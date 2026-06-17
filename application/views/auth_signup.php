@@ -1,95 +1,125 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 
 <head>
   <meta charset="utf-8">
-  <meta name="csrf-token" content="edjGgac9mtFsWPbrGHhItAsXhkBE8VClTqg62ZE4">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="author" content="LEFT4CODE">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<?= base_url('assets/css/signup.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/auth.css') ?>">
-
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-  <title>JobMatch DavOr - Signup</title>
-
-  <!-- ✅ keep (your functions/js rely on dist assets & lucide) -->
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('dist/css/app.css') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/signup.css') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/auth.css?v=20260617') ?>">
+  <title>PESO Davao Oriental - Sign Up</title>
 </head>
 
-<body class="overflow-y-auto">
-
+<body class="overflow-y-auto auth-page auth-page--signup">
   <div class="page-loader bg-background fixed inset-0 z-[100] flex items-center justify-center transition-opacity">
     <div class="loader-spinner !w-14"></div>
   </div>
 
-  <!-- =========================================================
-       ✅ NEW LAYOUT (NOT Midone)
-       - Clean split layout
-       - Uses your existing IDs/classes so JS + CSS still works
-       ========================================================= -->
-  <div class="jm-wrap">
-    <div class="jm-left">
-      <a class="jm-brand" href="<?= site_url('/') ?>">
-        <img src="<?= base_url('assets/images/logo.png') ?>" alt="JobMatch DavOr" class="jm-logo">
-      </a>
-
-      <div class="jm-left-body">
-        <div class="jm-illus">
-          <img src="<?= base_url('dist/images/illustration.svg') ?>" alt="Illustration">
+  <div class="auth-shell">
+    <div class="auth-wrap auth-wrap--signup">
+      <aside class="auth-visual">
+        <div class="auth-visual-glow"></div>
+        <div class="auth-visual-art">
+          <img src="<?= base_url('assets/images/job-matching.png') ?>" alt="Job matching illustration">
         </div>
 
-        <h1 class="jm-title">
-          A few more clicks to<br>
-          sign up to your account.
-        </h1>
-
-        <p class="jm-sub">
-          All your jobs and skilled workers—together in<br>
-          one place with JobMatch DavOr
-        </p>
-
-        <div class="jm-badges">
-          <span class="jm-pill">Skilled Workers</span>
-          <span class="jm-pill">Employers</span>
-          <span class="jm-pill">Secure</span>
-        </div>
-      </div>
-
-      <div class="jm-left-foot">
-        <small>© <?= date('Y') ?> JobMatch DavOr</small>
-      </div>
-    </div>
-
-    <div class="jm-right">
-      <div class="jm-card">
-        <div class="jm-card-head">
-          <h2 class="jm-card-title">Sign Up</h2>
-          <div class="jm-card-note">Create your JobMatch DavOr account in seconds.</div>
-        </div>
-
-        <?= form_open('auth/signup', ['id' => 'signupForm', 'data-email-check-url' => site_url('auth/email-available')]) ?>
-
-        <div class="mt-4">
-          <?php foreach (['success' => 'success', 'error' => 'danger', 'info' => 'info', 'msg' => 'success'] as $key => $class): ?>
-            <?php if ($this->session->flashdata($key)): ?>
-              <div class="alert alert-<?= $class ?> alert-dismissible fade show small mb-3" role="alert">
-                <?= htmlspecialchars($this->session->flashdata($key), ENT_QUOTES, 'UTF-8') ?>
-                <button type="button" class="btn-close" aria-label="Close"></button>
-              </div>
-            <?php endif; ?>
-          <?php endforeach; ?>
-        </div>
-
-        <div class="jm-grid2">
+        <div class="auth-visual-brand">
+          <div class="auth-visual-mark">
+            <img src="<?= base_url('assets/images/logo.png') ?>" alt="">
+          </div>
           <div>
-            <label class="jm-label" for="first_name">First Name</label>
+            <p class="auth-visual-name">PESO Davao Oriental</p>
+            <p class="auth-visual-tag">Public Employment Service Office</p>
+          </div>
+        </div>
+
+        <div class="auth-visual-copy">
+          <span class="auth-kicker">Get started</span>
+          <h1>Create your account and join the local employment network.</h1>
+          <p>Build your worker profile or find skilled service providers with a verified JobMatch account.</p>
+        </div>
+      </aside>
+
+      <main class="auth-panel">
+        <div class="auth-mobile-brand">
+          <a href="<?= site_url('/') ?>" class="auth-brand-link">
+            <span class="auth-brand-mark">
+              <img src="<?= base_url('assets/images/logo.png') ?>" alt="">
+            </span>
+            <span>
+              <strong>PESO Davao Oriental</strong>
+              <small>Public Employment Service Office</small>
+            </span>
+          </a>
+        </div>
+
+        <div class="auth-head fade-up fd2">
+          <h2>Create your account</h2>
+          <p>Register to manage jobs, hires, and messages.</p>
+        </div>
+
+        <?php foreach (['success' => 'success', 'error' => 'danger', 'info' => 'info', 'msg' => 'success'] as $key => $class): ?>
+          <?php if ($this->session->flashdata($key)): ?>
+            <div class="alert alert-<?= $class ?> alert-dismissible fade show small mb-3 fade-up fd2" role="alert">
+              <?= htmlspecialchars($this->session->flashdata($key), ENT_QUOTES, 'UTF-8') ?>
+              <button type="button" class="btn-close" aria-label="Close"></button>
+            </div>
+          <?php endif; ?>
+        <?php endforeach; ?>
+
+        <?= form_open('auth/signup', ['id' => 'signupForm', 'class' => 'auth-form', 'data-email-check-url' => site_url('auth/email-available')]) ?>
+
+        <div class="auth-field auth-field--full fade-up fd3">
+          <label class="auth-label">I am registering as a</label>
+          <div class="auth-role-grid">
+            <label class="auth-role-card">
+              <input
+                type="radio"
+                name="role"
+                value="worker"
+                <?= set_radio('role', 'worker'); ?>
+                required>
+              <span class="auth-role-icon">
+                <i data-lucide="briefcase-business"></i>
+              </span>
+              <span>
+                <strong>Skilled Worker</strong>
+                <small>Offer services and manage your profile.</small>
+              </span>
+            </label>
+
+            <label class="auth-role-card">
+              <input
+                type="radio"
+                name="role"
+                value="client"
+                <?= set_radio('role', 'client'); ?>
+                required>
+              <span class="auth-role-icon auth-role-icon--client">
+                <i data-lucide="users"></i>
+              </span>
+              <span>
+                <strong>Individual / Employer</strong>
+                <small>Find and hire skilled workers.</small>
+              </span>
+            </label>
+          </div>
+          <?php if (form_error('role')): ?>
+            <div class="text-red-600 text-sm mt-2"><?= form_error('role'); ?></div>
+          <?php endif; ?>
+        </div>
+
+        <div class="auth-grid2 fade-up fd3">
+          <div class="auth-field">
+            <label class="auth-label" for="first_name">First Name</label>
             <input
               id="first_name"
-              class="jm-input"
+              class="auth-input"
               type="text"
               name="first_name"
               placeholder="First Name"
@@ -102,11 +132,11 @@
             <?php endif; ?>
           </div>
 
-          <div>
-            <label class="jm-label" for="last_name">Last Name</label>
+          <div class="auth-field">
+            <label class="auth-label" for="last_name">Last Name</label>
             <input
               id="last_name"
-              class="jm-input"
+              class="auth-input"
               type="text"
               name="last_name"
               placeholder="Last Name"
@@ -120,81 +150,73 @@
           </div>
         </div>
 
-        <div class="mt-3">
-          <label class="jm-label" for="signupEmail">Email</label>
-          <input
-            id="signupEmail"
-            class="jm-input"
-            type="email"
-            name="email"
-            placeholder="Email"
-            value="<?= set_value('email') ?>">
-          <div id="emailHint" class="alert alert-info alert-inline" role="alert" hidden></div>
-
-          <?php if (form_error('email')): ?>
-            <div class="alert alert-danger alert-inline" role="alert"><?= form_error('email'); ?></div>
-          <?php endif; ?>
-        </div>
-
-        <div class="mt-3">
-          <label class="jm-label" for="signupPassword">Password</label>
-          <div class="jm-pass">
-            <input
-              id="signupPassword"
-              class="jm-input jm-input-pass"
-              type="password"
-              name="password"
-              placeholder="Password"
-              autocomplete="new-password"
-              required
-              aria-required="true" />
-
-            <button
-              type="button"
-              class="jm-eye"
-              aria-label="Show password"
-              data-toggle="password"
-              data-target="#signupPassword">
-              <i data-lucide="eye" class="jm-icon"></i>
-            </button>
-          </div>
-
-          <!-- keep this strength bar block as-is for your current look -->
-          <div class="box ml-px mt-4 grid h-2 w-full grid-flow-col gap-3 [--color:var(--color-foreground)]">
-            <div class="active bg-(--color)/20 border-(--color)/30 -ml-px h-full rounded border [&.active]:[--color:var(--color-success)]"></div>
-            <div class="active bg-(--color)/20 border-(--color)/30 -ml-px h-full rounded border [&.active]:[--color:var(--color-success)]"></div>
-            <div class="active bg-(--color)/20 border-(--color)/30 -ml-px h-full rounded border [&.active]:[--color:var(--color-success)]"></div>
-            <div class="bg-(--color)/20 border-(--color)/30 -ml-px h-full rounded border [&.active]:[--color:var(--color-success)]"></div>
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <label for="role" class="jm-label">Register as</label>
-          <select id="role" name="role" class="field-select" required>
-            <option value="" <?= set_select('role', '', true) ?>>-- Select Role --</option>
-            <option value="worker" <?= set_select('role', 'worker') ?>>Skilled Worker</option>
-            <option value="client" <?= set_select('role', 'client') ?>>Individual / Employer</option>
-          </select>
-        </div>
-
-        <div class="mt-4 jm-tos">
-          <div class="bg-background border-foreground/70 relative size-4 rounded-sm border">
-            <input
-              class="peer relative z-10 size-full cursor-pointer opacity-0"
-              type="checkbox"
-              id="tos"
-              name="accept_privacy"
-              value="1"
-              <?= set_checkbox('accept_privacy', '1'); ?>
-              required>
-            <div class="z-4 bg-foreground invisible absolute inset-0 flex items-center justify-center text-white peer-checked:visible">
-              <i data-lucide="check" class="stroke-[1.5] [--color:currentColor] stroke-(--color) fill-(--color)/25 size-4"></i>
+        <div class="auth-grid2 fade-up fd3">
+          <div class="auth-field">
+            <label class="auth-label" for="signupEmail">Email</label>
+            <div class="auth-control">
+              <i data-lucide="mail" class="auth-control-icon"></i>
+              <input
+                id="signupEmail"
+                class="auth-input auth-input--icon"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value="<?= set_value('email') ?>">
             </div>
+            <div id="emailHint" class="alert alert-info alert-inline" role="alert" hidden></div>
+
+            <?php if (form_error('email')): ?>
+              <div class="alert alert-danger alert-inline" role="alert"><?= form_error('email'); ?></div>
+            <?php endif; ?>
           </div>
 
-          <label class="jm-tos-label" for="tos">
-            I agree to the JobMatch DavOr
-            <a class="text-primary ml-1" href="#" id="openPrivacy">Privacy Policy</a>.
+          <div class="auth-field">
+            <label class="auth-label" for="signupPassword">Password</label>
+            <div class="auth-control">
+              <i data-lucide="lock" class="auth-control-icon"></i>
+              <input
+                id="signupPassword"
+                class="auth-input auth-input--icon auth-input-pass"
+                type="password"
+                name="password"
+                placeholder="Create a password"
+                autocomplete="new-password"
+                required
+                aria-required="true" />
+
+              <button
+                type="button"
+                class="auth-eye"
+                aria-label="Show password"
+                data-toggle="password"
+                data-target="#signupPassword">
+                <i data-lucide="eye" class="auth-icon"></i>
+              </button>
+            </div>
+            <?php if (form_error('password')): ?>
+              <div class="text-red-600 text-sm mt-2"><?= form_error('password'); ?></div>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <div class="auth-strength fade-up fd4" aria-hidden="true">
+          <span class="active"></span>
+          <span class="active"></span>
+          <span class="active"></span>
+          <span></span>
+        </div>
+
+        <div class="auth-tos fade-up fd4">
+          <input
+            type="checkbox"
+            id="tos"
+            name="accept_privacy"
+            value="1"
+            <?= set_checkbox('accept_privacy', '1'); ?>
+            required>
+          <label class="auth-tos-label" for="tos">
+            In compliance with the Data Privacy Act of 2012, I consent to the collection and processing of my personal information and agree to the
+            <a href="#" id="openPrivacy">Privacy Policy</a>.
           </label>
         </div>
 
@@ -202,14 +224,16 @@
           <div class="text-red-600 text-sm mt-2"><?= form_error('accept_privacy'); ?></div>
         <?php endif; ?>
 
-        <div class="mt-4">
-          <label class="jm-label">Human verification</label>
-          <div
-            class="g-recaptcha"
-            data-sitekey="<?= html_escape($this->config->item('recaptcha_site_key')) ?>"
-            data-callback="recaptchaOk"
-            data-expired-callback="recaptchaExpired"
-            data-error-callback="recaptchaError"></div>
+        <div class="auth-field auth-field--full fade-up fd4">
+          <label class="auth-label">Human verification</label>
+          <div class="auth-captcha">
+            <div
+              class="g-recaptcha"
+              data-sitekey="<?= html_escape($this->config->item('recaptcha_site_key')) ?>"
+              data-callback="recaptchaOk"
+              data-expired-callback="recaptchaExpired"
+              data-error-callback="recaptchaError"></div>
+          </div>
           <?php if (form_error('g-recaptcha-response')): ?>
             <div class="text-red-600 text-sm mt-2"><?= form_error('g-recaptcha-response'); ?></div>
           <?php endif; ?>
@@ -220,32 +244,25 @@
           <input id="hp-website" type="text" name="website" autocomplete="off" tabindex="-1">
         </div>
 
-        <div class="mt-5">
-          <button
-            id="btnRegister"
-            type="submit"
-            disabled
-            class="cursor-pointer inline-flex border items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-(--color)/20 border-(--color)/60 text-(--color) hover:bg-(--color)/5 [--color:var(--color-primary)] h-10 box w-full px-4 py-5"
-            aria-disabled="true"
-            tabindex="-1">
-            Register
-          </button>
+        <button
+          id="btnRegister"
+          type="submit"
+          disabled
+          class="auth-btn auth-btn-primary fade-up fd4"
+          aria-disabled="true"
+          tabindex="-1">
+          Register
+        </button>
 
-          <?= form_close() ?>
+        <?= form_close() ?>
 
-          <a href="<?= site_url('auth/login') ?>"
-            data-auth-transition="1"
-            class="[--color:var(--color-foreground)] cursor-pointer inline-flex border items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-(--color) hover:bg-(--color)/5 bg-background border-(--color)/20 h-10 box mt-4 w-full px-4 py-5">
-            Login
-          </a>
-        </div>
-      </div>
+        <p class="auth-switch fade-up fd4">
+          Already have an account?
+          <a href="<?= site_url('auth/login') ?>" data-auth-transition="1">Login</a>
+        </p>
+      </main>
     </div>
   </div>
-
-  <!-- =========================================================
-       YOUR EXISTING MODAL + FIXED CLOSE ICON
-       ========================================================= -->
 
   <div id="pmModal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
     <div id="pmBackdrop" data-close="1"></div>
@@ -256,7 +273,7 @@
       </div>
       <div id="pmBody">
         <p><strong>Effective date:</strong> <?= date('F j, Y') ?></p>
-        <p>Welcome to <strong>JobMatch DavOr</strong>. We connect skilled workers with individuals or employers who need their services. This Privacy Policy explains what data we collect, how we use it, and the choices you have.</p>
+        <p>Welcome to the <strong>Public Employment Service Office &ndash; Davao Oriental</strong>. We connect skilled workers with individuals or employers who need their services. This Privacy Policy explains what data we collect, how we use it, and the choices you have.</p>
 
         <h4>1) Information We Collect</h4>
         <ul>
@@ -278,7 +295,7 @@
         </ul>
 
         <h4>3) Legal Bases</h4>
-        <p>We process your data to perform our contract with you (providing the JobMatch DavOr service), for our legitimate interests (platform safety and service improvement), and to comply with legal obligations.</p>
+        <p>We process your data to perform our contract with you (providing the PESO Davao Oriental service), for our legitimate interests (platform safety and service improvement), and to comply with legal obligations.</p>
 
         <h4>4) Sharing</h4>
         <p>We share data with service providers that help us operate (ex. hosting, email delivery) under appropriate safeguards. Worker profile content may be visible to signed-in clients as part of matching. We may disclose information if required by law.</p>
@@ -297,13 +314,13 @@
         <p>We use reasonable technical and organizational measures to protect personal data. No method of transmission or storage is 100% secure.</p>
 
         <h4>8) Children</h4>
-        <p>JobMatch DavOr is not directed to children under 16 and we do not knowingly collect personal data from children.</p>
+        <p>PESO Davao Oriental is not directed to children under 16 and we do not knowingly collect personal data from children.</p>
 
         <h4>9) International Transfers</h4>
         <p>Your information may be processed in countries with different data-protection laws. We take steps to ensure appropriate safeguards are in place.</p>
 
         <h4>10) Changes</h4>
-        <p>We may update this Policy. If changes are material, we’ll notify you in the app or by email.</p>
+        <p>We may update this Policy. If changes are material, we&rsquo;ll notify you in the app or by email.</p>
       </div>
       <div id="pmFoot">
         <button type="button" class="pm-btn" data-close="1">Close</button>
@@ -312,7 +329,6 @@
     </div>
   </div>
 
-  <!-- keep your scripts (functions unchanged) -->
   <script src="<?= base_url('dist/js/vendors/dom.js') ?>"></script>
   <script src="<?= base_url('dist/js/vendors/lucide.js') ?>"></script>
   <script src="<?= base_url('dist/js/vendors/modal.js') ?>"></script>
@@ -323,7 +339,6 @@
 
   <script src="<?= base_url('assets/js/auth-common.js') ?>"></script>
   <script src="<?= base_url('assets/js/auth-signup.js') ?>"></script>
-
 </body>
 
 </html>

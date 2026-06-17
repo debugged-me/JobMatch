@@ -5,16 +5,13 @@
   <meta charset="utf-8" />
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=overlays-content">
-  <title>Public Employment Service Office Davao Oriental</title>
+  <title>Public Employment Service Office — Davao Oriental</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css'); ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css'); ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css'); ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/universal.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/landing.css') ?>">
+  <?php $lpCssVer = is_file(FCPATH . 'assets/css/landing-peso.css') ? filemtime(FCPATH . 'assets/css/landing-peso.css') : time(); ?>
+  <link rel="stylesheet" href="<?= base_url('assets/css/landing-peso.css?v=' . $lpCssVer); ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png'); ?>" />
-
 </head>
 
 <body>
@@ -146,7 +143,7 @@
     ],
     'peso' => [
       'label'   => 'PESO',
-      'summary' => 'Keep the city-wide workforce and employers aligned every day.',
+      'summary' => 'Keep the province-wide workforce and employers aligned every day.',
       'links'   => [
         [
           'title' => 'Manage PESO dashboard',
@@ -187,95 +184,167 @@
   }
   ?>
 
-  <header class="landing-header" id="home">
-    <div class="landing-container nav-container">
-      <a href="<?= site_url(); ?>" class="brand" aria-label="Public Employment Service Office Home">
-        <img src="<?= base_url('assets/images/logo.png'); ?>" alt="Public Employment Service Office logo">
-        <div class="brand-copy">
-          <span>Public Employment Service Office</span>
-          <small>Davao Oriental</small>
-        </div>
+  <!-- Top utility strip -->
+  <div class="lp-topbar">
+    <div class="lp-container">
+      <span class="lp-topbar-left">
+        <i class="mdi mdi-shield-check-outline"></i> Official portal of PESO &mdash; Davao Oriental
+      </span>
+      <span class="lp-topbar-right">
+        <a href="<?= site_url('hotlines'); ?>"><i class="mdi mdi-phone-in-talk-outline"></i> Hotlines</a>
+        <a href="<?= site_url('complaints'); ?>"><i class="mdi mdi-message-alert-outline"></i> File a concern</a>
+      </span>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <header class="lp-nav" id="home">
+    <div class="lp-container">
+      <a href="<?= site_url(); ?>" class="lp-brand" aria-label="PESO Davao Oriental Home">
+        <img src="<?= base_url('assets/images/logo.png'); ?>" alt="PESO Davao Oriental logo">
+        <span class="lp-brand-text">
+          <strong>Public Employment Service Office</strong>
+          <span>Davao Oriental</span>
+        </span>
       </a>
 
-      <nav class="nav-links" aria-label="Primary navigation">
+      <nav class="lp-navlinks" aria-label="Primary navigation">
         <a href="#jobs-latest">Jobs</a>
-        <a href="#why-choose">Why Public Employment Service Office?</a>
         <a href="#services">Services</a>
+        <a href="#role-toolkit">Toolkits</a>
+        <a href="#how-it-works">How it works</a>
         <a href="#partners">Partners</a>
       </nav>
 
-      <div class="nav-actions">
+      <div class="lp-nav-actions">
         <?php if ($isLoggedIn): ?>
-          <a class="btn btn-ghost btn-sm" href="<?= site_url('auth/logout'); ?>">Logout</a>
-          <a class="btn btn-primary btn-sm" href="<?= site_url($dashboardRoute); ?>">Go to dashboard</a>
+          <a class="lp-btn lp-btn--ghost lp-btn--sm" href="<?= site_url('auth/logout'); ?>">Logout</a>
+          <a class="lp-btn lp-btn--primary lp-btn--sm" href="<?= site_url($dashboardRoute); ?>">Dashboard</a>
         <?php else: ?>
-          <a class="btn btn-ghost btn-sm" href="<?= site_url('auth/login'); ?>">Log in</a>
-          <a class="btn btn-primary btn-sm" href="<?= site_url('auth/signup'); ?>">Register</a>
+          <a class="lp-btn lp-btn--ghost lp-btn--sm" href="<?= site_url('auth/login'); ?>">Log in</a>
+          <a class="lp-btn lp-btn--primary lp-btn--sm" href="<?= site_url('auth/signup'); ?>">Register</a>
         <?php endif; ?>
-      </div>
-    </div>
-
-    <div class="landing-container hero-grid">
-      <div class="hero-copy">
-        <div class="hero-seal">
-          <img src="<?= base_url('assets/images/logo.png'); ?>" alt="Public Employment Service Office seal">
-        </div>
-
-        <?php if ($isLoggedIn): ?>
-          <span class="hero-eyebrow"><i class="mdi mdi-account-circle-outline"></i> Welcome back<?= $firstNameSafe !== '' ? ', ' . $firstNameSafe : ''; ?></span>
-          <h1 class="hero-title">Public Employment Service Office Portal</h1>
-          <p class="hero-text">
-            Continue managing applications, updates, and PESO announcements in your dashboard.
-          </p>
-          <div class="hero-cta">
-            <a class="btn btn-primary" href="<?= site_url($dashboardRoute); ?>">Go to dashboard</a>
-            <a class="btn btn-outline" href="#jobs-latest">View latest jobs</a>
-          </div>
-        <?php else: ?>
-          <span class="hero-eyebrow"><i class="mdi mdi-map-marker-outline"></i> Davao Oriental</span>
-          <h1 class="hero-title">Public Employment Service Office Portal</h1>
-          <p class="hero-text">
-            Sign up for free to manage applications, follow job fairs, and receive tailored alerts from Davao Oriental PESO.
-          </p>
-          <div class="hero-cta">
-            <a class="btn btn-primary" href="<?= site_url('auth/signup'); ?>">Register now</a>
-            <a class="btn btn-outline" href="<?= site_url('auth/login'); ?>">Log in</a>
-          </div>
-        <?php endif; ?>
-
-        <ul class="hero-points">
-          <li><i class="mdi mdi-check-circle-outline"></i> Daily updates direct from Davao Oriental PESO</li>
-          <li><i class="mdi mdi-check-circle-outline"></i> TESDA-certified trainings and local events</li>
-          <li><i class="mdi mdi-check-circle-outline"></i> Support for workers, employers, and schools</li>
-        </ul>
-      </div>
-
-      <!-- kept for compatibility but hidden -->
-      <div class="hero-panel">
-        <div class="hero-card"></div>
       </div>
     </div>
   </header>
 
+  <!-- Hero -->
+  <section class="lp-hero">
+    <div class="lp-container">
+      <div class="lp-hero-copy">
+        <?php if ($isLoggedIn): ?>
+          <span class="lp-hero-eyebrow"><i class="mdi mdi-account-circle-outline"></i> Welcome back<?= $firstNameSafe !== '' ? ', ' . $firstNameSafe : ''; ?></span>
+          <h1 class="lp-hero-title">Your <em>PESO</em> workspace,<br>ready when you are.</h1>
+          <p class="lp-hero-text">
+            Pick up where you left off &mdash; manage applications, job orders, and announcements from the Davao Oriental Public Employment Service Office.
+          </p>
+          <div class="lp-hero-cta">
+            <a class="lp-btn lp-btn--light" href="<?= site_url($dashboardRoute); ?>">Go to dashboard <i class="mdi mdi-arrow-right"></i></a>
+            <a class="lp-btn lp-btn--clear" href="#jobs-latest">View latest jobs</a>
+          </div>
+        <?php else: ?>
+          <span class="lp-hero-eyebrow"><i class="mdi mdi-map-marker-outline"></i> Serving the whole of Davao Oriental</span>
+          <h1 class="lp-hero-title">Find work. Hire talent.<br>All through <em>one</em> public office.</h1>
+          <p class="lp-hero-text">
+            The Public Employment Service Office connects skilled workers, employers, and schools across Davao Oriental &mdash; with verified job orders, trainings, and real-time assistance.
+          </p>
+          <div class="lp-hero-cta">
+            <a class="lp-btn lp-btn--light" href="<?= site_url('auth/signup'); ?>">Create free account <i class="mdi mdi-arrow-right"></i></a>
+            <a class="lp-btn lp-btn--clear" href="<?= site_url('auth/login'); ?>">Log in</a>
+          </div>
+        <?php endif; ?>
+
+        <ul class="lp-hero-points">
+          <li><i class="mdi mdi-check-circle"></i> Daily updates direct from Davao Oriental PESO</li>
+          <li><i class="mdi mdi-check-circle"></i> TESDA-certified trainings and local job fairs</li>
+          <li><i class="mdi mdi-check-circle"></i> Support for workers, employers, and schools</li>
+        </ul>
+      </div>
+
+      <aside class="lp-statboard" aria-label="Platform snapshot">
+        <div class="lp-statboard-head">
+          <strong>Live snapshot</strong>
+          <span>Updated daily</span>
+        </div>
+        <div class="lp-statgrid">
+          <div class="lp-stat">
+            <b><?= $statWorkers > 0 ? $statWorkersFmt . '+' : '--'; ?></b>
+            <small>Registered workers</small>
+          </div>
+          <div class="lp-stat">
+            <b><?= $statEmployers > 0 ? $statEmployersFmt . '+' : '--'; ?></b>
+            <small>Verified employers</small>
+          </div>
+          <div class="lp-stat">
+            <b><?= $statJobs > 0 ? $statJobsFmt : '--'; ?></b>
+            <small>Open job orders</small>
+          </div>
+          <div class="lp-stat">
+            <b><?= $statHotlines > 0 ? $statHotlinesFmt : '--'; ?></b>
+            <small>Active hotlines</small>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
   <main>
-    <section class="landing-jobs" id="jobs-latest">
-      <div class="landing-container">
-        <div class="jobs-shell">
-          <header class="jobs-header">
-            <div>
-              <h2 class="section-head">Latest job vacancies</h2>
-              <p class="section-subhead">Stay up to date with fresh postings from the Davao Oriental Public Employment Service Office.</p>
+    <!-- Live insights -->
+    <section class="lp-section" id="insights">
+      <div class="lp-container">
+        <div class="lp-head">
+          <span class="lp-eyebrow">Live snapshot</span>
+          <h2 class="lp-title">PESO opportunities right now</h2>
+          <p class="lp-sub">Numbers refresh as soon as provincial job orders go public.</p>
+        </div>
+
+        <div class="lp-insights-grid">
+          <article class="lp-insight">
+            <span class="lp-insight-label">Open job orders</span>
+            <div class="lp-insight-value" id="insight-total-jobs">--</div>
+            <span class="lp-insight-note" id="insight-total-jobs-note">Waiting for updates...</span>
+          </article>
+
+          <article class="lp-insight">
+            <span class="lp-insight-label">Active locations</span>
+            <div class="lp-insight-value" id="insight-total-locations">--</div>
+            <span class="lp-insight-note" id="insight-location-top">--</span>
+          </article>
+
+          <article class="lp-insight">
+            <span class="lp-insight-label">Salary transparency</span>
+            <div class="lp-insight-value" id="insight-pay-count">--</div>
+            <span class="lp-insight-note" id="insight-pay-percent">--</span>
+          </article>
+
+          <article class="lp-insight">
+            <span class="lp-insight-label">Newest posting</span>
+            <div class="lp-insight-value" id="insight-last-updated">--</div>
+            <span class="lp-insight-note" id="insight-last-updated-note">--</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Latest jobs -->
+    <section class="lp-section lp-section--tint" id="jobs-latest">
+      <div class="lp-container">
+        <div class="lp-jobs-shell">
+          <div class="lp-jobs-head">
+            <div class="lp-head" style="margin-bottom:0;">
+              <span class="lp-eyebrow">Now hiring</span>
+              <h2 class="lp-title">Latest job vacancies</h2>
+              <p class="lp-sub">Fresh postings straight from the Davao Oriental Public Employment Service Office.</p>
             </div>
-            <div class="jobs-actions">
+            <div class="lp-jobs-actions">
               <?php if ($isLoggedIn): ?>
-                <span class="muted small">Signed in as <?= $roleLabelSafe; ?>.</span>
-                <a class="btn btn-outline btn-sm" href="<?= site_url($dashboardRoute); ?>">Manage saved jobs</a>
+                <a class="lp-btn lp-btn--outline lp-btn--sm" href="<?= site_url($dashboardRoute); ?>">Manage saved jobs</a>
               <?php else: ?>
-                <a class="btn btn-outline btn-sm" href="<?= site_url('auth/signup'); ?>">Save these jobs</a>
-                <a class="btn btn-ghost btn-sm" href="<?= site_url('auth/login'); ?>">Login</a>
+                <a class="lp-btn lp-btn--outline lp-btn--sm" href="<?= site_url('auth/signup'); ?>">Save these jobs</a>
+                <a class="lp-btn lp-btn--ghost lp-btn--sm" href="<?= site_url('auth/login'); ?>">Login</a>
               <?php endif; ?>
             </div>
-          </header>
+          </div>
 
           <div id="jobs-carousel" class="jobs-carousel" style="display:none;">
             <div class="jobs-track">
@@ -295,78 +364,53 @@
       </div>
     </section>
 
-    <section class="landing-insights" id="insights">
-      <div class="landing-container">
-        <div class="insights-shell">
-          <div>
-            <span class="insights-eyebrow">Live snapshot</span>
-            <h2 class="section-head">PESO opportunities right now</h2>
-            <p class="section-subhead">Numbers refresh as soon as city job orders go public.</p>
-          </div>
+    <!-- Services / features -->
+    <section class="lp-section" id="services">
+      <div class="lp-container">
+        <div class="lp-head lp-head--center">
+          <span class="lp-eyebrow">What you get</span>
+          <h2 class="lp-title">Everything you need to land the role</h2>
+          <p class="lp-sub">Whether you are a worker, employer, or school partner, PESO Davao Oriental keeps everyone in sync.</p>
+        </div>
 
-          <div class="insights-grid">
-            <article class="insight-card">
-              <span class="insight-label">Open job orders</span>
-              <div class="insight-value" id="insight-total-jobs">--</div>
-              <span class="insight-note" id="insight-total-jobs-note">Waiting for updates...</span>
-            </article>
+        <div class="lp-feature-grid">
+          <article class="lp-feature">
+            <span class="lp-feature-icon"><i class="mdi mdi-briefcase-check"></i></span>
+            <h3>Guided applications</h3>
+            <p>Track requirements, upload documents, and monitor interview slots in one place.</p>
+          </article>
 
-            <article class="insight-card">
-              <span class="insight-label">Active locations</span>
-              <div class="insight-value" id="insight-total-locations">--</div>
-              <span class="insight-note" id="insight-location-top">--</span>
-            </article>
+          <article class="lp-feature">
+            <span class="lp-feature-icon"><i class="mdi mdi-school"></i></span>
+            <h3>TESDA-aligned trainings</h3>
+            <p>Discover accredited programs and reserve slots for upskilling or reskilling.</p>
+          </article>
 
-            <article class="insight-card">
-              <span class="insight-label">Salary transparency</span>
-              <div class="insight-value" id="insight-pay-count">--</div>
-              <span class="insight-note" id="insight-pay-percent">--</span>
-            </article>
+          <article class="lp-feature">
+            <span class="lp-feature-icon"><i class="mdi mdi-account-group"></i></span>
+            <h3>Community support</h3>
+            <p>Connect with local employers, PESO officers, and fellow workers for timely updates.</p>
+          </article>
 
-            <article class="insight-card">
-              <span class="insight-label">Newest posting</span>
-              <div class="insight-value" id="insight-last-updated">--</div>
-              <span class="insight-note" id="insight-last-updated-note">--</span>
-            </article>
-          </div>
+          <article class="lp-feature">
+            <span class="lp-feature-icon"><i class="mdi mdi-chart-line"></i></span>
+            <h3>Insights for employers</h3>
+            <p>Manage postings, respond to applicants, and review hiring analytics from your dashboard.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="landing-stats" id="why-choose">
-      <div class="landing-container">
-        <h2 class="section-head">Community impact across Public Employment Service Office</h2>
-        <p class="section-subhead">Figures update from the live database so you always know how active the platform is.</p>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <strong><?= $statWorkers > 0 ? $statWorkersFmt . '+' : '--'; ?></strong>
-            <span>Registered workers building their careers</span>
-          </div>
-          <div class="stat-card">
-            <strong><?= $statEmployers > 0 ? $statEmployersFmt . '+' : '--'; ?></strong>
-            <span>Verified employers and partner organizations</span>
-          </div>
-          <div class="stat-card">
-            <strong><?= $statJobs > 0 ? $statJobsFmt : '--'; ?></strong>
-            <span>Public job orders currently open</span>
-          </div>
-          <div class="stat-card">
-            <strong><?= $statHotlines > 0 ? $statHotlinesFmt : '--'; ?></strong>
-            <span>Active PESO hotlines ready to assist</span>
-          </div>
+    <!-- Role toolkits -->
+    <section class="lp-section lp-section--tint" id="role-toolkit">
+      <div class="lp-container">
+        <div class="lp-head">
+          <span class="lp-eyebrow">By account type</span>
+          <h2 class="lp-title">Toolkits for every account</h2>
+          <p class="lp-sub">Switch tabs to discover the workflows available to you inside PESO Davao Oriental.</p>
         </div>
-      </div>
-    </section>
 
-    <section class="landing-toolkit" id="role-toolkit">
-      <div class="landing-container">
         <div class="toolkit-shell" data-default-role="<?= htmlspecialchars($toolkitDefault, ENT_QUOTES, 'UTF-8'); ?>">
-          <div>
-            <h2 class="section-head">Toolkits for every account type</h2>
-            <p class="section-subhead">Switch tabs to discover the workflows available to you inside Public Employment Service Office.</p>
-          </div>
-
           <div class="toolkit-tabs" role="tablist" aria-label="Role toolkits">
             <?php foreach ($toolkitData as $slug => $conf): ?>
               <?php
@@ -414,92 +458,59 @@
       </div>
     </section>
 
-    <section class="landing-features" id="services">
-      <div class="landing-container">
-        <h2 class="section-head">Everything you need to land the role</h2>
-        <p class="section-subhead">Whether you are a worker, employer, or school partner, Public Employment Service Office keeps everyone in sync.</p>
-
-        <div class="feature-grid">
-          <article class="feature-card">
-            <span class="feature-icon"><i class="mdi mdi-briefcase-check"></i></span>
-            <h3>Guided applications</h3>
-            <p>Track requirements, upload documents, and monitor interview slots in one place.</p>
-          </article>
-
-          <article class="feature-card">
-            <span class="feature-icon"><i class="mdi mdi-school"></i></span>
-            <h3>TESDA-aligned trainings</h3>
-            <p>Discover accredited programs and reserve slots for upskilling or reskilling.</p>
-          </article>
-
-          <article class="feature-card">
-            <span class="feature-icon"><i class="mdi mdi-account-group"></i></span>
-            <h3>Community support</h3>
-            <p>Connect with local employers, PESO officers, and fellow workers for timely updates.</p>
-          </article>
-
-          <article class="feature-card">
-            <span class="feature-icon"><i class="mdi mdi-chart-line"></i></span>
-            <h3>Insights for employers</h3>
-            <p>Manage postings, respond to applicants, and review hiring analytics from your dashboard.</p>
-          </article>
+    <!-- How it works -->
+    <section class="lp-section" id="how-it-works">
+      <div class="lp-container">
+        <div class="lp-head">
+          <span class="lp-eyebrow">Simple steps</span>
+          <h2 class="lp-title">How your PESO journey works</h2>
+          <p class="lp-sub">From profile setup to hiring, follow these steps to make the most of the platform.</p>
         </div>
-      </div>
-    </section>
 
-    <section class="landing-journey" id="how-it-works">
-      <div class="landing-container">
-        <h2 class="section-head">How your Public Employment Service Office journey works</h2>
-        <p class="section-subhead">From profile setup to hiring, follow these simple steps to make the most of the platform.</p>
-
-        <div class="journey-grid">
-          <div class="journey-step">
-            <span class="step-index">Step 01</span>
-            <h3>Create or update your profile</h3>
+        <div class="lp-steps">
+          <div class="lp-step">
+            <h3>Create your profile</h3>
             <p>Complete your details so PESO officers can match you with jobs or trainings faster.</p>
           </div>
-
-          <div class="journey-step">
-            <span class="step-index">Step 02</span>
+          <div class="lp-step">
             <h3>Browse active vacancies</h3>
-            <p>Filter openings, save the ones you like, and receive notifications for urgent hiring.</p>
+            <p>Filter openings, save the ones you like, and get notified for urgent hiring.</p>
           </div>
-
-          <div class="journey-step">
-            <span class="step-index">Step 03</span>
+          <div class="lp-step">
             <h3>Connect and get hired</h3>
-            <p>Attend orientations, submit documents, and coordinate with employers right inside your dashboard.</p>
+            <p>Attend orientations, submit documents, and coordinate with employers in your dashboard.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="landing-partners" id="partners">
-      <div class="landing-container">
-        <h2 class="section-head">Local partners backing your success</h2>
-        <p class="section-subhead">We work closely with government offices, schools, and private employers to provide trusted opportunities.</p>
+    <!-- Partners -->
+    <section class="lp-section lp-section--tint" id="partners">
+      <div class="lp-container">
+        <div class="lp-head lp-head--center">
+          <span class="lp-eyebrow">Trusted by</span>
+          <h2 class="lp-title">Local partners backing your success</h2>
+          <p class="lp-sub">We work closely with government offices, schools, and private employers to provide trusted opportunities.</p>
+        </div>
 
-        <div class="partner-grid">
-          <div class="partner-card">
-            <span class="partner-badge">Government</span>
-            <h3>Davao Oriental Government</h3>
-            <p>Municipal offices offering roles in frontline services, administration, and community projects.</p>
+        <div class="lp-partner-grid">
+          <div class="lp-partner">
+            <span class="lp-partner-badge">Government</span>
+            <h3>Davao Oriental LGUs</h3>
+            <p>Provincial and municipal offices offering frontline, administrative, and community roles.</p>
           </div>
-
-          <div class="partner-card">
-            <span class="partner-badge">Training</span>
+          <div class="lp-partner">
+            <span class="lp-partner-badge">Training</span>
             <h3>TESDA Davao Oriental</h3>
             <p>Gain new certifications and connect with employers looking for skilled talent.</p>
           </div>
-
-          <div class="partner-card">
-            <span class="partner-badge">Education</span>
-            <h3>Partner Schools &amp; Universities</h3>
+          <div class="lp-partner">
+            <span class="lp-partner-badge">Education</span>
+            <h3>Schools &amp; Universities</h3>
             <p>Onboard students for internships, on-the-job training, and industry partnerships.</p>
           </div>
-
-          <div class="partner-card">
-            <span class="partner-badge">Industry</span>
+          <div class="lp-partner">
+            <span class="lp-partner-badge">Industry</span>
             <h3>Regional Employers</h3>
             <p>Tourism, construction, and service companies with consistent hiring needs.</p>
           </div>
@@ -507,41 +518,22 @@
       </div>
     </section>
 
-    <section class="landing-community" id="community">
-      <div class="landing-container community-grid">
-        <article class="community-card">
-          <h3>Stay in the loop</h3>
-          <p>Receive caravan schedules, job fair announcements, and PESO advisories right away.</p>
-          <a class="btn btn-outline" href="<?= site_url('worker/feed'); ?>">Open community feed</a>
-        </article>
-
-        <article class="community-card">
-          <h3>Support for employers</h3>
-          <p>Coordinate interviews, review applicants, and request assistance from PESO specialists.</p>
-          <a class="btn btn-outline" href="<?= site_url('dashboard/client'); ?>">Go to employer tools</a>
-        </article>
-
-        <article class="community-card">
-          <h3>Schools &amp; partners</h3>
-          <p>Manage student placements, track requirements, and collaborate with Davao Oriental.</p>
-          <a class="btn btn-outline" href="<?= site_url('school-admin'); ?>">Visit school admin</a>
-        </article>
-      </div>
-    </section>
-
-    <section class="landing-cta" id="get-started">
-      <div class="landing-container">
-        <div class="cta-shell">
+    <!-- CTA -->
+    <section class="lp-section" id="get-started">
+      <div class="lp-container">
+        <div class="lp-cta">
           <?php if ($isLoggedIn): ?>
             <h2>Ready to continue your hiring journey?</h2>
             <p>Review candidate profiles, update job posts, and respond to applications in seconds.</p>
-            <a class="btn btn-primary" href="<?= site_url($dashboardRoute); ?>">Return to your dashboard</a>
+            <div class="lp-cta-actions">
+              <a class="lp-btn lp-btn--light" href="<?= site_url($dashboardRoute); ?>">Return to your dashboard</a>
+            </div>
           <?php else: ?>
-            <h2>Start your next opportunity with Public Employment Service Office</h2>
+            <h2>Start your next opportunity with PESO Davao Oriental</h2>
             <p>Sign up for free to manage applications, follow job fairs, and receive tailored alerts from Davao Oriental PESO.</p>
-            <div class="cta-actions">
-              <a class="btn btn-primary" href="<?= site_url('auth/signup'); ?>">Create free account</a>
-              <a class="btn btn-outline" href="<?= site_url('auth/login'); ?>">Log in</a>
+            <div class="lp-cta-actions">
+              <a class="lp-btn lp-btn--light" href="<?= site_url('auth/signup'); ?>">Create free account</a>
+              <a class="lp-btn lp-btn--clear" href="<?= site_url('auth/login'); ?>">Log in</a>
             </div>
           <?php endif; ?>
         </div>
@@ -549,60 +541,44 @@
     </section>
   </main>
 
-  <footer class="landing-footer">
-    <div class="landing-container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-heading">Discover jobs</div>
-          <div class="footer-links">
-            <a href="#jobs-latest">Latest vacancies</a>
-            <a href="#services">Worker services</a>
-            <a href="#community">Community updates</a>
-            <a href="<?= site_url('hotlines'); ?>">Job fairs &amp; caravans</a>
-          </div>
+  <!-- Footer -->
+  <footer class="lp-footer">
+    <div class="lp-container">
+      <div class="lp-foot-top">
+        <div class="lp-foot-brand">
+          <img src="<?= base_url('assets/images/logo.png'); ?>" alt="PESO Davao Oriental"
+            onerror="this.onerror=null;this.src='<?= base_url('assets/images/logo.png'); ?>';">
+          <p>The Public Employment Service Office of Davao Oriental connects skilled workers and employers with verified opportunities, trainings, and assistance.</p>
         </div>
 
-        <div>
-          <div class="footer-heading">For workers</div>
-          <div class="footer-links">
-            <a href="<?= site_url('auth/signup'); ?>">Create account</a>
-            <a href="<?= site_url('auth/login'); ?>">Sign in</a>
-            <a href="<?= site_url('profile'); ?>">Update profile</a>
-          </div>
+        <div class="lp-foot-col">
+          <h4>Discover jobs</h4>
+          <a href="#jobs-latest">Latest vacancies</a>
+          <a href="#services">Worker services</a>
+          <a href="<?= site_url('hotlines'); ?>">Job fairs &amp; caravans</a>
         </div>
 
-        <div>
-          <div class="footer-heading">For employers</div>
-          <div class="footer-links">
-            <a href="<?= site_url('users'); ?>">Manage postings</a>
-            <a href="<?= site_url('dashboard/client'); ?>">Employer dashboard</a>
-            <a href="<?= site_url('admin/reports'); ?>">Reports</a>
-          </div>
+        <div class="lp-foot-col">
+          <h4>For workers</h4>
+          <a href="<?= site_url('auth/signup'); ?>">Create account</a>
+          <a href="<?= site_url('auth/login'); ?>">Sign in</a>
+          <a href="<?= site_url('profile'); ?>">Update profile</a>
         </div>
 
-        <div>
-          <div class="footer-heading">Support</div>
-          <div class="footer-links">
-            <span>Email <a href="mailto:support@jobmatch.ph">support@jobmatch.ph</a></span>
-            <a href="<?= site_url('visibility'); ?>">Privacy notice</a>
-            <a href="<?= site_url('complaints'); ?>">Submit a complaint</a>
-          </div>
+        <div class="lp-foot-col">
+          <h4>Support</h4>
+          <span>support@jobmatch.ph</span>
+          <a href="<?= site_url('visibility'); ?>">Privacy notice</a>
+          <a href="<?= site_url('complaints'); ?>">Submit a complaint</a>
         </div>
       </div>
 
-      <div class="footer-meta">
-        <span>&copy; <?= date('Y'); ?> Public Employment Service Office - Davao Oriental </span>
-        <span><a href="#" data-twx-open="about" role="button">Terms of use</a> | <a href="<?= site_url('hotlines'); ?>">Contact us</a></span>
+      <div class="lp-foot-bottom">
+        <span>&copy; <?= date('Y'); ?> Public Employment Service Office &mdash; Davao Oriental</span>
+        <span><a href="#" data-twx-open="about" role="button">Terms of use</a> &nbsp;|&nbsp; <a href="<?= site_url('hotlines'); ?>">Contact us</a></span>
       </div>
     </div>
   </footer>
-
-  <script src="<?= base_url('assets/vendors/js/vendor.bundle.base.js'); ?>"></script>
-  <script src="<?= base_url('assets/js/off-canvas.js'); ?>"></script>
-  <script src="<?= base_url('assets/js/hoverable-collapse.js'); ?>"></script>
-  <script src="<?= base_url('assets/js/misc.js'); ?>"></script>
-  <script src="<?= base_url('assets/js/settings.js'); ?>"></script>
-  <script src="<?= base_url('assets/js/todolist.js'); ?>"></script>
 
   <script>
     window.fallbackStats = {
@@ -610,7 +586,6 @@
     };
     window.pesoFeedUrl = '<?= site_url('peso/feed'); ?>';
   </script>
-
 
   <script src="<?= base_url('assets/js/landing.js'); ?>"></script>
 
