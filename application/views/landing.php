@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=overlays-content">
-  <title>JobMatch DavOr</title>
+  <title>Public Employment Service Office Davao Oriental</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css'); ?>">
@@ -122,7 +122,7 @@
     ],
     'tesda' => [
       'label'   => 'TESDA',
-      'summary' => 'Align training programs with employer demand across Mati.',
+      'summary' => 'Align training programs with employer demand across Davao Oriental.',
       'links'   => [
         [
           'title' => 'View TESDA dashboard',
@@ -189,17 +189,17 @@
 
   <header class="landing-header" id="home">
     <div class="landing-container nav-container">
-      <a href="<?= site_url(); ?>" class="brand" aria-label="JobMatch Home">
-        <img src="<?= base_url('assets/images/logo.png'); ?>" alt="JobMatch logo">
+      <a href="<?= site_url(); ?>" class="brand" aria-label="Public Employment Service Office Home">
+        <img src="<?= base_url('assets/images/logo.png'); ?>" alt="Public Employment Service Office logo">
         <div class="brand-copy">
-          <span>JobMatch</span>
-          <small>City of Mati</small>
+          <span>Public Employment Service Office</span>
+          <small>Davao Oriental</small>
         </div>
       </a>
 
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#jobs-latest">Jobs</a>
-        <a href="#why-choose">Why JobMatch?</a>
+        <a href="#why-choose">Why Public Employment Service Office?</a>
         <a href="#services">Services</a>
         <a href="#partners">Partners</a>
       </nav>
@@ -218,12 +218,12 @@
     <div class="landing-container hero-grid">
       <div class="hero-copy">
         <div class="hero-seal">
-          <img src="<?= base_url('assets/images/logo.png'); ?>" alt="JobMatch seal">
+          <img src="<?= base_url('assets/images/logo.png'); ?>" alt="Public Employment Service Office seal">
         </div>
 
         <?php if ($isLoggedIn): ?>
           <span class="hero-eyebrow"><i class="mdi mdi-account-circle-outline"></i> Welcome back<?= $firstNameSafe !== '' ? ', ' . $firstNameSafe : ''; ?></span>
-          <h1 class="hero-title">JobMatch Portal</h1>
+          <h1 class="hero-title">Public Employment Service Office Portal</h1>
           <p class="hero-text">
             Continue managing applications, updates, and PESO announcements in your dashboard.
           </p>
@@ -232,10 +232,10 @@
             <a class="btn btn-outline" href="#jobs-latest">View latest jobs</a>
           </div>
         <?php else: ?>
-          <span class="hero-eyebrow"><i class="mdi mdi-map-marker-outline"></i> City of Mati</span>
-          <h1 class="hero-title">JobMatch Portal</h1>
+          <span class="hero-eyebrow"><i class="mdi mdi-map-marker-outline"></i> Davao Oriental</span>
+          <h1 class="hero-title">Public Employment Service Office Portal</h1>
           <p class="hero-text">
-            Sign up for free to manage applications, follow job fairs, and receive tailored alerts from Mati PESO.
+            Sign up for free to manage applications, follow job fairs, and receive tailored alerts from Davao Oriental PESO.
           </p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="<?= site_url('auth/signup'); ?>">Register now</a>
@@ -244,7 +244,7 @@
         <?php endif; ?>
 
         <ul class="hero-points">
-          <li><i class="mdi mdi-check-circle-outline"></i> Daily updates direct from Mati PESO</li>
+          <li><i class="mdi mdi-check-circle-outline"></i> Daily updates direct from Davao Oriental PESO</li>
           <li><i class="mdi mdi-check-circle-outline"></i> TESDA-certified trainings and local events</li>
           <li><i class="mdi mdi-check-circle-outline"></i> Support for workers, employers, and schools</li>
         </ul>
@@ -264,7 +264,7 @@
           <header class="jobs-header">
             <div>
               <h2 class="section-head">Latest job vacancies</h2>
-              <p class="section-subhead">Stay up to date with fresh postings from the Mati Public Employment Service Office.</p>
+              <p class="section-subhead">Stay up to date with fresh postings from the Davao Oriental Public Employment Service Office.</p>
             </div>
             <div class="jobs-actions">
               <?php if ($isLoggedIn): ?>
@@ -335,7 +335,7 @@
 
     <section class="landing-stats" id="why-choose">
       <div class="landing-container">
-        <h2 class="section-head">Community impact across JobMatch</h2>
+        <h2 class="section-head">Community impact across Public Employment Service Office</h2>
         <p class="section-subhead">Figures update from the live database so you always know how active the platform is.</p>
 
         <div class="stats-grid">
@@ -364,7 +364,7 @@
         <div class="toolkit-shell" data-default-role="<?= htmlspecialchars($toolkitDefault, ENT_QUOTES, 'UTF-8'); ?>">
           <div>
             <h2 class="section-head">Toolkits for every account type</h2>
-            <p class="section-subhead">Switch tabs to discover the workflows available to you inside JobMatch.</p>
+            <p class="section-subhead">Switch tabs to discover the workflows available to you inside Public Employment Service Office.</p>
           </div>
 
           <div class="toolkit-tabs" role="tablist" aria-label="Role toolkits">
@@ -417,7 +417,7 @@
     <section class="landing-features" id="services">
       <div class="landing-container">
         <h2 class="section-head">Everything you need to land the role</h2>
-        <p class="section-subhead">Whether you are a worker, employer, or school partner, JobMatch keeps everyone in sync.</p>
+        <p class="section-subhead">Whether you are a worker, employer, or school partner, Public Employment Service Office keeps everyone in sync.</p>
 
         <div class="feature-grid">
           <article class="feature-card">
@@ -449,7 +449,7 @@
 
     <section class="landing-journey" id="how-it-works">
       <div class="landing-container">
-        <h2 class="section-head">How your JobMatch journey works</h2>
+        <h2 class="section-head">How your Public Employment Service Office journey works</h2>
         <p class="section-subhead">From profile setup to hiring, follow these simple steps to make the most of the platform.</p>
 
         <div class="journey-grid">
@@ -482,7 +482,7 @@
         <div class="partner-grid">
           <div class="partner-card">
             <span class="partner-badge">Government</span>
-            <h3>City Government of Mati</h3>
+            <h3>Davao Oriental Government</h3>
             <p>Municipal offices offering roles in frontline services, administration, and community projects.</p>
           </div>
 
@@ -523,7 +523,7 @@
 
         <article class="community-card">
           <h3>Schools &amp; partners</h3>
-          <p>Manage student placements, track requirements, and collaborate with the City of Mati.</p>
+          <p>Manage student placements, track requirements, and collaborate with Davao Oriental.</p>
           <a class="btn btn-outline" href="<?= site_url('school-admin'); ?>">Visit school admin</a>
         </article>
       </div>
@@ -537,8 +537,8 @@
             <p>Review candidate profiles, update job posts, and respond to applications in seconds.</p>
             <a class="btn btn-primary" href="<?= site_url($dashboardRoute); ?>">Return to your dashboard</a>
           <?php else: ?>
-            <h2>Start your next opportunity with JobMatch</h2>
-            <p>Sign up for free to manage applications, follow job fairs, and receive tailored alerts from Mati PESO.</p>
+            <h2>Start your next opportunity with Public Employment Service Office</h2>
+            <p>Sign up for free to manage applications, follow job fairs, and receive tailored alerts from Davao Oriental PESO.</p>
             <div class="cta-actions">
               <a class="btn btn-primary" href="<?= site_url('auth/signup'); ?>">Create free account</a>
               <a class="btn btn-outline" href="<?= site_url('auth/login'); ?>">Log in</a>
@@ -591,7 +591,7 @@
       </div>
 
       <div class="footer-meta">
-        <span>&copy; <?= date('Y'); ?> JobMatch - City of Mati </span>
+        <span>&copy; <?= date('Y'); ?> Public Employment Service Office - Davao Oriental </span>
         <span><a href="#" data-twx-open="about" role="button">Terms of use</a> | <a href="<?= site_url('hotlines'); ?>">Contact us</a></span>
       </div>
     </div>

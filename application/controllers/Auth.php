@@ -57,20 +57,44 @@ class Auth extends CI_Controller
             $this->form_validation->set_rules('website', 'Website', 'callback__honeypot_clear');
 
             if ($this->form_validation->run()) {
-                $token   = bin2hex(random_bytes(32));
-                $expires = date('Y-m-d H:i:s', strtotime('+24 hours'));
-                $rolePost = $this->input->post('role', true);
+                $now = date('Y-m-d H:i:s');
                 $dataInsert = [
-                    'first_name'          => $this->input->post('first_name', true),
-                    'last_name'           => $this->input->post('last_name', true),
-                    'email'               => $this->input->post('email', true),
-                    'password_hash'       => password_hash((string)$this->input->post('password', true), PASSWORD_BCRYPT),
-                    'role'                => $this->input->post('role', true),
-                    'status'              => in_array(strtolower($rolePost), ['client', 'employer'], true) ? 'pending' : 'inactive',
-                    'is_active'           => 0,
-                    'activation_token'    => $token,
-                    'email_token_expires' => $expires
+                    'first_name'    => $this->input->post('first_name', true),
+                    'last_name'     => $this->input->post('last_name', true),
+                    'email'         => $this->input->post('email', true),
+                    'password_hash' => password_hash((string)$this->input->post('password', true), PASSWORD_BCRYPT),
+                    'role'          => $this->input->post('role', true),
+                    'status'        => 'active',
+                    'is_active'     => 1,
                 ];
+
+                if ($this->db->field_exists('activation_token', 'users')) {
+                    $dataInsert['activation_token'] = null;
+                }
+                if ($this->db->field_exists('email_token_expires', 'users')) {
+                    $dataInsert['email_token_expires'] = null;
+                }
+                if ($this->db->field_exists('email_verified', 'users')) {
+                    $dataInsert['email_verified'] = 1;
+                }
+                if ($this->db->field_exists('email_verified_at', 'users')) {
+                    $dataInsert['email_verified_at'] = $now;
+                }
+                if ($this->db->field_exists('approved_at', 'users')) {
+                    $dataInsert['approved_at'] = $now;
+                }
+                if ($this->db->field_exists('failed_attempts', 'users')) {
+                    $dataInsert['failed_attempts'] = 0;
+                }
+                if ($this->db->field_exists('locked_until', 'users')) {
+                    $dataInsert['locked_until'] = null;
+                }
+                if ($this->db->field_exists('updated_at', 'users')) {
+                    $dataInsert['updated_at'] = $now;
+                }
+                if ($this->db->field_exists('created_at', 'users')) {
+                    $dataInsert['created_at'] = $now;
+                }
 
                 $ok = $this->user->create($dataInsert);
                 if (!$ok) {
@@ -83,8 +107,6 @@ class Auth extends CI_Controller
                     return redirect('auth/signup');
                 }
 
-                $this->_send_activation_email($dataInsert['email'], $token);
-
                 $uid = (int) $this->db->insert_id();
                 if (($dataInsert['role'] ?? '') === 'client') {
                     $this->cp->ensure_row($uid, [
@@ -93,7 +115,7 @@ class Auth extends CI_Controller
                     ]);
                 }
 
-                $this->session->set_flashdata('msg', 'Signup successful! Please check your email to confirm your account.');
+                $this->session->set_flashdata('msg', 'Signup successful! Your account is now active. You can log in.');
                 return redirect('auth/login');
             }
 

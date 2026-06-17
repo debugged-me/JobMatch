@@ -4,6 +4,7 @@ class ClientProfile_model extends CI_Model
 {
     protected $table = 'client_profile';
     protected $has_company_position = false;
+    protected $column_nullable_cache = [];
 
     public function __construct()
     {
@@ -12,6 +13,36 @@ class ClientProfile_model extends CI_Model
 
         // Optional column support (future-proof)
         $this->has_company_position = $this->db->field_exists('company_position', $this->table);
+        $this->load_column_nullability();
+    }
+
+    protected function load_column_nullability(): void
+    {
+        $this->column_nullable_cache = [];
+
+        if (!$this->db->table_exists($this->table)) {
+            return;
+        }
+
+        $table = $this->db->protect_identifiers($this->table, true);
+        $query = $this->db->query("SHOW COLUMNS FROM {$table}");
+        if (!$query) {
+            return;
+        }
+
+        foreach ($query->result_array() as $col) {
+            $name = (string)($col['Field'] ?? '');
+            if ($name === '') continue;
+            $this->column_nullable_cache[$name] = strtoupper((string)($col['Null'] ?? 'YES')) === 'YES';
+        }
+    }
+
+    protected function column_allows_null(string $column): bool
+    {
+        if (array_key_exists($column, $this->column_nullable_cache)) {
+            return (bool)$this->column_nullable_cache[$column];
+        }
+        return true;
     }
 
     /**
@@ -20,8 +51,7 @@ class ClientProfile_model extends CI_Model
      */
     protected function sanitize_payload(array $data): array
     {
-        // These columns in your schema are NOT NULL (except avatar is nullable).
-        // We keep them as strings if provided.
+        // Strongly-typed text fields we always persist as strings.
         $stringFields = ['fName', 'mName', 'lName', 'phoneNo', 'companyName', 'city', 'province', 'brgy'];
 
         foreach ($stringFields as $f) {
@@ -31,8 +61,8 @@ class ClientProfile_model extends CI_Model
             }
         }
 
-        // Nullable text/varchar fields (keep NULL if empty string is provided)
-        $nullableFields = [
+        // Optional text/varchar fields.
+        $optionalTextFields = [
             'address',
             'employer',
             'business_name',
@@ -40,12 +70,22 @@ class ClientProfile_model extends CI_Model
             'avatar',
             'id_image',
             'business_permit',
+            'company_position',
         ];
 
-        foreach ($nullableFields as $f) {
+        foreach ($optionalTextFields as $f) {
             if (array_key_exists($f, $data)) {
-                if ($data[$f] === '') $data[$f] = null;
-                if ($data[$f] !== null) $data[$f] = (string) $data[$f];
+                $allowsNull = $this->column_allows_null($f);
+
+                if ($data[$f] === null && !$allowsNull) {
+                    $data[$f] = '';
+                } elseif ($data[$f] === '' && $allowsNull) {
+                    $data[$f] = null;
+                }
+
+                if ($data[$f] !== null) {
+                    $data[$f] = (string) $data[$f];
+                }
             }
         }
 
@@ -55,10 +95,14 @@ class ClientProfile_model extends CI_Model
                 $vals = array_values(array_unique(array_filter($data['certificates'], function ($x) {
                     return $x !== null && $x !== '';
                 })));
-                $data['certificates'] = !empty($vals) ? json_encode($vals) : null;
+                $data['certificates'] = !empty($vals) ? json_encode($vals) : ($this->column_allows_null('certificates') ? null : '');
             } else {
                 $v = trim((string) $data['certificates']);
-                $data['certificates'] = ($v !== '') ? $v : null;
+                if ($v !== '') {
+                    $data['certificates'] = $v;
+                } else {
+                    $data['certificates'] = $this->column_allows_null('certificates') ? null : '';
+                }
             }
         }
 
