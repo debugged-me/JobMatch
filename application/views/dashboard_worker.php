@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/font-awesome/css/font-awesome.min.css') ?>">
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=5.0.7') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/universal.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-worker.css?v=1.0.0') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-worker.css?v=3.1.0') ?>">
 
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 
@@ -32,9 +32,7 @@
       <?php $this->load->view('includes_nav_top'); ?>
       <div class="main-panel">
         <div class="content-wrapper pb-0">
-          <div class="app">
-
-            <div class="eyebrow"><?= htmlspecialchars($page_title ?? 'Dashboard', ENT_QUOTES, 'UTF-8') ?></div>
+          <div class="wd">
 
             <?php if ($this->session->flashdata('error')): ?>
               <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('error'); ?></div>
@@ -140,15 +138,19 @@
             }
             $langs      = array_filter(array_map('trim', explode(',', $p->languages ?? '')));
 
-            function is_image_path($path)
-            {
-              $ext = strtolower(pathinfo(is_string($path) ? $path : '', PATHINFO_EXTENSION));
-              return in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+            if (!function_exists('is_image_path')) {
+              function is_image_path($path)
+              {
+                $ext = strtolower(pathinfo(is_string($path) ? $path : '', PATHINFO_EXTENSION));
+                return in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif']);
+              }
             }
-            function is_pdf_path($path)
-            {
-              $ext = strtolower(pathinfo(is_string($path) ? $path : '', PATHINFO_EXTENSION));
-              return $ext === 'pdf';
+            if (!function_exists('is_pdf_path')) {
+              function is_pdf_path($path)
+              {
+                $ext = strtolower(pathinfo(is_string($path) ? $path : '', PATHINFO_EXTENSION));
+                return $ext === 'pdf';
+              }
             }
             $proofByTitle = [];
             if (!empty($certs)) {
@@ -179,298 +181,48 @@
               $tesdaKeys = array_values(array_unique($tesdaKeys));
             }
 
-            ?>
-
-            <div class="profile-card">
-              <div class="profile-brandbar"></div>
-              <div class="profile-cover"></div>
-              <div class="profile-gold"></div>
-              <div class="profile-main">
-                <?php $defaultEsc = htmlspecialchars(base_url('uploads/avatars/avatar.png'), ENT_QUOTES, 'UTF-8'); ?>
-                <img
-                  class="avatar"
-                  src="<?= htmlspecialchars($avatarUrl, ENT_QUOTES, 'UTF-8') ?>"
-                  alt="Avatar"
-                  style="object-fit:cover"
-                  onerror="this.onerror=null;this.src='<?= $defaultEsc ?>';">
-                <div>
-                  <div class="profile-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                    <h3 class="profile-name"><?= htmlspecialchars($full_name !== '' ? $full_name : ($email ?? 'Worker'), ENT_QUOTES, 'UTF-8') ?></h3>
-
-                  </div>
-                  <?php if ($headline): ?>
-                    <div class="profile-sub"><?= htmlspecialchars($headline, ENT_QUOTES, 'UTF-8') ?></div>
-                  <?php endif; ?>
-                  <div class="meta" style="margin-top:2px">
-                    <?php if ($loc): ?><span class="me-3"><i class="mdi mdi-map-marker"></i> <?= htmlspecialchars($loc, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
-                    <?php if ($phoneNo): ?><span><i class="mdi mdi-phone"></i> <?= htmlspecialchars($phoneNo, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
-                  </div>
-                </div>
-                <div class="badges">
-                  <a href="<?= site_url('profile/edit') ?>" class="btn-primary-brand"><i class="mdi mdi-pencil"></i>Edit Profile</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="kpi-grid" style="margin:10px 0 6px">
-              <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(193,39,45,.15)"><i class="mdi mdi-briefcase-check" style="font-size:18px;color:#c1272d"></i></div>
-                  <div>
-                    <div class="label">Times Hired</div>
-                    <div class="value"><?= (int)($times_hired ?? 0) ?></div>
-                  </div>
-                </div>
-
-                <div class="text-muted" style="font-size:12px;margin-top:4px">Last 12 months</div>
-              </div>
-              <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(230,48,49,.12)"><i class="mdi mdi-star" style="font-size:18px;color:#e63031"></i></div>
-                  <div>
-                    <div class="label">Average Rating</div>
-                    <div class="value"><?= number_format((float)($p->avgRating ?? 0), 2) ?></div>
-                  </div>
-                </div>
-
-                <div class="text-muted" style="font-size:12px;margin-top:4px">Based on latest jobs</div>
-              </div>
-
-              <?php $pc = (int)($completion['percent'] ?? 0);
-              $missing = (array)($completion['missing'] ?? []); ?>
-              <div class="panel kpi">
-                <div class="progress-wrap">
-                  <div
-                    class="progress-ring"
-                    style="--val: <?= $pc ?>; --accent: <?= $pc >= 100 ? '#34495e' : '#e74c3c' ?>;">
-                    <span><?= $pc ?>%</span>
-                  </div>
-                  <div>
-                    <div class="label">Profile Completion</div>
-                    <div class="value"><?= $pc ?>%</div>
-                    <div class="text-muted" style="font-size:12px;margin-top:4px">
-                      <?php if ($pc >= 100): ?>
-                        All set nice work!
-                      <?php else: ?>
-                        Missing items below.
-                      <?php endif; ?>
-                    </div>
-                  </div>
-                </div>
-
-                <?php if ($pc < 100): ?>
-                  <div class="list-missing">
-                    <?php if (!empty($missing)):
-                      $tops = array_slice($missing, 0, 3);
-                    ?>
-                      Top missing:
-                      <?php foreach ($tops as $m): ?>
-                        <span class="chip"><i class="mdi mdi-checkbox-blank-circle-outline"></i><?= htmlspecialchars($m, ENT_QUOTES, 'UTF-8') ?></span>
-                      <?php endforeach; ?>
-                      <?php if (count($missing) > 3): ?>
-                        <span class="text-muted">+<?= count($missing) - 3 ?> more</span>
-                      <?php endif; ?>
-                      <a href="<?= site_url('profile/edit') ?>" class="c-tag" style="margin-left:6px">
-                        <i class="mdi mdi-pencil"></i> Complete
-                      </a>
-                    <?php else: ?>
-                      Almost there add a bit more info.
-                    <?php endif; ?>
-                  </div>
-                <?php endif; ?>
-              </div>
-
-            </div>
-
-            <div class="layout">
-              <section class="panel">
-                <div class="panel-head"><i class="mdi mdi-information-outline"></i>
-                  <h6>About</h6>
-                </div>
-                <div class="panel-body">
-                  <?php if ($bio): ?>
-                    <div class="wrap"><?= nl2br(htmlspecialchars($bio, ENT_QUOTES, 'UTF-8')) ?></div>
-                  <?php else: ?><div class="empty">No bio yet. Add a short summary about your background and strengths.</div><?php endif; ?>
-                </div>
-              </section>
-
-              <section class="panel">
-                <div class="panel-head"><i class="mdi mdi-lightbulb-on-outline"></i>
-                  <h6>Skills</h6>
-                </div>
-                <div class="panel-body">
-                  <?php if (!empty($skills)): ?>
-                    <div class="chips">
-                      <?php foreach ($skills as $s): ?>
-                        <span class="chip chip--gold"><i class="mdi mdi-tag-outline"></i><?= htmlspecialchars($s, ENT_QUOTES, 'UTF-8') ?></span>
-                      <?php endforeach; ?>
-                    </div>
-                  <?php else: ?><div class="empty">No skills yet.</div><?php endif; ?>
-                </div>
-              </section>
-
-              <section class="panel">
-                <div class="panel-head"><i class="mdi mdi-calendar-clock"></i>
-                  <h6>Availability</h6>
-                </div>
-                <div class="panel-body">
-                  <?php if (!empty($days)): ?>
-                    <div class="chips">
-                      <?php foreach ($days as $d): ?>
-                        <span class="chip"><i class="mdi mdi-calendar-blank"></i><?= htmlspecialchars($d, ENT_QUOTES, 'UTF-8') ?></span>
-                      <?php endforeach; ?>
-                    </div>
-                  <?php else: ?><div class="empty">No availability set.</div><?php endif; ?>
-                </div>
-              </section>
-
-              <section class="panel">
-                <div class="panel-head"><i class="mdi mdi-school-outline"></i>
-                  <h6>Education & Links</h6>
-                </div>
-                <div class="panel-body">
-                  <?php
-                  $hasRight = ($edu || $school || $yr) || (!empty($p->portfolio_url) || !empty($p->facebook_url));
-                  ?>
-                  <?php if (!$hasRight): ?>
-                    <div class="empty">No education or links yet.</div>
-                  <?php else: ?>
-
-                    <?php
-                    $eduPrimary = trim((string)$course) !== '' ? trim((string)$course) : trim((string)$edu);
-                    $eduParts = array_filter([
-                      $eduPrimary,
-                      trim((string)$school),
-                      trim((string)$yr),
-                    ], function ($v) {
-                      return $v !== '';
-                    });
-                    $eduText = implode(' • ', $eduParts);
-                    ?>
-
-                    <?php if ($eduText !== ''): ?>
-                      <div class="mb-1"><strong>Education:</strong> <?= htmlspecialchars($eduText, ENT_QUOTES, 'UTF-8') ?></div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($p->portfolio_url) || !empty($p->facebook_url)): ?>
-                      <div class="mt-2 edu-links">
-
-                        <?php if (!empty($p->portfolio_url)): ?>
-                          <div><strong>Portfolio:</strong>
-                            <a href="<?= htmlspecialchars($p->portfolio_url, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
-                              <?= htmlspecialchars($p->portfolio_url, ENT_QUOTES, 'UTF-8') ?>
-                            </a>
-                          </div>
-                        <?php endif; ?>
-                        <?php if (!empty($p->facebook_url)): ?>
-                          <div><strong>Facebook:</strong>
-                            <a href="<?= htmlspecialchars($p->facebook_url, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
-                              <?= htmlspecialchars($p->facebook_url, ENT_QUOTES, 'UTF-8') ?>
-                            </a>
-                          </div>
-                        <?php endif; ?>
-                      </div>
-                    <?php endif; ?>
-
-                  <?php endif; ?>
-                </div>
-              </section>
-
-            </div>
-
-            <!-- Saved Documents (from Documents table) -->
-            <section class="panel panel--wide">
-              <div class="panel-head">
-                <i class="mdi mdi-folder-outline"></i>
-                <h6>Saved Documents</h6>
-              </div>
-              <div class="panel-body">
-                <?php
-                $docs = $docs ?? [];
-                $extOf = function ($path) {
-                  return strtolower(pathinfo((string)$path, PATHINFO_EXTENSION));
+            // ---- helpers for job listings ----
+            if (!function_exists('wd_time_ago')) {
+              function wd_time_ago($datetime)
+              {
+                if (!$datetime) return '';
+                $ts = strtotime((string)$datetime);
+                if (!$ts) return '';
+                $diff = time() - $ts;
+                if ($diff < 60)        return 'just now';
+                if ($diff < 3600)      return floor($diff / 60) . 'm ago';
+                if ($diff < 86400)     return floor($diff / 3600) . 'h ago';
+                if ($diff < 2592000)   return floor($diff / 86400) . 'd ago';
+                return date('M j, Y', $ts);
+              }
+            }
+            if (!function_exists('wd_budget')) {
+              function wd_budget($min, $max, $unit)
+              {
+                $min = $min !== null && $min !== '' ? (float)$min : null;
+                $max = $max !== null && $max !== '' ? (float)$max : null;
+                $u   = $unit ? ('/ ' . htmlspecialchars((string)$unit, ENT_QUOTES, 'UTF-8')) : '';
+                $fmt = function ($n) {
+                  return '₱' . number_format((float)$n, ($n == (int)$n) ? 0 : 2);
                 };
-                $makeFileHref = function ($p) {
-                  $rel = ltrim((string)$p, '/');
-                  $isAbs     = preg_match('#^https?://#i', $rel);
-                  $isUploads = preg_match('#^uploads/#i',  $rel);
-                  if ($isUploads) return site_url('media/preview') . '?f=' . rawurlencode($rel);
-                  return $isAbs ? $rel : base_url($rel);
-                };
-                $chip = function ($text, $class = '') {
-                  return '<span class="chip ' . $class . '">' . htmlspecialchars((string)$text, ENT_QUOTES, 'UTF-8') . '</span>';
-                };
-                ?>
+                if ($min !== null && $max !== null) {
+                  if ($min == $max) return $fmt($min) . ' ' . $u;
+                  return $fmt($min) . ' – ' . $fmt($max) . ' ' . $u;
+                }
+                if ($min !== null) return 'From ' . $fmt($min) . ' ' . $u;
+                if ($max !== null) return 'Up to ' . $fmt($max) . ' ' . $u;
+                return 'Rate negotiable';
+              }
+            }
 
-                <?php if (empty($docs)): ?>
-                  <div class="empty">No saved documents yet.</div>
-                <?php else: ?>
-                  <div class="table-responsive">
-                    <table class="table table-sm table-r" style="width:100%">
-                      <thead class="bg-light">
-                        <tr>
-                          <th>Document</th>
-                          <th>Type</th>
-                          <th>Certificate</th>
-                          <th>Expiry</th>
-                          <th>File</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php foreach ($docs as $r):
-                          $name  = trim((string)($r->doc_name    ?? $r['doc_name']    ?? ''));
-                          $type  = trim((string)($r->doc_type    ?? $r['doc_type']    ?? ''));
-                          $skill = trim((string)($r->skill       ?? $r['skill']       ?? ''));
-                          $exp   = trim((string)($r->expiry_date ?? $r['expiry_date'] ?? ''));
-                          $file  = (string)($r->file_path ?? $r['file_path'] ?? '');
-                          $href  = $file !== '' ? $makeFileHref($file) : '';
-                          $ext   = $extOf($file);
-                          $badge = ($exp !== '' && function_exists('nc_status_badge')) ? nc_status_badge($exp) : '';
+            $recommended_jobs = $recommended_jobs ?? [];
+            $my_applications  = $my_applications ?? [];
+            $app_counts       = $app_counts ?? ['total' => 0, 'submitted' => 0, 'accepted' => 0, 'withdrawn' => 0];
+            $greetName = $first_name !== '' ? $first_name : 'there';
+            $pc        = (int)($completion['percent'] ?? 0);
+            $missing   = (array)($completion['missing'] ?? []);
 
-                          // NEW: compute certificate label
-                          $other = trim((string)($r->other_choice ?? $r['other_choice'] ?? ''));
-                          $certLabel = '';
-                          if ($skill !== '') {
-                            $certLabel = $skill;
-                          } elseif ($type !== '' && preg_match('/certificate/i', $type)) {
-                            $certLabel = $type;
-                          } elseif (strtolower($other) === 'certificate') {
-                            $certLabel = $type !== '' ? $type : 'Certificate';
-                          }
-                        ?>
-                          <tr>
-                            <td class="fw-medium"><?= htmlspecialchars($name ?: '(Untitled)', ENT_QUOTES, 'UTF-8') ?></td>
-                            <td><?= $type  ? $chip($type,  'chip--gold') : '—' ?></td>
-
-                            <td><?= $certLabel ? $chip($certLabel) : '—' ?></td>
-
-                            <td>
-                              <?php if ($exp): ?>
-                                <div><?= htmlspecialchars($exp, ENT_QUOTES, 'UTF-8') ?></div>
-                                <div class="mt-1"><?= $badge ?></div>
-                                <?php else: ?>—<?php endif; ?>
-                            </td>
-                            <td>
-                              <?php if ($href): ?>
-                                <a class="c-tag" style="padding:.2rem .6rem" href="<?= htmlspecialchars($href, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
-                                  <i class="mdi <?= $ext === 'pdf' ? 'mdi-file-pdf-box' : 'mdi-eye' ?>"></i>
-                                  <?= $ext ? strtoupper($ext) : 'View' ?>
-                                </a>
-                                <?php else: ?>—<?php endif; ?>
-                            </td>
-                          </tr>
-                        <?php endforeach; ?>
-                      </tbody>
-
-                    </table>
-                  </div>
-                <?php endif; ?>
-              </div>
-            </section>
-
-
-
-            <?php
+            // Experience (parsed once, used below)
             $xp = [];
             if (!empty($p->exp)) {
               $items = json_decode($p->exp, true);
@@ -488,95 +240,395 @@
             }
             ?>
 
-            <section class="panel panel--wide">
-              <div class="panel-head"><i class="mdi mdi-briefcase-outline"></i>
-                <h6>Experience</h6>
-              </div>
-              <div class="panel-body">
-                <?php if (empty($xp)): ?><div class="empty">No experience added.</div>
-                <?php else: ?>
-                  <div class="xp">
-                    <?php foreach ($xp as $row): ?>
-                      <div class="xp-item">
-                        <div class="xp-role">
-                          <?= htmlspecialchars($row['role'] ?? '', ENT_QUOTES, 'UTF-8') ?>
-                          <?php if (!empty($row['employer'])): ?><span class="xp-meta"> • <?= htmlspecialchars($row['employer'], ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
-                        </div>
-                        <div class="xp-meta"><?= htmlspecialchars(trim(($row['from'] ?? '') . ' - ' . ($row['to'] ?? '')), ENT_QUOTES, 'UTF-8') ?></div>
-                        <?php if (!empty($row['desc'])): ?><div class="wrap" style="margin-top:4px"><?= nl2br(htmlspecialchars($row['desc'], ENT_QUOTES, 'UTF-8')) ?></div><?php endif; ?>
-                      </div>
-                    <?php endforeach; ?>
+            <!-- ============ HERO — core identity first ============ -->
+            <section class="wd-hero">
+              <div class="wd-hero-id">
+                <?php $defaultEsc = htmlspecialchars(base_url('uploads/avatars/avatar.png'), ENT_QUOTES, 'UTF-8'); ?>
+                <img class="wd-hero-avatar"
+                  src="<?= htmlspecialchars($avatarUrl, ENT_QUOTES, 'UTF-8') ?>"
+                  alt="Avatar"
+                  onerror="this.onerror=null;this.src='<?= $defaultEsc ?>';">
+                <div class="wd-hero-text">
+                  <div class="wd-hero-greet">Welcome back 👋</div>
+                  <h1 class="wd-hero-name"><?= htmlspecialchars($full_name !== '' ? $full_name : $greetName, ENT_QUOTES, 'UTF-8') ?></h1>
+                  <?php if ($headline): ?>
+                    <div class="wd-hero-headline"><?= htmlspecialchars($headline, ENT_QUOTES, 'UTF-8') ?></div>
+                  <?php endif; ?>
+                  <div class="wd-hero-meta">
+                    <?php if ($loc): ?><span><i class="mdi mdi-map-marker"></i> <?= htmlspecialchars($loc, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
+                    <?php if ($phoneNo): ?><span><i class="mdi mdi-phone"></i> <?= htmlspecialchars($phoneNo, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
                   </div>
-                <?php endif; ?>
-              </div>
-            </section>
-
-            <div
-              id="jmWorkerChartData"
-              hidden
-              data-labels="<?= htmlspecialchars(json_encode($labels ?? []), ENT_QUOTES, 'UTF-8') ?>"
-              data-values="<?= htmlspecialchars(json_encode($counts ?? []), ENT_QUOTES, 'UTF-8') ?>"></div>
-
-            <section class="panel panel--wide" id="svcMixPanel" data-mix-url="<?= site_url('services/mix') ?>">
-              <div class="panel-head">
-                <i class="mdi mdi-chart-pie"></i>
-                <h6>Types of Service</h6>
-                <div id="svcMixPills" class="d-flex gap-2" style="margin-left:auto; display:none"></div>
-              </div>
-              <div class="panel-body">
-                <div class="muted mb-2" id="svcMixCaption">Share of jobs by skill</div>
-                <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;align-items:center">
-                  <div style="min-height:320px">
-                    <canvas id="svcMixChart" height="300"></canvas>
+                  <div class="wd-hero-actions">
+                    <a href="<?= site_url('worker/feed') ?>" class="wd-btn wd-btn-primary"><i class="mdi mdi-briefcase-search-outline"></i> Browse Open Jobs</a>
+                    <a href="<?= site_url('profile/edit') ?>" class="wd-btn wd-btn-ghost"><i class="mdi mdi-account-edit-outline"></i> Edit Profile</a>
                   </div>
-                  <div id="svcMixLegend" style="font-size:12.5px"></div>
+                </div>
+              </div>
+              <div class="wd-hero-stats">
+                <div class="wd-hstat">
+                  <div class="wd-hstat-ico"><i class="mdi mdi-briefcase-check"></i></div>
+                  <div>
+                    <div class="wd-hstat-val"><?= (int)($times_hired ?? 0) ?></div>
+                    <div class="wd-hstat-lbl">Times Hired</div>
+                  </div>
+                </div>
+                <div class="wd-hstat">
+                  <div class="wd-hstat-ico"><i class="mdi mdi-star"></i></div>
+                  <div>
+                    <div class="wd-hstat-val"><?= number_format((float)($p->avgRating ?? 0), 1) ?></div>
+                    <div class="wd-hstat-lbl">Avg. Rating</div>
+                  </div>
+                </div>
+                <div class="wd-hstat">
+                  <div class="wd-hstat-ico"><i class="mdi mdi-send-check-outline"></i></div>
+                  <div>
+                    <div class="wd-hstat-val"><?= (int)($app_counts['total'] ?? 0) ?></div>
+                    <div class="wd-hstat-lbl">Applications</div>
+                  </div>
                 </div>
               </div>
             </section>
-            <div class="panel panel--wide" style="margin-top:6px">
-              <div class="panel-head"><i class="mdi mdi-comment-text-outline"></i>
-                <h6>Latest Reviews</h6>
+
+            <div class="wd-stack">
+
+              <!-- ===== CORE PROFILE: strength / skills / availability ===== -->
+              <div class="wd-row wd-row-3">
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-shield-check-outline"></i> Profile Strength</h2></div>
+                  <div class="wd-completion">
+                    <div class="progress-ring" style="--val: <?= $pc ?>; --accent: <?= $pc >= 100 ? '#16a34a' : '#e23b41' ?>;">
+                      <span><?= $pc ?>%</span>
+                    </div>
+                    <div>
+                      <div class="wd-completion-title"><?= $pc >= 100 ? 'All set — great work!' : 'Complete your profile' ?></div>
+                      <div class="wd-muted"><?= $pc >= 100 ? 'You appear higher in client searches.' : 'A complete profile gets more job offers.' ?></div>
+                    </div>
+                  </div>
+                  <?php if ($pc < 100 && !empty($missing)): ?>
+                    <div class="wd-missing">
+                      <?php foreach (array_slice($missing, 0, 4) as $m): ?>
+                        <span class="wd-miss-chip"><i class="mdi mdi-alert-circle-outline"></i><?= htmlspecialchars($m, ENT_QUOTES, 'UTF-8') ?></span>
+                      <?php endforeach; ?>
+                      <?php if (count($missing) > 4): ?><span class="wd-muted">+<?= count($missing) - 4 ?> more</span><?php endif; ?>
+                    </div>
+                    <a href="<?= site_url('profile/edit') ?>" class="wd-btn wd-btn-ghost wd-btn-block wd-btn-sm mt-2"><i class="mdi mdi-pencil"></i> Complete now</a>
+                  <?php endif; ?>
+                </section>
+
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-lightbulb-on-outline"></i> Skills</h2></div>
+                  <?php if (!empty($skills)): ?>
+                    <div class="wd-chips">
+                      <?php foreach ($skills as $s): ?>
+                        <span class="wd-chip wd-chip-accent"><?= htmlspecialchars($s, ENT_QUOTES, 'UTF-8') ?></span>
+                      <?php endforeach; ?>
+                    </div>
+                  <?php else: ?><div class="wd-empty wd-empty-sm">No skills added.</div><?php endif; ?>
+                </section>
+
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-calendar-clock"></i> Availability</h2></div>
+                  <?php if (!empty($days)): ?>
+                    <div class="wd-chips">
+                      <?php foreach ($days as $d): ?>
+                        <span class="wd-chip"><?= htmlspecialchars($d, ENT_QUOTES, 'UTF-8') ?></span>
+                      <?php endforeach; ?>
+                    </div>
+                  <?php else: ?><div class="wd-empty wd-empty-sm">No availability set.</div><?php endif; ?>
+                </section>
               </div>
-              <div class="panel-body">
-                <?php if (empty($latest_reviews)): ?>
-                  <div class="empty">No reviews yet.</div>
+
+              <!-- ===== About + Experience ===== -->
+              <div class="wd-row wd-row-2">
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-information-outline"></i> About</h2></div>
+                  <?php if ($bio): ?>
+                    <div class="wd-about"><?= nl2br(htmlspecialchars($bio, ENT_QUOTES, 'UTF-8')) ?></div>
+                  <?php else: ?><div class="wd-empty wd-empty-sm">No bio yet. Add a short summary about your background and strengths.</div><?php endif; ?>
+                </section>
+
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-briefcase-outline"></i> Work Experience</h2></div>
+                  <?php if (empty($xp)): ?>
+                    <div class="wd-empty wd-empty-sm">No experience added yet. Adding past work boosts your hire rate.</div>
+                  <?php else: ?>
+                    <div class="wd-xp">
+                      <?php foreach ($xp as $row): ?>
+                        <div class="wd-xp-item">
+                          <div class="wd-xp-role">
+                            <?= htmlspecialchars($row['role'] ?? '', ENT_QUOTES, 'UTF-8') ?>
+                            <?php if (!empty($row['employer'])): ?><span class="wd-xp-meta"> • <?= htmlspecialchars($row['employer'], ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
+                          </div>
+                          <div class="wd-xp-meta"><?= htmlspecialchars(trim(($row['from'] ?? '') . ' - ' . ($row['to'] ?? '')), ENT_QUOTES, 'UTF-8') ?></div>
+                          <?php if (!empty($row['desc'])): ?><div class="wd-xp-desc"><?= nl2br(htmlspecialchars($row['desc'], ENT_QUOTES, 'UTF-8')) ?></div><?php endif; ?>
+                        </div>
+                      <?php endforeach; ?>
+                    </div>
+                  <?php endif; ?>
+                </section>
+              </div>
+
+              <!-- ===== Education + Documents ===== -->
+              <div class="wd-row wd-row-2">
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-school-outline"></i> Education &amp; Links</h2></div>
+                  <?php
+                  $eduPrimary = trim((string)$course) !== '' ? trim((string)$course) : trim((string)$edu);
+                  $eduParts = array_filter([$eduPrimary, trim((string)$school), trim((string)$yr)], function ($v) {
+                    return $v !== '';
+                  });
+                  $eduText = implode(' • ', $eduParts);
+                  $hasRight = ($eduText !== '') || (!empty($p->portfolio_url) || !empty($p->facebook_url));
+                  ?>
+                  <?php if (!$hasRight): ?>
+                    <div class="wd-empty wd-empty-sm">No education or links yet.</div>
+                  <?php else: ?>
+                    <?php if ($eduText !== ''): ?>
+                      <div class="wd-kv"><i class="mdi mdi-school-outline"></i> <?= htmlspecialchars($eduText, ENT_QUOTES, 'UTF-8') ?></div>
+                    <?php endif; ?>
+                    <?php if (!empty($p->portfolio_url)): ?>
+                      <div class="wd-kv"><i class="mdi mdi-link-variant"></i> <a href="<?= htmlspecialchars($p->portfolio_url, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">Portfolio</a></div>
+                    <?php endif; ?>
+                    <?php if (!empty($p->facebook_url)): ?>
+                      <div class="wd-kv"><i class="mdi mdi-facebook"></i> <a href="<?= htmlspecialchars($p->facebook_url, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">Facebook</a></div>
+                    <?php endif; ?>
+                  <?php endif; ?>
+                </section>
+
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-folder-outline"></i> Saved Documents</h2></div>
+                  <?php
+                  $docs = $docs ?? [];
+                  $extOf = function ($path) {
+                    return strtolower(pathinfo((string)$path, PATHINFO_EXTENSION));
+                  };
+                  $makeFileHref = function ($pth) {
+                    $rel = ltrim((string)$pth, '/');
+                    $isAbs     = preg_match('#^https?://#i', $rel);
+                    $isUploads = preg_match('#^uploads/#i',  $rel);
+                    if ($isUploads) return site_url('media/preview') . '?f=' . rawurlencode($rel);
+                    return $isAbs ? $rel : base_url($rel);
+                  };
+                  ?>
+                  <?php if (empty($docs)): ?>
+                    <div class="wd-empty wd-empty-sm">No saved documents yet.</div>
+                  <?php else: ?>
+                    <div class="wd-docs">
+                      <?php foreach ($docs as $r):
+                        $name  = trim((string)($r->doc_name    ?? $r['doc_name']    ?? ''));
+                        $type  = trim((string)($r->doc_type    ?? $r['doc_type']    ?? ''));
+                        $expd  = trim((string)($r->expiry_date ?? $r['expiry_date'] ?? ''));
+                        $file  = (string)($r->file_path ?? $r['file_path'] ?? '');
+                        $href  = $file !== '' ? $makeFileHref($file) : '';
+                        $ext   = $extOf($file);
+                        $badge = ($expd !== '' && function_exists('nc_status_badge')) ? nc_status_badge($expd) : '';
+                      ?>
+                        <div class="wd-doc">
+                          <i class="mdi <?= $ext === 'pdf' ? 'mdi-file-pdf-box' : 'mdi-file-document-outline' ?>"></i>
+                          <div class="wd-doc-info">
+                            <div class="wd-doc-name"><?= htmlspecialchars($name ?: '(Untitled)', ENT_QUOTES, 'UTF-8') ?></div>
+                            <?php if ($type): ?><div class="wd-muted"><?= htmlspecialchars($type, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
+                            <?php if ($badge): ?><div class="mt-1"><?= $badge ?></div><?php endif; ?>
+                          </div>
+                          <?php if ($href): ?>
+                            <a class="wd-doc-link" href="<?= htmlspecialchars($href, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener"><?= $ext ? strtoupper($ext) : 'View' ?></a>
+                          <?php endif; ?>
+                        </div>
+                      <?php endforeach; ?>
+                    </div>
+                  <?php endif; ?>
+                </section>
+              </div>
+
+              <!-- ===== FIND WORK (below the core profile) ===== -->
+              <section class="wd-card">
+                <div class="wd-card-head">
+                  <h2><i class="mdi mdi-briefcase-search"></i> Recommended Work</h2>
+                  <a href="<?= site_url('worker/feed') ?>" class="wd-link">Browse all <i class="mdi mdi-arrow-right"></i></a>
+                </div>
+
+                <?php if (empty($recommended_jobs)): ?>
+                  <div class="wd-empty">
+                    <i class="mdi mdi-briefcase-outline"></i>
+                    <div>No open jobs right now. Check the job board for new postings.</div>
+                    <a href="<?= site_url('worker/feed') ?>" class="wd-btn wd-btn-primary wd-btn-sm mt-2"><i class="mdi mdi-refresh"></i> Open Job Board</a>
+                  </div>
+                <?php else: ?>
+                  <div class="wd-jobs">
+                    <?php foreach ($recommended_jobs as $job):
+                      $jLoc = trim(implode(', ', array_filter([
+                        trim((string)($job->brgy ?? '')),
+                        trim((string)($job->city ?? '')),
+                        trim((string)($job->province ?? '')),
+                      ])));
+                      $jDesc = trim((string)($job->description ?? ''));
+                    ?>
+                      <article class="wd-job">
+                        <div class="wd-job-top">
+                          <div class="wd-job-logo"><i class="mdi mdi-briefcase-variant-outline"></i></div>
+                          <div class="wd-job-headings">
+                            <h3 class="wd-job-title"><?= htmlspecialchars((string)($job->title ?? 'Untitled job'), ENT_QUOTES, 'UTF-8') ?></h3>
+                            <div class="wd-job-meta">
+                              <?php if (!empty($job->category)): ?>
+                                <span><i class="mdi mdi-shape-outline"></i> <?= htmlspecialchars((string)$job->category, ENT_QUOTES, 'UTF-8') ?></span>
+                              <?php endif; ?>
+                              <?php if ($jLoc !== ''): ?>
+                                <span><i class="mdi mdi-map-marker-outline"></i> <?= htmlspecialchars($jLoc, ENT_QUOTES, 'UTF-8') ?></span>
+                              <?php endif; ?>
+                              <span><i class="mdi mdi-clock-outline"></i> <?= htmlspecialchars(wd_time_ago($job->created_at ?? ''), ENT_QUOTES, 'UTF-8') ?></span>
+                            </div>
+                          </div>
+                          <div class="wd-job-pay"><?= wd_budget($job->budget_min ?? null, $job->budget_max ?? null, $job->rate_unit ?? null) ?></div>
+                        </div>
+
+                        <?php if ($jDesc !== ''): ?>
+                          <p class="wd-job-desc"><?= htmlspecialchars(mb_strimwidth($jDesc, 0, 200, '…'), ENT_QUOTES, 'UTF-8') ?></p>
+                        <?php endif; ?>
+
+                        <div class="wd-job-foot">
+                          <div class="wd-job-tags">
+                            <?php if (!empty($job->employment_term)): ?>
+                              <span class="wd-tag"><i class="mdi mdi-briefcase-clock-outline"></i> <?= htmlspecialchars((string)$job->employment_term, ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php endif; ?>
+                            <?php if (!empty($job->project_duration_value) && !empty($job->project_duration_unit)): ?>
+                              <span class="wd-tag"><i class="mdi mdi-calendar-range"></i> <?= (int)$job->project_duration_value . ' ' . htmlspecialchars((string)$job->project_duration_unit, ENT_QUOTES, 'UTF-8') ?>(s)</span>
+                            <?php endif; ?>
+                          </div>
+                          <a href="<?= site_url('worker/feed') ?>" class="wd-btn wd-btn-primary wd-btn-sm">
+                            <i class="mdi mdi-send-outline"></i> View &amp; Apply
+                          </a>
+                        </div>
+                      </article>
+                    <?php endforeach; ?>
+                  </div>
+                <?php endif; ?>
+              </section>
+
+              <!-- ===== My Applications ===== -->
+              <section class="wd-card">
+                <div class="wd-card-head">
+                  <h2><i class="mdi mdi-clipboard-text-clock-outline"></i> My Applications</h2>
+                  <div class="wd-app-pills">
+                    <span class="wd-pill wd-pill-blue"><?= (int)($app_counts['submitted'] ?? 0) ?> pending</span>
+                    <span class="wd-pill wd-pill-green"><?= (int)($app_counts['accepted'] ?? 0) ?> accepted</span>
+                  </div>
+                </div>
+
+                <?php if (empty($my_applications)): ?>
+                  <div class="wd-empty">
+                    <i class="mdi mdi-send-outline"></i>
+                    <div>You haven't applied to any jobs yet.</div>
+                  </div>
                 <?php else: ?>
                   <div class="table-responsive">
-                    <table class="table table-sm table-r" style="width:100%">
-                      <thead class="bg-light">
+                    <table class="table wd-table">
+                      <thead>
                         <tr>
-                          <th>Client</th>
                           <th>Job</th>
-                          <th>Rating</th>
-                          <th>Comment</th>
-                          <th>When</th>
+                          <th>Location</th>
+                          <th>Expected Rate</th>
+                          <th>Status</th>
+                          <th>Applied</th>
+                          <th></th>
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach ($latest_reviews as $r): $stars = (int)($r->rating ?? 0);
-                          $comment = trim((string)($r->comment ?? '')); ?>
+                        <?php foreach ($my_applications as $a):
+                          $st     = strtolower((string)($a->status ?? ''));
+                          $aLoc   = trim(implode(', ', array_filter([trim((string)($a->city ?? '')), trim((string)($a->province ?? ''))])));
+                          $stMap  = [
+                            'submitted' => ['Pending', 'wd-badge-blue'],
+                            'accepted'  => ['Accepted', 'wd-badge-green'],
+                            'withdrawn' => ['Withdrawn', 'wd-badge-gray'],
+                            'rejected'  => ['Not selected', 'wd-badge-red'],
+                          ];
+                          [$stLabel, $stClass] = $stMap[$st] ?? [ucfirst($st ?: '—'), 'wd-badge-gray'];
+                          $rate = ($a->expected_rate ?? '') !== '' ? ('₱' . number_format((float)$a->expected_rate, 2) . ($a->rate_unit ? ' / ' . htmlspecialchars((string)$a->rate_unit, ENT_QUOTES, 'UTF-8') : '')) : '—';
+                        ?>
                           <tr>
-                            <td data-label="Client" class="fw-medium"><?= htmlspecialchars($r->client_name ?? '—', ENT_QUOTES) ?></td>
-                            <td data-label="Job"><?= htmlspecialchars($r->job_title ?? '—', ENT_QUOTES) ?></td>
-                            <td data-label="Rating">
-                              <?php for ($i = 1; $i <= 5; $i++): ?>
-                                <i class="mdi <?= $i <= $stars ? 'mdi-star text-warning' : 'mdi-star-outline text-muted' ?>"></i>
-                              <?php endfor; ?>
+                            <td data-label="Job" class="fw-medium"><?= htmlspecialchars((string)($a->title ?? '—'), ENT_QUOTES, 'UTF-8') ?></td>
+                            <td data-label="Location"><?= $aLoc !== '' ? htmlspecialchars($aLoc, ENT_QUOTES, 'UTF-8') : '—' ?></td>
+                            <td data-label="Expected Rate"><?= $rate ?></td>
+                            <td data-label="Status"><span class="wd-badge <?= $stClass ?>"><?= htmlspecialchars($stLabel, ENT_QUOTES, 'UTF-8') ?></span></td>
+                            <td data-label="Applied" class="text-muted"><?= htmlspecialchars(wd_time_ago($a->created_at ?? ''), ENT_QUOTES, 'UTF-8') ?></td>
+                            <td data-label="">
+                              <?php if ($st === 'submitted'): ?>
+                                <a class="wd-link-danger" href="<?= site_url('worker/feed/withdraw/' . (int)($a->id ?? 0)) ?>" onclick="return confirm('Withdraw this application?');">Withdraw</a>
+                              <?php else: ?>—<?php endif; ?>
                             </td>
-                            <td data-label="Comment">
-                              <div class="rv-clamp-2"><?= $comment !== '' ? nl2br(htmlspecialchars($comment, ENT_QUOTES)) : '—' ?></div>
-                            </td>
-                            <td data-label="When" class="text-muted"><?= htmlspecialchars($r->time_ago ?? '', ENT_QUOTES) ?></td>
                           </tr>
                         <?php endforeach; ?>
                       </tbody>
                     </table>
-
                   </div>
                 <?php endif; ?>
-              </div>
-            </div>
+              </section>
 
+              <!-- ===== Analytics: Service mix + Reviews ===== -->
+              <div
+                id="jmWorkerChartData"
+                hidden
+                data-labels="<?= htmlspecialchars(json_encode($labels ?? []), ENT_QUOTES, 'UTF-8') ?>"
+                data-values="<?= htmlspecialchars(json_encode($counts ?? []), ENT_QUOTES, 'UTF-8') ?>"></div>
+
+              <div class="wd-row wd-row-2">
+                <section class="wd-card" id="svcMixPanel" data-mix-url="<?= site_url('services/mix') ?>">
+                  <div class="wd-card-head">
+                    <h2><i class="mdi mdi-chart-pie"></i> Types of Service</h2>
+                    <div id="svcMixPills" class="wd-app-pills" style="display:none"></div>
+                  </div>
+                  <div class="wd-muted mb-2" id="svcMixCaption">Share of jobs by skill</div>
+                  <div class="wd-svcmix">
+                    <div class="wd-svcmix-chart">
+                      <canvas id="svcMixChart" height="280"></canvas>
+                    </div>
+                    <div id="svcMixLegend" class="wd-svcmix-legend"></div>
+                  </div>
+                </section>
+
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-comment-text-outline"></i> Latest Reviews</h2></div>
+                  <?php if (empty($latest_reviews)): ?>
+                    <div class="wd-empty"><i class="mdi mdi-star-outline"></i>
+                      <div>No reviews yet. Complete jobs to earn client feedback.</div>
+                    </div>
+                  <?php else: ?>
+                    <div class="table-responsive">
+                      <table class="table wd-table">
+                        <thead>
+                          <tr>
+                            <th>Client</th>
+                            <th>Job</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>When</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach ($latest_reviews as $r): $stars = (int)($r->rating ?? 0);
+                            $comment = trim((string)($r->comment ?? '')); ?>
+                            <tr>
+                              <td data-label="Client" class="fw-medium"><?= htmlspecialchars($r->client_name ?? '—', ENT_QUOTES) ?></td>
+                              <td data-label="Job"><?= htmlspecialchars($r->job_title ?? '—', ENT_QUOTES) ?></td>
+                              <td data-label="Rating">
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                  <i class="mdi <?= $i <= $stars ? 'mdi-star text-warning' : 'mdi-star-outline text-muted' ?>"></i>
+                                <?php endfor; ?>
+                              </td>
+                              <td data-label="Comment">
+                                <div class="rv-clamp-2"><?= $comment !== '' ? nl2br(htmlspecialchars($comment, ENT_QUOTES)) : '—' ?></div>
+                              </td>
+                              <td data-label="When" class="text-muted"><?= htmlspecialchars($r->time_ago ?? '', ENT_QUOTES) ?></td>
+                            </tr>
+                          <?php endforeach; ?>
+                        </tbody>
+                      </table>
+                    </div>
+                  <?php endif; ?>
+                </section>
+              </div>
+
+            </div>
 
             <?php $this->load->view('includes_footer'); ?>
           </div>

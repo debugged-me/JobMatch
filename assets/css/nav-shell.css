@@ -130,6 +130,38 @@ html {
   flex-direction: column;
 }
 
+/* Keep the sidebar fixed in view on desktop, full height, even when the
+   page content is very long. position:fixed is immune to the template's
+   ancestor `overflow:hidden` (which breaks position:sticky), so the dark
+   sidebar always fills the left column while scrolling.
+   The content area is offset to the right by the sidebar width. */
+@media (min-width: 992px) {
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--jm-sidebar-w);
+    overflow-y: auto;
+    z-index: 1031;
+  }
+
+  .page-body-wrapper {
+    margin-left: var(--jm-sidebar-w);
+    width: calc(100% - var(--jm-sidebar-w));
+  }
+
+  /* collapsed (icon-only) state keeps the same fixed behaviour */
+  .sidebar-icon-only #sidebar {
+    width: var(--jm-sidebar-w-collapsed);
+  }
+
+  .sidebar-icon-only .page-body-wrapper {
+    margin-left: var(--jm-sidebar-w-collapsed);
+    width: calc(100% - var(--jm-sidebar-w-collapsed));
+  }
+}
+
 #sidebar .nav {
   padding-top: 0;
   flex: 1 1 auto;

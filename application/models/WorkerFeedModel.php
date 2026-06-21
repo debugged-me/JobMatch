@@ -79,6 +79,39 @@ class WorkerFeedModel extends CI_Model
         return $this->db->query($sql, [$workerId, (int)$limit])->result();
     }
 
+    /**
+     * Open projects recommended for a worker, matched against their skills
+     * (skill keyword appears in the job category, title, or description).
+     * Falls back to all open projects when no skills are provided.
+     */
+    public function get_recommended_projects_for_worker($workerId, array $skills = [], $limit = 5)
+    {
+        $this->db->select('cp.*')
+            ->from('client_projects cp')
+            ->where('cp.status', 'active')
+            ->where('cp.visibility', 'public')
+            ->where('NOT EXISTS (SELECT 1 FROM project_applications pa WHERE pa.project_id = cp.id AND pa.worker_id = ' . (int)$workerId . ')', null, false);
+
+        $skills = array_values(array_filter(array_map('trim', $skills)));
+        if (!empty($skills)) {
+            $this->db->group_start();
+            foreach ($skills as $i => $s) {
+                $like = $this->db->escape_like_str($s);
+                $cond = "(cp.category LIKE '%{$like}%' OR cp.title LIKE '%{$like}%' OR cp.description LIKE '%{$like}%')";
+                if ($i === 0) {
+                    $this->db->where($cond, null, false);
+                } else {
+                    $this->db->or_where($cond, null, false);
+                }
+            }
+            $this->db->group_end();
+        }
+
+        return $this->db->order_by('cp.created_at', 'DESC')
+            ->limit((int)$limit)
+            ->get()->result();
+    }
+
     public function apply_to_project($workerId, $projectId, $payload)
     {
         $row = [

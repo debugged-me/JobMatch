@@ -188,8 +188,35 @@ class Dashboard extends CI_Controller
             'reviews'        => $stats,
             'latest_reviews' => $this->reviews->latest($uid, 3),
             'incomplete'     => $incomplete,
-            'docs'           => $docs,  
+            'docs'           => $docs,
         ];
+
+        // Job-discovery data (JobStreet-style): open work + my applications
+        $recommended_jobs = [];
+        $my_applications  = [];
+        try {
+            $this->load->model('WorkerFeedModel', 'wfeed');
+            $wskills = array_filter(array_map('trim', explode(',', (string)($p->skills ?? ''))));
+            $recommended_jobs = $this->wfeed->get_recommended_projects_for_worker($uid, $wskills, 5);
+            // Fallback to recent open jobs if no skill matches (so the section isn't empty)
+            if (empty($recommended_jobs)) {
+                $recommended_jobs = $this->wfeed->get_open_projects_for_worker($uid, 5);
+            }
+            $my_applications  = $this->wfeed->list_my_applications($uid);
+        } catch (\Throwable $e) {
+            log_message('error', 'Dashboard->worker(): jobs load failed: '.$e->getMessage());
+        }
+        $data['recommended_jobs'] = $recommended_jobs;
+        $data['my_applications']  = $my_applications;
+
+        // Application status summary
+        $app_counts = ['total' => 0, 'submitted' => 0, 'accepted' => 0, 'withdrawn' => 0];
+        foreach ((array)$my_applications as $a) {
+            $st = strtolower((string)($a->status ?? ''));
+            $app_counts['total']++;
+            if (isset($app_counts[$st])) $app_counts[$st]++;
+        }
+        $data['app_counts'] = $app_counts;
 
         $this->load->view('dashboard_worker', $data);
     }

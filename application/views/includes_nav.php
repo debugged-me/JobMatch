@@ -96,7 +96,7 @@ list($ariaProjects, $showProjects, $collapsedProjects)   = $submenu_state(['proj
 list($ariaProjW, $showProjW, $collapsedProjW)            = $submenu_state(['projects/active', 'projects/history']);
 list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin']);
 ?>
-<link rel="stylesheet" href="<?= base_url('assets/css/nav-shell.css') ?>">
+<link rel="stylesheet" href="<?= base_url('assets/css/nav-shell.css') ?>?v=<?= @filemtime(FCPATH . 'assets/css/nav-shell.css') ?: '2' ?>">
 <nav class="sidebar sidebar-offcanvas <?= ($isAdmin || $isTesda) ? 'sidebar-textonly' : '' ?>" id="sidebar">
   <ul class="nav">
     <li class="sidebar-brand-block">
