@@ -9,6 +9,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css'); ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/icons-phosphor.css'); ?>">
   <?php $lpCssVer = is_file(FCPATH . 'assets/css/landing-peso.css') ? filemtime(FCPATH . 'assets/css/landing-peso.css') : time(); ?>
   <link rel="stylesheet" href="<?= base_url('assets/css/landing-peso.css?v=' . $lpCssVer); ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png'); ?>" />

@@ -1,4 +1,4 @@
-﻿<?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +10,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/universal.css') ?>">
@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=1.0.5') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-client.css?v=1.0.0') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-client.css?v=2.0.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 </head>
 
@@ -30,8 +30,7 @@
       <?php $this->load->view('includes_nav_top'); ?>
       <div class="main-panel">
         <div class="content-wrapper pb-0">
-          <div class="app">
-            <div class="eyebrow"><?= htmlspecialchars($page_title ?? 'Client Dashboard', ENT_QUOTES, 'UTF-8') ?></div>
+          <div class="wd">
 
             <?php if ($this->session->flashdata('error')): ?>
               <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('error'); ?></div>
@@ -155,149 +154,128 @@
             }
 
             $isVerified = ($first_name && $last_name && !empty($id_image));
+            $greetName  = $first_name !== '' ? $first_name : 'there';
             ?>
 
-
-            <div class="profile-card">
-              <div class="profile-brandbar"></div>
-              <div class="profile-cover"></div>
-              <div class="profile-gold"></div>
-              <div class="profile-main">
+            <!-- ============ HERO — identity first ============ -->
+            <section class="wd-hero">
+              <div class="wd-hero-id">
                 <?php $defaultEsc = htmlspecialchars(base_url('uploads/avatars/avatar.png'), ENT_QUOTES, 'UTF-8'); ?>
-                <img
-                  class="avatar"
+                <img class="wd-hero-avatar"
                   src="<?= htmlspecialchars($avatarUrl, ENT_QUOTES, 'UTF-8') ?>"
                   alt="Avatar"
                   onerror="this.onerror=null;this.src='<?= $defaultEsc ?>';">
-                <div>
-                  <div class="profile-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                    <h3 class="profile-name">
-                      <?= htmlspecialchars($display_name !== '' ? $display_name : ($p->email ?? $this->session->userdata('email') ?? 'Client'), ENT_QUOTES, 'UTF-8') ?>
-                    </h3>
-
-                    <span class="badge-soft" title="Account status">
+                <div class="wd-hero-text">
+                  <div class="wd-hero-greet">Welcome back 👋</div>
+                  <h1 class="wd-hero-name">
+                    <?= htmlspecialchars($display_name !== '' ? $display_name : ($p->email ?? $this->session->userdata('email') ?? 'Client'), ENT_QUOTES, 'UTF-8') ?>
+                    <span class="wd-verified <?= $isVerified ? '' : 'is-unverified' ?>" title="Account status">
                       <i class="mdi <?= $isVerified ? 'mdi-check-decagram-outline' : 'mdi-alert-decagram-outline' ?>"></i>
-                      <?= $isVerified ? 'Verified' : 'Verification Needed' ?>
+                      <?= $isVerified ? 'Verified' : 'Verification needed' ?>
                     </span>
-                  </div>
+                  </h1>
                   <?php if ($org_label !== ''): ?>
-                    <div class="profile-sub">
+                    <div class="wd-hero-org">
                       <?= htmlspecialchars($org_label, ENT_QUOTES, 'UTF-8') ?>
+                      <?php if ($has_company_position_field && $company_position !== ''): ?>
+                        <small><?= htmlspecialchars($company_position, ENT_QUOTES, 'UTF-8') ?></small>
+                      <?php endif; ?>
                     </div>
                   <?php endif; ?>
-                  <?php if ($has_company_position_field && $company_position !== ''): ?>
-                    <div class="profile-sub text-xs text-gray-500">
-                      <?= htmlspecialchars($company_position, ENT_QUOTES, 'UTF-8') ?>
-                    </div>
-                  <?php endif; ?>
-                  <div class="meta" style="margin-top:2px">
-                    <?php if ($loc): ?><span class="me-3"><i class="mdi mdi-map-marker"></i> <?= htmlspecialchars($loc, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
-                    <?php if ($phoneNo): ?><span class="me-3"><i class="mdi mdi-phone"></i> <?= htmlspecialchars($phoneNo, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
-                    <?php if ($address): ?><span class="wrap"><i class="mdi mdi-home-map-marker"></i> <?= htmlspecialchars($address, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
+                  <div class="wd-hero-meta">
+                    <?php if ($loc): ?><span><i class="mdi mdi-map-marker"></i> <?= htmlspecialchars($loc, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
+                    <?php if ($phoneNo): ?><span><i class="mdi mdi-phone"></i> <?= htmlspecialchars($phoneNo, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
+                    <?php if ($address): ?><span><i class="mdi mdi-home-map-marker"></i> <?= htmlspecialchars($address, ENT_QUOTES, 'UTF-8') ?></span><?php endif; ?>
+                  </div>
+                  <div class="wd-hero-actions">
+                    <a href="<?= site_url('projects/create') ?>" class="wd-btn wd-btn-primary"><i class="mdi mdi-briefcase-plus-outline"></i> Post a Job</a>
+                    <a href="<?= site_url('client/edit') ?>" class="wd-btn wd-btn-ghost"><i class="mdi mdi-account-edit-outline"></i> Edit Profile</a>
                   </div>
                 </div>
-                <div class="badges" style="display:flex;gap:8px;flex-wrap:wrap">
-                  <a href="<?= site_url('client/edit') ?>" class="btn-primary-brand"><i class="mdi mdi-pencil"></i>Edit Profile</a>
-                  <a href="<?= site_url('projects/create') ?>" class="btn-primary-brand"><i class="mdi mdi-briefcase-plus-outline"></i>Post a Job</a>
+              </div>
+            </section>
+
+            <!-- ============ KPI CARDS ============ -->
+            <div class="wd-kpis">
+              <div class="wd-kpi">
+                <div class="wd-kpi-ico tint-red"><i class="mdi mdi-briefcase-outline"></i></div>
+                <div>
+                  <div class="wd-kpi-val"><?= $jobs_posted ?></div>
+                  <div class="wd-kpi-lbl">Jobs Posted</div>
+                </div>
+              </div>
+              <div class="wd-kpi">
+                <div class="wd-kpi-ico tint-green"><i class="mdi mdi-briefcase-check"></i></div>
+                <div>
+                  <div class="wd-kpi-val"><?= $jobs_active ?></div>
+                  <div class="wd-kpi-lbl">Active Jobs</div>
+                </div>
+              </div>
+              <div class="wd-kpi">
+                <div class="wd-kpi-ico tint-amber"><i class="mdi mdi-account-multiple-check"></i></div>
+                <div>
+                  <div class="wd-kpi-val"><?= $hires_total ?></div>
+                  <div class="wd-kpi-lbl">Total Hires</div>
+                </div>
+              </div>
+              <div class="wd-kpi">
+                <div class="wd-kpi-ico tint-indigo"><i class="mdi mdi-cash-multiple"></i></div>
+                <div>
+                  <div class="wd-kpi-val">₱<?= number_format($spend_total, 2) ?></div>
+                  <div class="wd-kpi-lbl">Total Spend</div>
                 </div>
               </div>
             </div>
 
-            <div class="kpi-grid" style="margin:10px 0 6px">
-              <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(193,39,45,.15)"><i class="mdi mdi-briefcase-outline" style="font-size:18px;color:#c1272d"></i></div>
-                  <div>
-                    <div class="label">Jobs Posted</div>
-                    <div class="value"><?= $jobs_posted ?></div>
-                  </div>
-                </div>
-                <div class="text-muted" style="font-size:12px;margin-top:4px">All-time</div>
-              </div>
-              <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(193,39,45,.12)"><i class="mdi mdi-briefcase-check" style="font-size:18px;color:#c1272d"></i></div>
-                  <div>
-                    <div class="label">Active Jobs</div>
-                    <div class="value"><?= $jobs_active ?></div>
-                  </div>
-                </div>
-                <div class="text-muted" style="font-size:12px;margin-top:4px">Open right now</div>
-              </div>
-              <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(245,158,11,.12)"><i class="mdi mdi-account-multiple-check" style="font-size:18px;color:#f59e0b"></i></div>
-                  <div>
-                    <div class="label">Total Hires</div>
-                    <div class="value"><?= $hires_total ?></div>
-                  </div>
-                </div>
-                <div class="text-muted" style="font-size:12px;margin-top:4px">All-time</div>
-              </div>
-              <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(99,102,241,.12)"><i class="mdi mdi-cash-multiple" style="font-size:18px;color:#6366f1"></i></div>
-                  <div>
-                    <div class="label">Total Spend</div>
-                    <div class="value"><?= number_format($spend_total, 2) ?></div>
-                  </div>
-                </div>
-                <div class="text-muted" style="font-size:12px;margin-top:4px">All-time</div>
-              </div>
-            </div>
+            <div class="wd-stack">
 
-            <div class="layout">
-              <section class="panel">
-                <div class="panel-head"><i class="mdi mdi-briefcase-outline"></i>
-                  <h6>Business / Project</h6>
-                </div>
-                <div class="panel-body">
-                  <?php if ($is_individual_employer): ?>
-                    <div class="mb-1"><strong>Employer Type:</strong> Individual Employer</div>
-                  <?php endif; ?>
-
-                  <?php if (!$has_business_details): ?>
-                    <div class="empty">No business or project details yet.</div>
+              <!-- ============ Business + Verification ============ -->
+              <div class="wd-row wd-row-2">
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-briefcase-outline"></i> Business / Project</h2></div>
+                  <?php if (!$has_business_details && !$is_individual_employer): ?>
+                    <div class="wd-empty wd-empty-sm">No business or project details yet.</div>
                   <?php else: ?>
-                    <?php if ($company !== ''): ?><div class="mb-1"><strong>Company:</strong> <?= htmlspecialchars($company, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
-                    <?php if ($has_company_position_field && $company_position !== ''): ?><div class="mb-1"><strong>Position:</strong> <?= htmlspecialchars($company_position, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
-                    <?php if ($employer !== ''): ?><div class="mb-1"><strong>Employer:</strong> <?= htmlspecialchars($employer, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
-                    <?php if ($biz_name !== ''): ?><div class="mb-1"><strong>Project / Business Name:</strong> <?= htmlspecialchars($biz_name, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
-                    <?php if ($biz_loc !== ''): ?><div class="mb-1"><strong>Business Location:</strong> <?= htmlspecialchars($biz_loc, ENT_QUOTES, 'UTF-8') ?></div><?php endif; ?>
+                    <?php if ($is_individual_employer): ?>
+                      <div class="wd-kv"><span class="k">Employer Type</span><span class="v">Individual Employer</span></div>
+                    <?php endif; ?>
+                    <?php if ($company !== ''): ?><div class="wd-kv"><span class="k">Company</span><span class="v"><?= htmlspecialchars($company, ENT_QUOTES, 'UTF-8') ?></span></div><?php endif; ?>
+                    <?php if ($has_company_position_field && $company_position !== ''): ?><div class="wd-kv"><span class="k">Position</span><span class="v"><?= htmlspecialchars($company_position, ENT_QUOTES, 'UTF-8') ?></span></div><?php endif; ?>
+                    <?php if ($employer !== ''): ?><div class="wd-kv"><span class="k">Employer</span><span class="v"><?= htmlspecialchars($employer, ENT_QUOTES, 'UTF-8') ?></span></div><?php endif; ?>
+                    <?php if ($biz_name !== ''): ?><div class="wd-kv"><span class="k">Project / Business</span><span class="v"><?= htmlspecialchars($biz_name, ENT_QUOTES, 'UTF-8') ?></span></div><?php endif; ?>
+                    <?php if ($biz_loc !== ''): ?><div class="wd-kv"><span class="k">Business Location</span><span class="v"><?= htmlspecialchars($biz_loc, ENT_QUOTES, 'UTF-8') ?></span></div><?php endif; ?>
                   <?php endif; ?>
-                </div>
-              </section>
+                </section>
 
-              <section class="panel">
-                <div class="panel-head"><i class="mdi mdi-shield-account-outline"></i>
-                  <h6>Verification & Documents</h6>
-                </div>
-                <div class="panel-body">
-                  <div class="mb-2">
-                    <strong>Government ID:</strong>
-                    <?php if ($idViewerUrl): ?>
-                      <a class="btn-primary-brand" href="<?= htmlspecialchars($idViewerUrl, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
-                        <i class="mdi mdi-id-card"></i> View
-                      </a>
-                    <?php else: ?>
-                      <span class="meta">Not uploaded</span>
-                    <?php endif; ?>
-                  </div>
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-shield-account-outline"></i> Verification &amp; Documents</h2></div>
 
-                  <div class="mb-2" style="margin-top:6px">
-                    <strong>Business Permit:</strong>
-                    <?php if ($permitViewerUrl): ?>
-                      <a class="btn-primary-brand" href="<?= htmlspecialchars($permitViewerUrl, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">
-                        <i class="mdi mdi-file-certificate-outline"></i> View
-                      </a>
-                    <?php else: ?>
-                      <span class="meta">Not uploaded</span>
-                    <?php endif; ?>
+                  <div class="wd-docs">
+                    <div class="wd-doc">
+                      <i class="mdi mdi-id-card"></i>
+                      <div class="wd-doc-info">
+                        <div class="wd-doc-name">Government ID</div>
+                        <div class="wd-muted"><?= $idViewerUrl ? 'Uploaded' : 'Not uploaded' ?></div>
+                      </div>
+                      <?php if ($idViewerUrl): ?>
+                        <a class="wd-doc-link" href="<?= htmlspecialchars($idViewerUrl, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">View</a>
+                      <?php endif; ?>
+                    </div>
+                    <div class="wd-doc">
+                      <i class="mdi mdi-file-certificate-outline"></i>
+                      <div class="wd-doc-info">
+                        <div class="wd-doc-name">Business Permit</div>
+                        <div class="wd-muted"><?= $permitViewerUrl ? 'Uploaded' : 'Not uploaded' ?></div>
+                      </div>
+                      <?php if ($permitViewerUrl): ?>
+                        <a class="wd-doc-link" href="<?= htmlspecialchars($permitViewerUrl, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener">View</a>
+                      <?php endif; ?>
+                    </div>
                   </div>
 
                   <?php if (!empty($certs)): ?>
-                    <div style="margin-top:10px">
-                      <strong>Certificates:</strong>
+                    <div style="margin-top:14px">
+                      <div class="wd-muted" style="font-weight:600;margin-bottom:2px">Certificates</div>
                       <?php
                       $items = [];
                       foreach ($certs as $c) {
@@ -315,17 +293,17 @@
                         $items[] = ['path' => $path, 'title' => $title, 'abs' => $abs, 'view' => $view];
                       }
                       ?>
-                      <div class="c-grid certs-row" style="margin-top:6px">
+                      <div class="wd-certs">
                         <?php foreach ($items as $it):
                           $img = is_image_path($it['path']);
                           $pdf = is_pdf_path($it['path']);
                         ?>
-                          <div class="c-card <?= $img ? 'hasimg' : '' ?>"
+                          <div class="c-card"
                             <?= $img ? 'style="background-image:url(\'' . htmlspecialchars($it['abs'], ENT_QUOTES) . '\')"' : '' ?>>
                             <?php if (!$img): ?>
                               <div class="text-center">
-                                <i class="mdi <?= $pdf ? 'mdi-file-pdf-box' : 'mdi-file' ?>" style="font-size:40px;<?= $pdf ? 'color:#b91c1c' : 'color:#334155' ?>"></i>
-                                <div style="font-size:11px;margin-top:4px;color:#334155;max-width:92%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <i class="mdi <?= $pdf ? 'mdi-file-pdf-box' : 'mdi-file' ?>" style="font-size:38px;<?= $pdf ? 'color:#b91c1c' : 'color:#64748b' ?>"></i>
+                                <div style="font-size:11px;margin-top:4px;color:#475569;max-width:92%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                   <?= htmlspecialchars($it['title'], ENT_QUOTES) ?>
                                 </div>
                               </div>
@@ -341,68 +319,65 @@
                         <?php endforeach; ?>
                       </div>
                     </div>
-                  <?php else: ?>
-                    <div class="empty" style="margin-top:8px">No client certificates uploaded.</div>
                   <?php endif; ?>
 
                   <?php if (!$isVerified || empty($permit)): ?>
-                    <div class="empty" style="margin-top:10px">
-                      Complete your verification to build trust with workers.
-                      <div style="margin-top:6px">
-                        <a href="<?= site_url('client/edit') ?>" class="btn-primary-brand"><i class="mdi mdi-upload"></i> Upload Documents</a>
-                      </div>
+                    <div class="wd-empty wd-empty-sm" style="margin-top:12px">
+                      <i class="mdi mdi-shield-alert-outline"></i>
+                      <div>Complete your verification to build trust with workers.</div>
+                      <a href="<?= site_url('client/edit') ?>" class="wd-btn wd-btn-primary wd-btn-sm" style="margin-top:6px"><i class="mdi mdi-upload"></i> Upload Documents</a>
                     </div>
                   <?php endif; ?>
+                </section>
+              </div>
+
+              <!-- ============ Recent Jobs ============ -->
+              <section class="wd-card">
+                <div class="wd-card-head">
+                  <h2><i class="mdi mdi-clipboard-text-outline"></i> Recent Jobs</h2>
+                  <a href="<?= site_url('projects/active') ?>" class="wd-link">View all <i class="mdi mdi-arrow-right"></i></a>
                 </div>
+                <?php if (empty($recent_jobs)): ?>
+                  <div class="wd-empty">
+                    <i class="mdi mdi-briefcase-outline"></i>
+                    <div>No jobs yet. Post your first job to start hiring.</div>
+                    <a href="<?= site_url('projects/create') ?>" class="wd-btn wd-btn-primary wd-btn-sm" style="margin-top:6px"><i class="mdi mdi-briefcase-plus-outline"></i> Post a Job</a>
+                  </div>
+                <?php else: ?>
+                  <div class="table-responsive">
+                    <table class="table wd-table">
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th>Status</th>
+                          <th>Applicants</th>
+                          <th>Posted</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php foreach ($recent_jobs as $j):
+                          $status = strtolower($j->status ?? 'open');
+                          $icon   = $status === 'open' ? 'mdi-lock-open-outline' : ($status === 'hired' ? 'mdi-account-check' : 'mdi-archive-outline');
+                          $badge  = $status === 'open' ? 'wd-badge-green' : ($status === 'hired' ? 'wd-badge-blue' : 'wd-badge-gray');
+                          $label  = ucfirst($status);
+                        ?>
+                          <tr>
+                            <td data-label="Title" class="fw-medium"><?= htmlspecialchars($j->title ?? '—', ENT_QUOTES, 'UTF-8') ?></td>
+                            <td data-label="Status"><span class="wd-badge <?= $badge ?>"><i class="mdi <?= $icon ?>"></i> <?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span></td>
+                            <td data-label="Applicants"><?= (int)($j->applicants ?? 0) ?></td>
+                            <td data-label="Posted" class="text-muted"><?= htmlspecialchars($j->posted_ago ?? '', ENT_QUOTES, 'UTF-8') ?></td>
+                            <td data-label="">
+                              <a class="wd-link" href="<?= site_url('projects/active') ?>">View</a>
+                            </td>
+                          </tr>
+                        <?php endforeach; ?>
+                      </tbody>
+                    </table>
+                  </div>
+                <?php endif; ?>
               </section>
 
-              <section class="panel panel--wide">
-                <div class="panel-head"><i class="mdi mdi-clipboard-text-outline"></i>
-                  <h6>Recent Jobs</h6>
-                </div>
-                <div class="panel-body">
-                  <?php if (empty($recent_jobs)): ?>
-                    <div class="empty">No jobs yet. Post your first job to start hiring.</div>
-                    <div style="margin-top:8px">
-                      <a href="<?= site_url('projects/active') ?>" class="btn-primary-brand"><i class="mdi mdi-briefcase-plus-outline"></i> Post a Job</a>
-                    </div>
-                  <?php else: ?>
-                    <div class="table-responsive">
-                      <table class="table table-sm" style="width:100%">
-                        <thead class="bg-light">
-                          <tr>
-                            <th>Title</th>
-                            <th>Status</th>
-                            <th>Applicants</th>
-                            <th>Posted</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <?php foreach ($recent_jobs as $j): ?>
-                            <tr>
-                              <td class="fw-medium"><?= htmlspecialchars($j->title ?? '—', ENT_QUOTES, 'UTF-8') ?></td>
-                              <td>
-                                <?php
-                                $status = strtolower($j->status ?? 'open');
-                                $icon   = $status === 'open' ? 'mdi-lock-open-outline' : ($status === 'hired' ? 'mdi-account-check' : 'mdi-archive-outline');
-                                $label  = ucfirst($status);
-                                ?>
-                                <span class="badge-soft"><i class="mdi <?= $icon ?>"></i> <?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
-                              </td>
-                              <td><?= (int)($j->applicants ?? 0) ?></td>
-                              <td class="text-muted"><?= htmlspecialchars($j->posted_ago ?? '', ENT_QUOTES, 'UTF-8') ?></td>
-                              <td style="white-space:nowrap">
-                                <a class="btn-primary-brand" href="<?= site_url('projects/active') ?>"><i class="mdi mdi-eye-outline"></i> View</a>
-                              </td>
-                            </tr>
-                          <?php endforeach; ?>
-                        </tbody>
-                      </table>
-                    </div>
-                  <?php endif; ?>
-                </div>
-              </section>
             </div>
 
           </div>

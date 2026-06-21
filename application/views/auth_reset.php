@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/icons-phosphor.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/auth-reset.css') ?>">
 
 </head>

@@ -1,3 +1,6 @@
+/* Phosphor icon shim — remaps mdi-* glyphs to Phosphor Icons app-wide */
+@import url("icons-phosphor.css");
+
 :root {
   --brand-blue: #c1272d;
   --brand-blue-dark: #d63031;
