@@ -23,6 +23,9 @@ $isTesda        = ($role === 'tesda_admin');
 $isPeso         = ($role === 'peso');
 $isSchoolAdmin  = ($role === 'school admin');
 
+$portalLabel =
+  $isAdmin        ? 'Admin Portal'   : ($isWorker      ? 'Worker Portal' : ($isClient      ? 'Client Portal' : ($isTesda       ? 'TESDA Portal'  : ($isPeso        ? 'PESO Portal'   : ($isSchoolAdmin ? 'School Admin'  : 'Portal')))));
+
 $dashboard_url =
   $isAdmin        ? 'dashboard/admin'  : ($isWorker      ? 'dashboard/worker' : ($isClient      ? 'dashboard/client' : ($isTesda       ? 'dashboard/tesda'  : ($isPeso        ? 'dashboard/peso'   : ($isSchoolAdmin ? 'school-admin'     : 'dashboard/user')))));
 
@@ -96,6 +99,16 @@ list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin
 <link rel="stylesheet" href="<?= base_url('assets/css/nav-shell.css') ?>">
 <nav class="sidebar sidebar-offcanvas <?= ($isAdmin || $isTesda) ? 'sidebar-textonly' : '' ?>" id="sidebar">
   <ul class="nav">
+    <li class="sidebar-brand-block">
+      <span class="brand-icon">
+        <img src="<?= base_url('assets/images/logo.png') ?>" alt="PESO" onerror="this.style.display='none'">
+      </span>
+      <span class="brand-text">
+        <?= htmlspecialchars($portalLabel, ENT_QUOTES, 'UTF-8') ?>
+        <small>PESO Davao Oriental</small>
+      </span>
+    </li>
+
     <li class="nav-item nav-profile">
       <div class="nav-link d-flex align-items-center">
         <div class="nav-profile-image position-relative">
@@ -288,12 +301,14 @@ list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin
       </li>
     <?php endif; ?>
 
-    <li class="nav-item mt-3">
+    <li class="nav-item logout-item">
       <a class="nav-link text-danger" href="<?= site_url('auth/logout') ?>">
         <i class="mdi mdi-logout menu-icon"></i>
         <span class="menu-title">Logout</span>
       </a>
     </li>
+
+    <li class="sidebar-foot">&copy; <?= date('Y') ?> PESO Davao Oriental</li>
   </ul>
 </nav>
 <script src="<?= base_url('assets/js/nav.js') ?>"></script>
