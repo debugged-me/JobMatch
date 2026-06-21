@@ -412,6 +412,16 @@ class Client extends CI_Controller
             $res = $this->cp->upsert($uid, $payload);
 
             if (!empty($res['ok'])) {
+                // Keep the canonical users name + session in sync so the edited
+                // name reflects on the dashboard, sidebar and top nav (which read
+                // users.first_name/last_name), not just in client_profile.
+                $this->db->where('id', $uid)->update('users', [
+                    'first_name' => $payload['fName'],
+                    'last_name'  => $payload['lName'],
+                ]);
+                $this->session->set_userdata('first_name', $payload['fName']);
+                $this->session->set_userdata('last_name', $payload['lName']);
+
                 if (!empty($res['changed'])) {
                     $this->session->set_flashdata('success', 'Client profile saved.');
                 } else {

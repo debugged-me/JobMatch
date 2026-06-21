@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -9,12 +9,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=1.0.9') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-tesda.css?v=1.0.0') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.0.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 </head>
 
@@ -26,79 +26,94 @@
 
       <div class="main-panel">
         <div class="content-wrapper pb-0">
-          <div class="app">
+          <div class="wd">
 
-            <!-- HERO (no upload fields here) -->
-            <div class="hero mb-3">
-              <div class="ico"><i class="mdi mdi-shield-account-outline text-white" style="font-size:22px"></i></div>
-              <div>
-                <h4><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></h4>
-                <div class="sub">Welcome! Manage TESDA-related onboarding of skilled workers from here.</div>
-              </div>
-            </div>
+            <?php if ($this->session->flashdata('error')): ?>
+              <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('error'); ?></div>
+            <?php endif; ?>
+            <?php if ($this->session->flashdata('success')): ?>
+              <div class="alert alert-success" role="alert"><?= $this->session->flashdata('success'); ?></div>
+            <?php endif; ?>
 
-            <!-- KPIs (pass $stats from controller if available) -->
             <?php
             $k_total     = (int)($stats['workers_total']      ?? $stats['total_workers']     ?? 0);
             $k_new_7d    = (int)($stats['workers_new_7d']     ?? $stats['new_7d']            ?? 0);
             $k_certified = (int)($stats['workers_certified']  ?? $stats['tesda_certified']   ?? $stats['certified'] ?? 0);
             $k_near_exp  = (int)($stats['certs_expiring_30d'] ?? $stats['expiring_30d']      ?? $stats['expiring_30'] ?? 0);
-
             ?>
-            <section class="kpi-grid">
-              <div class="kpi">
-                <div>
-                  <div class="label">Skilled Workers</div>
-                  <div class="value"><?= $k_total ?></div>
+
+            <!-- HERO -->
+            <section class="wd-hero">
+              <div class="wd-hero-id">
+                <div class="wd-hero-text">
+                  <div class="wd-hero-greet"><i class="mdi mdi-shield-account-outline"></i> TESDA Portal</div>
+                  <h1 class="wd-hero-name"><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></h1>
+                  <div class="wd-hero-meta">
+                    <span>Onboard and maintain TESDA-certified skilled workers.</span>
+                  </div>
+                  <div class="wd-hero-actions">
+                    <a class="wd-btn wd-btn-primary" href="<?= site_url('tesda/workers/upload') ?>"><i class="mdi mdi-database-import-outline"></i> Upload Workers</a>
+                    <a class="wd-btn wd-btn-ghost" href="<?= site_url('tesda/workers/template') ?>"><i class="mdi mdi-file-download-outline"></i> CSV Template</a>
+                  </div>
                 </div>
-                <div class="icon" style="background:var(--brand-blue-soft)"><i class="mdi mdi-account-hard-hat" style="font-size:20px;color:var(--brand-blue)"></i></div>
-              </div>
-              <div class="kpi">
-                <div>
-                  <div class="label">New (last 7 days)</div>
-                  <div class="value"><?= $k_new_7d ?></div>
-                </div>
-                <div class="icon" style="background:var(--brand-blue-soft)"><i class="mdi mdi-account-plus-outline" style="font-size:20px;color:var(--brand-blue)"></i></div>
-              </div>
-              <div class="kpi">
-                <div>
-                  <div class="label">TESDA Certified</div>
-                  <div class="value"><?= $k_certified ?></div>
-                </div>
-                <div class="icon" style="background:var(--brand-gold-soft)"><i class="mdi mdi-certificate" style="font-size:20px;color:#b45309"></i></div>
-              </div>
-              <div class="kpi">
-                <div>
-                  <div class="label">Certs expiring (30d)</div>
-                  <div class="value"><?= $k_near_exp ?></div>
-                </div>
-                <div class="icon" style="background:var(--brand-gold-soft)"><i class="mdi mdi-clock-alert-outline" style="font-size:20px;color:#92400e"></i></div>
               </div>
             </section>
 
-            <!-- ACTIONS (just links; real upload lives in /tesda/workers/upload) -->
-            <section class="panel">
-              <h6>Quick Actions</h6>
-              <p class="note">Use these tools to onboard and maintain records. The upload flow is on a separate page.</p>
-              <div class="actions">
-                <a class="btn btn-blue" href="<?= site_url('tesda/workers/upload') ?>">
-                  <i class="mdi mdi-database-import-outline"></i> Upload Workers
-                </a>
-                <a class="btn btn-silver" href="<?= site_url('tesda/workers/template') ?>">
-                  <i class="mdi mdi-file-download-outline"></i> Download CSV Template
-                </a>
+            <!-- KPIs -->
+            <div class="wd-kpis">
+              <div class="wd-kpi">
+                <div class="wd-kpi-ico tint-red"><i class="mdi mdi-account-hard-hat"></i></div>
+                <div>
+                  <div class="wd-kpi-val"><?= number_format($k_total) ?></div>
+                  <div class="wd-kpi-lbl">Skilled Workers</div>
+                </div>
               </div>
-            </section>
+              <div class="wd-kpi">
+                <div class="wd-kpi-ico tint-green"><i class="mdi mdi-account-plus-outline"></i></div>
+                <div>
+                  <div class="wd-kpi-val"><?= number_format($k_new_7d) ?></div>
+                  <div class="wd-kpi-lbl">New (last 7 days)</div>
+                </div>
+              </div>
+              <div class="wd-kpi">
+                <div class="wd-kpi-ico tint-amber"><i class="mdi mdi-certificate"></i></div>
+                <div>
+                  <div class="wd-kpi-val"><?= number_format($k_certified) ?></div>
+                  <div class="wd-kpi-lbl">TESDA Certified</div>
+                </div>
+              </div>
+              <div class="wd-kpi">
+                <div class="wd-kpi-ico tint-indigo"><i class="mdi mdi-clock-alert-outline"></i></div>
+                <div>
+                  <div class="wd-kpi-val"><?= number_format($k_near_exp) ?></div>
+                  <div class="wd-kpi-lbl">Certs expiring (30d)</div>
+                </div>
+              </div>
+            </div>
 
-            <!-- OPTIONAL: guidance -->
-            <section class="panel" style="margin-top:12px">
-              <h6>Guidelines</h6>
-              <ul class="list">
-                <li>For bulk onboarding, prepare a CSV using the provided template.</li>
-                <li>Only include columns you have data for; others can be left blank.</li>
-                <li>You can also add or edit individual workers from the Upload page after preview.</li>
-              </ul>
-            </section>
+            <div class="wd-stack">
+              <div class="wd-row wd-row-2">
+                <!-- Quick actions -->
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-lightning-bolt-outline"></i> Quick Actions</h2></div>
+                  <p class="wd-muted" style="margin-top:-8px">Use these tools to onboard and maintain records. The full upload flow lives on its own page.</p>
+                  <div class="wd-hero-actions" style="margin-top:4px">
+                    <a class="wd-btn wd-btn-primary" href="<?= site_url('tesda/workers/upload') ?>"><i class="mdi mdi-database-import-outline"></i> Upload Workers</a>
+                    <a class="wd-btn wd-btn-ghost" href="<?= site_url('tesda/workers/template') ?>"><i class="mdi mdi-file-download-outline"></i> Download CSV Template</a>
+                  </div>
+                </section>
+
+                <!-- Guidelines -->
+                <section class="wd-card">
+                  <div class="wd-card-head"><h2><i class="mdi mdi-information-outline"></i> Guidelines</h2></div>
+                  <ul class="wd-list">
+                    <li><i class="mdi mdi-check-circle-outline"></i> For bulk onboarding, prepare a CSV using the provided template.</li>
+                    <li><i class="mdi mdi-check-circle-outline"></i> Only include columns you have data for; others can be left blank.</li>
+                    <li><i class="mdi mdi-check-circle-outline"></i> You can also add or edit individual workers from the Upload page after preview.</li>
+                  </ul>
+                </section>
+              </div>
+            </div>
 
           </div>
         </div>
@@ -107,7 +122,6 @@
     </div>
   </div>
 
-  <!-- Vendor JS (no upload scripts here) -->
   <script src="<?= base_url('assets/vendors/js/vendor.bundle.base.js') ?>"></script>
   <script src="<?= base_url('assets/js/off-canvas.js') ?>"></script>
   <script src="<?= base_url('assets/js/hoverable-collapse.js') ?>"></script>

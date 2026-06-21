@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -8,80 +8,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=1.0.9') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.0.1') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
-  <style>
-    :root {
-      --silver-300: #d9dee7;
-      --blue-900: #c1272d;
-      --shadow-1: 0 6px 16px rgba(2, 6, 23, .08)
-    }
-
-    .app {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 12px
-    }
-
-    .eyebrow {
-      font-size: 12px;
-      color: #64748b;
-      font-weight: 600;
-      letter-spacing: .2px;
-      margin: 4px 0 8px
-    }
-
-    .panel {
-      background: #fff;
-      border: 1px solid var(--silver-300);
-      border-radius: 12px;
-      box-shadow: var(--shadow-1);
-      padding: 12px
-    }
-
-    .panel-head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px
-    }
-
-    .panel-head h6 {
-      margin: 0;
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--blue-900)
-    }
-
-    .h-card {
-      border: 1px solid var(--silver-300);
-      border-radius: 12px;
-      padding: 12px;
-      box-shadow: var(--shadow-1);
-      background: #fff;
-      height: 100%
-    }
-
-    .h-title {
-      font-weight: 800;
-      color: var(--blue-900);
-      margin: 0
-    }
-
-    .h-sub {
-      color: #6b7280;
-      font-size: 12px
-    }
-
-    .h-phone code {
-      font-size: 14px
-    }
-  </style>
 </head>
 
 <body>
@@ -92,44 +25,46 @@
       <?php $this->load->view('includes_nav_top'); ?>
       <div class="main-panel">
         <div class="content-wrapper pb-0">
-          <div class="app">
+          <div class="wd">
 
-            <div class="eyebrow"><?= htmlspecialchars($page_title ?? 'Hotlines', ENT_QUOTES) ?></div>
+            <div class="wd-pagehead">
+              <div class="wd-pagehead-main">
+                <h1><i class="mdi mdi-lifebuoy"></i> <?= htmlspecialchars($page_title ?? 'Hotlines', ENT_QUOTES) ?></h1>
+                <div class="sub">Emergency &amp; assistance contacts for <strong><?= htmlspecialchars($audience, ENT_QUOTES) ?></strong> and everyone.</div>
+              </div>
+            </div>
 
-            <section class="panel">
-              <div class="panel-head">
-                <i class="mdi mdi-lifebuoy" style="color:#a7afba;font-size:18px"></i>
-                <h6>Hotline Numbers</h6>
-                <div class="ms-auto text-muted" style="font-size:12px">
-                  Showing for <strong><?= htmlspecialchars($audience, ENT_QUOTES) ?></strong> + <strong>All</strong>
+            <?php if (empty($rows)): ?>
+              <div class="wd-card">
+                <div class="wd-empty"><i class="mdi mdi-phone-off-outline"></i>
+                  <div>No hotlines available right now.</div>
                 </div>
               </div>
-
-              <?php if (empty($rows)): ?>
-                <div class="empty">No hotlines available.</div>
-              <?php else: ?>
-                <div class="row g-2">
-                  <?php foreach ($rows as $r): ?>
-                    <div class="col-md-6">
-                      <div class="h-card">
-                        <div class="d-flex justify-content-between flex-wrap gap-2">
-                          <div>
-                            <h6 class="h-title"><?= htmlspecialchars($r->title, ENT_QUOTES) ?></h6>
-                            <?php if (!empty($r->agency)): ?>
-                              <div class="h-sub"><?= htmlspecialchars($r->agency, ENT_QUOTES) ?></div>
-                            <?php endif; ?>
-                          </div>
-                          <div class="h-phone"><code><?= htmlspecialchars($r->phone, ENT_QUOTES) ?></code></div>
+            <?php else: ?>
+              <div class="wd-grid">
+                <?php foreach ($rows as $r): ?>
+                  <div class="wd-itemcard">
+                    <div class="wd-itemcard-body">
+                      <div class="d-flex justify-content-between align-items-start gap-2">
+                        <div style="min-width:0">
+                          <div class="wd-person-name" style="font-size:15px"><?= htmlspecialchars($r->title, ENT_QUOTES) ?></div>
+                          <?php if (!empty($r->agency)): ?>
+                            <div class="wd-person-sub"><i class="mdi mdi-office-building-outline"></i> <?= htmlspecialchars($r->agency, ENT_QUOTES) ?></div>
+                          <?php endif; ?>
                         </div>
-                        <?php if (!empty($r->notes)): ?>
-                          <div class="mt-2"><?= nl2br(htmlspecialchars($r->notes, ENT_QUOTES)) ?></div>
-                        <?php endif; ?>
+                        <span class="wd-code"><?= htmlspecialchars($r->phone, ENT_QUOTES) ?></span>
                       </div>
+                      <?php if (!empty($r->notes)): ?>
+                        <div class="wd-muted" style="margin-top:10px;line-height:1.5"><?= nl2br(htmlspecialchars($r->notes, ENT_QUOTES)) ?></div>
+                      <?php endif; ?>
                     </div>
-                  <?php endforeach; ?>
-                </div>
-              <?php endif; ?>
-            </section>
+                    <div class="wd-itemcard-foot">
+                      <a class="wd-pill" href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', $r->phone), ENT_QUOTES) ?>"><i class="mdi mdi-phone"></i> Call now</a>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
 
           </div>
         </div>

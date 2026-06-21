@@ -9,145 +9,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=1.0.8') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.0.1') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --card: #fff;
-      --ink: #0f172a;
-      --muted: #64748b;
-      --line: #e5e7eb;
-      --indigo-200: #c7d2fe;
-      --indigo-300: #a5b4fc;
-      --indigo-400: #818cf8;
-      --indigo-500: #6366f1;
-      --shadow-1: 0 6px 18px rgba(2, 6, 23, .06), 0 1px 0 rgba(2, 6, 23, .04);
-      --shadow-2: 0 18px 44px rgba(2, 6, 23, .12), 0 6px 18px rgba(2, 6, 23, .08);
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
-    }
-
-    .content-wrapper {
-      padding-top: 1rem
-    }
-
-    .app {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 16px
-    }
-
-    .eyebrow {
-      font-size: .85rem;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: .3px;
-      margin-bottom: .2rem
-    }
-
-    h4 {
-      font-size: clamp(18px, 1.9vw, 22px);
-      font-weight: 800;
-      margin: 0
-    }
-
-    .section {
-      background: #fff;
-      border: 1px solid var(--indigo-200);
-      border-radius: 14px;
-      box-shadow: var(--shadow-1);
-      padding: 16px
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px
-    }
-
-    .card-flat {
-      background: #fff;
-      border: 1px solid var(--indigo-200);
-      border-radius: 14px;
-      box-shadow: var(--shadow-1);
-      transition: .18s
-    }
-
-    .card-flat:hover {
-      border-color: var(--indigo-400);
-      box-shadow: var(--shadow-2);
-      transform: translateY(-2px)
-    }
-
-    .card-body {
-      padding: 14px
-    }
-
-    .card-footer {
-      padding: 12px 14px;
-      border-top: 1px solid var(--line);
-      background: #fff
-    }
-
-    .avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 9999px;
-      object-fit: cover;
-      border: 2px solid var(--line)
-    }
-
-    .title {
-      font-weight: 700
-    }
-
-    .muted {
-      color: var(--muted)
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: .36rem .7rem;
-      border-radius: 9999px;
-      border: 1px solid var(--indigo-200);
-      background: #fff;
-      font-size: .82rem;
-      font-weight: 600;
-      color: #334155;
-      text-decoration: none;
-      transition: all .18s ease
-    }
-
-    .pill:hover {
-      background: var(--indigo-500);
-      border-color: var(--indigo-500);
-      color: #fff
-    }
-
-    .badge-soft {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 9999px;
-      padding: .2rem .55rem;
-      font-weight: 600;
-      font-size: .78rem;
-      border: 1px solid var(--indigo-200);
-      background: #eef2ff;
-      color: #3730a3
-    }
-  </style>
 </head>
 
 <body>
@@ -157,11 +25,13 @@
       <?php $this->load->view('includes_nav_top'); ?>
       <div class="main-panel">
         <div class="content-wrapper pb-0">
-          <div class="app">
+          <div class="wd">
 
-            <div class="mb-3">
-              <div class="eyebrow">Personnel</div>
-              <h4>Hired</h4>
+            <div class="wd-pagehead">
+              <div class="wd-pagehead-main">
+                <h1><i class="mdi mdi-account-group-outline"></i> Hired Personnel</h1>
+                <div class="sub">Workers you've hired across your projects.</div>
+              </div>
             </div>
 
             <?php if ($this->session->flashdata('success')): ?>
@@ -180,12 +50,14 @@
             ?>
 
             <?php if (empty($list)): ?>
-              <div class="section text-center">
-                <i class="mdi mdi-account-multiple-outline" style="font-size:42px;color:#94a3b8"></i>
-                <p class="mb-1">No hired personnel yet.</p>
+              <div class="wd-card">
+                <div class="wd-empty"><i class="mdi mdi-account-multiple-outline"></i>
+                  <div>No hired personnel yet. Once you hire workers, they'll appear here.</div>
+                  <a class="wd-btn wd-btn-primary wd-btn-sm" style="margin-top:6px" href="<?= site_url('projects/active') ?>"><i class="mdi mdi-briefcase-outline"></i> Manage Projects</a>
+                </div>
               </div>
             <?php else: ?>
-              <div class="grid">
+              <div class="wd-grid">
                 <?php foreach ($list as $r): ?>
                   <?php
                   $full  = trim(($r->first_name ?? '') . ' ' . ($r->last_name ?? ''));
@@ -196,29 +68,26 @@
                   $unitStr = !empty($r->rate_unit) ? (' / ' . html_escape($r->rate_unit)) : '';
                   $when    = !empty($r->updated_at) ? $r->updated_at : ($r->created_at ?? '');
                   ?>
-                  <div class="card-flat">
-                    <div class="card-body">
-                      <div class="d-flex align-items-center gap-3 mb-1">
-                        <img class="avatar" src="<?= htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8') ?>" alt="Avatar">
-                        <div>
-                          <div class="title"><?= html_escape($full ?: ($r->email ?? 'Worker')) ?></div>
+                  <div class="wd-itemcard">
+                    <div class="wd-itemcard-body">
+                      <div class="wd-person">
+                        <img class="wd-avatar" src="<?= htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8') ?>" alt="Avatar">
+                        <div style="min-width:0">
+                          <div class="wd-person-name"><?= html_escape($full ?: ($r->email ?? 'Worker')) ?></div>
                           <?php if (!empty($r->project_title)): ?>
-                            <div class="muted small"><i class="mdi mdi-briefcase-outline me-1"></i><?= html_escape($r->project_title) ?></div>
+                            <div class="wd-person-sub"><i class="mdi mdi-briefcase-outline"></i> <?= html_escape($r->project_title) ?></div>
                           <?php endif; ?>
                         </div>
                       </div>
-                      <div class="small mt-2">
-                        <span class="me-3"><i class="mdi mdi-cash me-1"></i><strong><?= $rateStr ?></strong><?= $unitStr ?></span>
+                      <div class="wd-metaline">
+                        <span><i class="mdi mdi-cash"></i> <strong><?= $rateStr ?></strong><?= $unitStr ?></span>
                         <?php if ($when): ?>
-                          <span class="muted"><i class="mdi mdi-calendar-blank me-1"></i><?= date('M d, Y h:i A', strtotime($when)) ?></span>
+                          <span><i class="mdi mdi-calendar-blank"></i> <?= date('M d, Y', strtotime($when)) ?></span>
                         <?php endif; ?>
                       </div>
                     </div>
-                    <div class="card-footer d-flex gap-2">
-                      <a class="pill" href="<?= site_url('profile/worker/' . (int)$r->worker_id) ?>">
-                        <i class="mdi mdi-account"></i> Profile
-                      </a>
-
+                    <div class="wd-itemcard-foot">
+                      <a class="wd-pill" href="<?= site_url('profile/worker/' . (int)$r->worker_id) ?>"><i class="mdi mdi-account"></i> View Profile</a>
                     </div>
                   </div>
                 <?php endforeach; ?>
