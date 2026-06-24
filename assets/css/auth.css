@@ -13,7 +13,7 @@
     linear-gradient(rgba(37, 99, 235, .055) 1px, transparent 1px),
     linear-gradient(90deg, rgba(37, 99, 235, .055) 1px, transparent 1px);
   background-size: 42px 42px;
-  font-family: "Noto Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
 .auth-page *,
@@ -28,7 +28,7 @@
 .auth-page h4,
 .auth-page h5,
 .auth-page h6 {
-  font-family: "Figtree", "Noto Sans", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Karla", "Karla", ui-sans-serif, system-ui, sans-serif;
   letter-spacing: 0;
 }
 
@@ -100,21 +100,22 @@ body.jm-leave .auth-shell {
 .auth-wrap {
   width: 100%;
   min-width: 0;
-  max-width: 940px;
+  max-width: 900px;
   display: grid;
-  grid-template-columns: minmax(340px, 44%) 1fr;
+  grid-template-columns: 1fr 1fr;
   overflow: hidden;
   background: #fff;
-  border: 1px solid rgba(15, 23, 42, .06);
-  border-radius: 26px;
-  box-shadow: 0 22px 64px rgba(15, 23, 42, .16);
+  border: 1px solid rgba(15, 23, 42, .05);
+  border-radius: 16px;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, .10);
 }
 
 .auth-wrap--signup {
-  max-width: 1080px;
-  grid-template-columns: minmax(360px, 42%) 1fr;
+  max-width: 960px;
+  grid-template-columns: minmax(330px, 40%) 1fr;
 }
 
+/* theraph-style minimal ink panel + red glow */
 .auth-visual {
   position: relative;
   min-height: 560px;
@@ -122,24 +123,24 @@ body.jm-leave .auth-shell {
   flex-direction: column;
   gap: 22px;
   overflow: hidden;
-  padding: 30px;
+  padding: 3rem 2.5rem;
   color: #fff;
-  background:
-    linear-gradient(rgba(255, 255, 255, .12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, .12) 1px, transparent 1px),
-    linear-gradient(145deg, rgba(185, 28, 28, .96), rgba(37, 99, 235, .88));
-  background-size: 34px 34px, 34px 34px, auto;
+  background: linear-gradient(160deg, #202826 0%, #2f3d39 100%);
 }
 
 .auth-wrap--signup .auth-visual {
-  min-height: 690px;
+  min-height: 620px;
 }
 
 .auth-visual::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(15, 23, 42, .08), rgba(15, 23, 42, .38));
+  top: -40%;
+  right: -30%;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(193, 39, 45, .28) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -294,7 +295,7 @@ body.jm-leave .auth-shell {
 }
 
 .auth-brand-link strong {
-  font-family: "Figtree", "Noto Sans", sans-serif;
+  font-family: "Karla", "Karla", sans-serif;
   font-size: 19px;
   font-weight: 900;
   line-height: 1.1;
@@ -398,8 +399,8 @@ body.jm-leave .auth-shell {
   width: 100%;
   min-width: 0;
   height: 48px;
-  border: 1px solid #e2e8f0;
-  border-radius: 13px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
   padding: 0 15px;
   background: #f8fafc;
   color: #0f172a;
@@ -480,7 +481,7 @@ body.jm-leave .auth-shell {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border-radius: 13px;
+  border-radius: 10px;
   border: 1px solid transparent;
   padding: 12px 18px;
   font-size: 14px;

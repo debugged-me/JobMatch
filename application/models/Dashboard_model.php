@@ -88,6 +88,148 @@ class Dashboard_model extends CI_Model
             ->get()
             ->result_array();
     }
+    /**
+     * Hires per day for the last N days (for chart).
+     * Returns ['labels' => [...], 'values' => [...]]
+     */
+    public function hires_chart_data($days = 30)
+    {
+        $days = max(1, (int)$days);
+        $now  = new DateTime('now', new DateTimeZone('Asia/Manila'));
+        $end  = clone $now;
+        $start = (clone $now)->modify('-' . ($days - 1) . ' days');
+
+        $labels = [];
+        $values = [];
+        for ($i = 0; $i < $days; $i++) {
+            $d = (clone $start)->modify('+' . $i . ' days');
+            $labels[] = $d->format('M j');
+            $values[] = 0;
+        }
+
+        $startStr = $start->format('Y-m-d 00:00:00');
+        $endStr   = $end->format('Y-m-d 23:59:59');
+
+        $rows = [];
+        if ($this->db->table_exists('personnel_hired') && $this->db->field_exists('created_at', 'personnel_hired')) {
+            $rows = $this->db->select("DATE(created_at) AS d, COUNT(*) AS c", false)
+                ->from('personnel_hired')
+                ->where_in('status', ['hired', 'ended', 'onhold'])
+                ->where('created_at >=', $startStr)
+                ->where('created_at <=', $endStr)
+                ->group_by('d')
+                ->get()->result();
+        } elseif ($this->db->table_exists('transactions') && $this->db->field_exists('created_at', 'transactions')) {
+            $rows = $this->db->select("DATE(created_at) AS d, COUNT(DISTINCT workerID) AS c", false)
+                ->from('transactions')
+                ->where_in('status', ['accepted', 'active', 'completed'])
+                ->where('created_at >=', $startStr)
+                ->where('created_at <=', $endStr)
+                ->group_by('d')
+                ->get()->result();
+        }
+
+        if (!empty($rows)) {
+            $map = [];
+            foreach ($rows as $r) {
+                $map[date('Y-m-d', strtotime($r->d))] = (int)$r->c;
+            }
+            for ($i = 0; $i < $days; $i++) {
+                $d = (clone $start)->modify('+' . $i . ' days');
+                $key = $d->format('Y-m-d');
+                if (isset($map[$key])) {
+                    $values[$i] = $map[$key];
+                }
+            }
+        }
+
+        // If all zeros, spread some sample data so chart isn't empty
+        if (array_sum($values) === 0) {
+            $values = [];
+            for ($i = 0; $i < $days; $i++) {
+                $values[] = 0;
+            }
+        }
+
+        return ['labels' => $labels, 'values' => $values];
+    }
+
+    /**
+     * Pending user verifications (is_active = 0).
+     */
+    public function pending_users_list($limit = 5)
+    {
+        $limit = max(1, (int)$limit);
+        if (!$this->db->table_exists('users')) return [];
+
+        $this->db->from('users')
+            ->where_in('role', ['worker', 'client'])
+            ->where('is_active', 0);
+
+        if ($this->db->field_exists('created_at', 'users')) {
+            $this->db->order_by('created_at', 'DESC');
+        }
+
+        return $this->db->limit($limit)->get()->result();
+    }
+
+    /**
+     * Most recent registrations.
+     */
+    public function recent_registrations($limit = 5)
+    {
+        $limit = max(1, (int)$limit);
+        if (!$this->db->table_exists('users')) return [];
+
+        $select = 'id, email, role, is_active';
+        if ($this->db->field_exists('first_name', 'users')) $select .= ', first_name';
+        if ($this->db->field_exists('last_name', 'users'))  $select .= ', last_name';
+        if ($this->db->field_exists('created_at', 'users')) $select .= ', created_at';
+
+        $this->db->select($select, false)
+            ->from('users')
+            ->where_in('role', ['worker', 'client']);
+
+        if ($this->db->field_exists('created_at', 'users')) {
+            $this->db->order_by('created_at', 'DESC');
+        } else {
+            $this->db->order_by('id', 'DESC');
+        }
+
+        return $this->db->limit($limit)->get()->result();
+    }
+
+    /**
+     * Top skills by worker count.
+     */
+    public function top_skills($limit = 8)
+    {
+        $limit = max(1, (int)$limit);
+        if (!$this->db->table_exists('worker_skills') || !$this->db->table_exists('skills')) {
+            return [];
+        }
+
+        return $this->db->select('s.Title AS title, COUNT(ws.workerID) AS cnt', false)
+            ->from('worker_skills ws')
+            ->join('skills s', 's.skillID = CAST(ws.skillsID AS UNSIGNED)', 'inner')
+            ->where('ws.is_active', 1)
+            ->or_where('ws.is_active IS NULL', null, false)
+            ->group_by('s.skillID')
+            ->order_by('cnt', 'DESC')
+            ->limit($limit)
+            ->get()
+            ->result();
+    }
+
+    /**
+     * Count open complaints.
+     */
+    public function open_complaints_count()
+    {
+        if (!$this->db->table_exists('complaints')) return 0;
+        return (int) $this->db->where('status', 'open')->count_all_results('complaints');
+    }
+
     public function recent_activity_admin($limit = 8)
 {
     $limit = (int) $limit;

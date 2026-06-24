@@ -36,7 +36,7 @@ html {
 }
 
 body {
-  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   background: var(--wd-paper);
   color: var(--wd-ink);
 }
@@ -60,32 +60,23 @@ body {
 }
 
 /* ===================== HERO ===================== */
+/* theraph-style plain title-row (no gradient banner) */
 .wd-hero {
   position: relative;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 24px;
-  padding: 28px 32px;
-  margin-bottom: 20px;
-  border-radius: var(--wd-radius);
-  color: #fff;
-  background:
-    radial-gradient(1200px 400px at 100% -40%, rgba(255, 255, 255, .14), transparent 60%),
-    linear-gradient(135deg, var(--wd-accent-dark) 0%, var(--wd-accent) 55%, var(--wd-accent-light) 100%);
-  box-shadow: 0 18px 40px -22px rgba(155, 31, 36, .65);
-  overflow: hidden;
+  gap: 16px 24px;
+  padding: 4px 2px 0;
+  margin-bottom: 22px;
+  color: var(--wd-ink);
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .wd-hero::after {
-  content: "";
-  position: absolute;
-  right: -60px;
-  bottom: -90px;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .06);
+  display: none;
 }
 
 .wd-hero-id {
@@ -96,12 +87,12 @@ body {
 }
 
 .wd-hero-avatar {
-  width: 96px;
-  height: 96px;
-  border-radius: 22px;
+  width: 84px;
+  height: 84px;
+  border-radius: 20px;
   object-fit: cover;
-  border: 3px solid rgba(255, 255, 255, .55);
-  box-shadow: 0 12px 30px -14px rgba(0, 0, 0, .5);
+  border: 2px solid var(--wd-line);
+  box-shadow: var(--wd-shadow);
   flex-shrink: 0;
 }
 
@@ -110,10 +101,14 @@ body {
 }
 
 .wd-hero-greet {
-  font-size: 13px;
-  font-weight: 500;
-  opacity: .85;
-  letter-spacing: .02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--wd-accent);
+  letter-spacing: .08em;
+  text-transform: uppercase;
 }
 
 .wd-hero-name {
@@ -130,13 +125,13 @@ body {
 
 .wd-hero-org {
   font-size: 14px;
-  opacity: .95;
+  color: var(--wd-ink-2);
   margin-top: 2px;
 }
 
 .wd-hero-org small {
   display: block;
-  opacity: .8;
+  color: var(--wd-muted);
   font-size: 12.5px;
 }
 
@@ -145,7 +140,7 @@ body {
   flex-wrap: wrap;
   gap: 6px 16px;
   font-size: 12.5px;
-  opacity: .9;
+  color: var(--wd-muted);
   margin: 10px 0 14px;
 }
 
@@ -170,12 +165,15 @@ body {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  background: rgba(255, 255, 255, .2);
-  border: 1px solid rgba(255, 255, 255, .3);
+  color: var(--wd-green);
+  background: rgba(22, 163, 74, .12);
+  border: 1px solid rgba(22, 163, 74, .2);
 }
 
 .wd-verified.is-unverified {
-  background: rgba(0, 0, 0, .18);
+  color: var(--wd-muted);
+  background: var(--wd-soft);
+  border-color: var(--wd-line);
 }
 
 /* ===================== BUTTONS ===================== */
@@ -209,13 +207,8 @@ body {
   box-shadow: 0 10px 22px -10px rgba(193, 39, 45, .7);
 }
 
-.wd-hero .wd-btn-primary {
-  background: #fff;
-  color: var(--wd-accent);
-}
-
 .wd-hero .wd-btn-primary:hover {
-  color: var(--wd-accent-dark);
+  color: #fff;
 }
 
 .wd-btn-ghost {
@@ -229,15 +222,6 @@ body {
   color: var(--wd-ink);
 }
 
-.wd-hero .wd-btn-ghost {
-  border-color: rgba(255, 255, 255, .55);
-  color: #fff;
-}
-
-.wd-hero .wd-btn-ghost:hover {
-  background: rgba(255, 255, 255, .14);
-  color: #fff;
-}
 
 /* ===================== KPI CARDS ===================== */
 .wd-kpis {
@@ -626,7 +610,7 @@ body {
 
   .wd-hero {
     grid-template-columns: 1fr;
-    padding: 22px 18px;
+    padding: 2px 0 0;
   }
 
   .wd-hero-name {
@@ -897,3 +881,103 @@ body {
   margin-top: 18px;
 }
 .wd-pager .disabled { opacity: .45; pointer-events: none; }
+
+/* ===================== QUICK ACTIONS ===================== */
+.wd-quick-actions { margin-bottom: 20px; }
+
+.wd-qa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.wd-qa-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 12px;
+  border: 1px solid var(--wd-line);
+  border-radius: var(--wd-radius-sm);
+  background: #fff;
+  text-decoration: none;
+  text-align: center;
+  transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+}
+
+.wd-qa-item:hover {
+  border-color: rgba(193, 39, 45, .3);
+  box-shadow: var(--wd-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.wd-qa-ico {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  flex-shrink: 0;
+}
+
+.wd-qa-item span {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  line-height: 1.3;
+}
+
+/* ===================== TABLE WRAP ===================== */
+.wd-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wd-cell-email {
+  font-size: 12px;
+  color: var(--wd-muted);
+  word-break: break-all;
+}
+
+/* ===================== SKILL BARS ===================== */
+.wd-skill-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wd-skill-bar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.wd-skill-bar-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wd-ink);
+}
+
+.wd-skill-bar-cnt {
+  font-size: 11.5px;
+  color: var(--wd-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.wd-skill-bar-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--wd-soft);
+  overflow: hidden;
+}
+
+.wd-skill-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--wd-accent-light), var(--wd-accent));
+  transition: width .4s ease;
+}

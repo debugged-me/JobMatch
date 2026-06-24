@@ -10,9 +10,7 @@
   ?>
   <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
@@ -26,7 +24,7 @@
       --ink:#0f172a; --muted:#6b7280; --bg:#f6f7fb; --card:#fff;
       --shadow:0 10px 30px rgba(2,6,23,.10), 0 2px 8px rgba(2,6,23,.06);
     }
-    body{background:var(--bg);font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:var(--ink)}
+    body{background:var(--bg);font-family:"Karla",system-ui,-apple-system,"Segoe UI",Roboto,Arial;color:var(--ink)}
     .app{max-width:1120px;margin:0 auto;padding:0 16px}
 
     /* HERO */

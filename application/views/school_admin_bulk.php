@@ -6,8 +6,7 @@
   <?php $page_title = $page_title ?? 'Bulk Upload Workers'; ?>
   <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
@@ -17,7 +16,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root{--ink:#0f172a;--muted:#6b7280;--line:#e5e7eb;--primary:#2563eb;--hover:rgba(2,6,23,.03)}
-    body{font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#f8fafc;color:var(--ink)}
+    body{font-family:"Karla",system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#f8fafc;color:var(--ink)}
     .admin-header{position:sticky;top:0;z-index:40;background:#fff;border-bottom:1px solid var(--line)}
     .card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
     .btn{display:inline-flex;align-items:center;gap:.5rem;border-radius:12px;padding:.6rem 1rem;font-weight:700;border:1px solid transparent;transition:all .15s ease}

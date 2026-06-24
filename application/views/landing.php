@@ -7,7 +7,7 @@
     content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=overlays-content">
   <title>Public Employment Service Office — Davao Oriental</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css'); ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/icons-phosphor.css'); ?>">
   <?php $lpCssVer = is_file(FCPATH . 'assets/css/landing-peso.css') ? filemtime(FCPATH . 'assets/css/landing-peso.css') : time(); ?>

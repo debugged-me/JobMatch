@@ -107,13 +107,23 @@ class Dashboard extends CI_Controller
 
         $this->db->from('users')->where_in('role', ['worker','client'])->where('is_active', 0);
         $stats['pending_verifications'] = (int) $this->db->count_all_results();
+        $stats['open_complaints']       = (int) $this->dash->open_complaints_count();
 
-        $activity = $this->dash->recent_activity_admin(6); 
+        $activity         = $this->dash->recent_activity_admin(6);
+        $chart            = $this->dash->hires_chart_data(30);
+        $pending_users    = $this->dash->pending_users_list(5);
+        $recent_regs      = $this->dash->recent_registrations(5);
+        $top_skills       = $this->dash->top_skills(8);
 
         $data = [
-            'page_title' => 'Admin Dashboard',
-            'stats'      => $stats,
-            'activity'   => $activity,  
+            'page_title'    => 'Admin Dashboard',
+            'stats'         => $stats,
+            'activity'      => $activity,
+            'chart_labels'  => $chart['labels'],
+            'chart_values'  => $chart['values'],
+            'pending_users' => $pending_users,
+            'recent_regs'   => $recent_regs,
+            'top_skills'    => $top_skills,
         ];
 
         $this->load->view('dashboard_admin', $data);

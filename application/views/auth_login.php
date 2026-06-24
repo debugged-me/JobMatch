@@ -6,9 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="author" content="LEFT4CODE">
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
   <link rel="stylesheet" href="<?= base_url('dist/css/app.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/signup.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/auth.css?v=20260617') ?>">

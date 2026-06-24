@@ -21,7 +21,7 @@
     var labels = parseJson(ctx.dataset.labels, []);
     var values = parseJson(ctx.dataset.values, []);
 
-    var brandBlueRGB = '37,99,235';
+    var brandRedRGB = '193,39,45';
     new Chart(ctx.getContext('2d'), {
       type: 'line',
       data: {
@@ -32,11 +32,11 @@
           fill: true,
           tension: 0.35,
           borderWidth: 2,
-          borderColor: 'rgba(' + brandBlueRGB + ',1)',
+          borderColor: 'rgba(' + brandRedRGB + ',1)',
           backgroundColor: function (c) {
             var g = c.chart.ctx.createLinearGradient(0, 0, 0, 240);
-            g.addColorStop(0, 'rgba(' + brandBlueRGB + ',0.20)');
-            g.addColorStop(1, 'rgba(' + brandBlueRGB + ',0.05)');
+            g.addColorStop(0, 'rgba(' + brandRedRGB + ',0.20)');
+            g.addColorStop(1, 'rgba(' + brandRedRGB + ',0.05)');
             return g;
           }
         }]
