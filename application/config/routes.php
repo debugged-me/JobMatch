@@ -66,6 +66,8 @@ $route['messages/api_invite_action']     = 'messages/api_invite_action';
 
 $route['admin/skills']      = 'admin/skills';
 $route['admin/skills/save'] = 'admin/saveSkill';
+$route['admin/skills/update/(:num)'] = 'admin/updateSkill/$1';
+$route['admin/skills/delete/(:num)'] = 'admin/deleteSkill/$1';
 
 $route['admin/workers/upload']   = 'AdminWorkers/index';
 $route['admin/workers/preview']  = 'AdminWorkers/preview';
@@ -129,6 +131,7 @@ $route['tesda/workers/store']    = 'AdminWorkers/store';
 $route['dashboard/tesda'] = 'TesdaDashboard/index';
 $route['dashboard/tesda'] = 'dashboard/tesda';
 $route['admin/reports'] = 'AdminReports/index';
+$route['admin/reports/export_csv'] = 'AdminReports/export_csv';
 $route['admin/reports/client/(:num)'] = 'AdminReports/client/$1';
 // Admin CRUD
 $route['admin/hotlines']                 = 'AdminHotlines/index';

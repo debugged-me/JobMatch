@@ -67,6 +67,46 @@ class Admin extends CI_Controller
 
         redirect('admin/skills');
     }
+    public function updateSkill($id = null)
+    {
+        if (strtolower((string)$this->session->userdata('role')) !== 'admin') {
+            show_error('Access Denied', 403);
+            return;
+        }
+
+        if ($this->input->method() !== 'post') {
+            show_error('Method Not Allowed', 405);
+            return;
+        }
+
+        $id    = (int)$id;
+        $title = trim((string)$this->input->post('Title', TRUE));
+        $desc  = trim((string)$this->input->post('Description', TRUE));
+
+        if ($title === '') {
+            $this->session->set_flashdata('error', 'Skill Title is required.');
+            redirect('admin/skills');
+            return;
+        }
+
+        $row = $this->db->select('skillID')->get_where('skills', ['skillID' => $id])->row();
+        if (!$row) {
+            $this->session->set_flashdata('error', 'Skill not found.');
+            redirect('admin/skills');
+            return;
+        }
+
+        $ok = $this->db->where('skillID', $id)->update('skills', [
+            'Title'       => $title,
+            'Description' => $desc
+        ]);
+
+        $this->session->set_flashdata($ok ? 'success' : 'error',
+            $ok ? 'Skill updated successfully.' : 'Failed to update skill.');
+
+        redirect('admin/skills');
+    }
+
 public function deleteSkill($id = null)
 {
     if (strtolower((string)$this->session->userdata('role')) !== 'admin') {

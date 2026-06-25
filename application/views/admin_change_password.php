@@ -116,7 +116,7 @@
 
     /* Inputs */
     .form-control {
-      border: 1px solid #0b1220;
+      border: 1px solid #e5e7eb;
       border-radius: 12px;
       padding: .85rem .95rem;
       font-weight: 500;
@@ -126,7 +126,7 @@
     .form-control:focus {
       outline: 0;
       border-color: var(--blue-3);
-      box-shadow: 0 0 0 3px rgba(43, 77, 165, .18)
+      box-shadow: 0 0 0 3px rgba(193, 39, 45, .18)
     }
 
     .muted {
@@ -189,8 +189,8 @@
     }
 
     .btn-blue:hover {
-      background: #162f73;
-      border-color: #162f73
+      background: var(--brand-blue-dark, #a61f2b);
+      border-color: var(--brand-blue-dark, #a61f2b)
     }
 
     .btn-silver {
@@ -217,6 +217,79 @@
       color: #475569;
       cursor: pointer;
     }
+
+    .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .82rem;
+      color: #64748b;
+      margin-bottom: 8px
+    }
+
+    .breadcrumb-bar a {
+      color: #64748b;
+      text-decoration: none;
+      font-weight: 600
+    }
+
+    .breadcrumb-bar a:hover {
+      color: #c1272d
+    }
+
+    .breadcrumb-bar .sep {
+      color: #cbd5e1
+    }
+
+    .breadcrumb-bar .current {
+      color: #334155;
+      font-weight: 700
+    }
+
+    .pw-strength {
+      margin-top: 8px;
+    }
+
+    .pw-strength-bar {
+      height: 6px;
+      border-radius: 9999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      transition: background .3s ease;
+    }
+
+    .pw-strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 9999px;
+      transition: width .3s ease, background .3s ease;
+    }
+
+    .pw-strength-label {
+      font-size: .78rem;
+      font-weight: 700;
+      margin-top: 4px;
+      color: #64748b;
+    }
+
+    .pw-match {
+      font-size: .82rem;
+      font-weight: 600;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .pw-match.show {
+      display: block;
+    }
+
+    .pw-match.ok {
+      color: #16a34a;
+    }
+
+    .pw-match.bad {
+      color: #ef4444;
+    }
   </style>
 </head>
 
@@ -228,6 +301,12 @@
       <div class="main-panel">
         <div class="content-wrapper pb-0">
           <div class="app">
+
+            <div class="breadcrumb-bar">
+              <a href="<?= site_url('dashboard/admin') ?>"><i class="mdi mdi-home-outline"></i> Dashboard</a>
+              <span class="sep">/</span>
+              <span class="current">Change Password</span>
+            </div>
 
             <!-- HERO -->
             <div class="hero mb-3">
@@ -288,6 +367,12 @@
                     <i class="mdi mdi-eye-outline"></i>
                   </button>
                 </div>
+                <div class="pw-strength">
+                  <div class="pw-strength-bar">
+                    <div class="pw-strength-fill" id="pw-strength-fill"></div>
+                  </div>
+                  <div class="pw-strength-label" id="pw-strength-label">Enter a password</div>
+                </div>
                 <div class="chips">
                   <span class="chip"><i class="mdi mdi-shield-key-outline"></i> Min. 8 chars</span>
                   <span class="chip"><i class="mdi mdi-alphabetical-variant"></i> Mix of letters & numbers</span>
@@ -303,6 +388,7 @@
                     <i class="mdi mdi-eye-outline"></i>
                   </button>
                 </div>
+                <div class="pw-match" id="pw-match"></div>
               </div>
 
               <div class="d-flex justify-content-end gap-2">
@@ -324,6 +410,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="<?= base_url('assets/vendors/js/vendor.bundle.base.js') ?>"></script>
   <script src="<?= base_url('assets/js/off-canvas.js') ?>"></script>
   <script src="<?= base_url('assets/js/hoverable-collapse.js') ?>"></script>
@@ -348,6 +435,80 @@
         this.querySelector('i').classList.toggle('mdi-eye-off-outline');
       });
     });
+
+    // Password strength meter
+    var newPw = document.getElementById('new_password');
+    var strengthFill = document.getElementById('pw-strength-fill');
+    var strengthLabel = document.getElementById('pw-strength-label');
+    var confirmPw = document.getElementById('confirm_password');
+    var matchEl = document.getElementById('pw-match');
+
+    function scorePassword(pw) {
+      var score = 0;
+      if (!pw) return 0;
+      if (pw.length >= 8) score += 1;
+      if (pw.length >= 12) score += 1;
+      if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score += 1;
+      if (/\d/.test(pw)) score += 1;
+      if (/[^A-Za-z0-9]/.test(pw)) score += 1;
+      return Math.min(score, 5);
+    }
+
+    var strengthLevels = [
+      { width: '0%',   color: '#e5e7eb', label: 'Enter a password' },
+      { width: '20%',  color: '#ef4444', label: 'Very weak' },
+      { width: '40%',  color: '#f59e0b', label: 'Weak' },
+      { width: '60%',  color: '#eab308', label: 'Fair' },
+      { width: '80%',  color: '#22c55e', label: 'Good' },
+      { width: '100%', color: '#16a34a', label: 'Strong' }
+    ];
+
+    function updateStrength() {
+      var score = scorePassword(newPw.value);
+      var info = strengthLevels[score];
+      strengthFill.style.width = info.width;
+      strengthFill.style.background = info.color;
+      strengthLabel.textContent = info.label;
+      strengthLabel.style.color = score === 0 ? '#64748b' : info.color;
+      updateMatch();
+    }
+
+    function updateMatch() {
+      var v1 = newPw.value;
+      var v2 = confirmPw.value;
+      if (!v2) {
+        matchEl.classList.remove('show', 'ok', 'bad');
+        matchEl.textContent = '';
+        return;
+      }
+      matchEl.classList.add('show');
+      if (v1 === v2) {
+        matchEl.classList.add('ok');
+        matchEl.classList.remove('bad');
+        matchEl.innerHTML = '<i class="mdi mdi-check-circle-outline"></i> Passwords match';
+      } else {
+        matchEl.classList.add('bad');
+        matchEl.classList.remove('ok');
+        matchEl.innerHTML = '<i class="mdi mdi-alert-circle-outline"></i> Passwords do not match';
+      }
+    }
+
+    if (newPw) newPw.addEventListener('input', updateStrength);
+    if (confirmPw) confirmPw.addEventListener('input', updateMatch);
+
+    // Pre-logout confirmation after successful password change
+    var successAlert = document.querySelector('.alert-success');
+    if (successAlert && successAlert.textContent.indexOf('password') !== -1) {
+      setTimeout(function() {
+        Swal.fire({
+          icon: 'success',
+          title: 'Password Changed',
+          text: 'You will be logged out shortly. Please log in with your new password.',
+          timer: 3000,
+          showConfirmButton: false
+        });
+      }, 500);
+    }
   </script>
 </body>
 

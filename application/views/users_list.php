@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <meta name="csrf-token-name" content="<?= $this->security->get_csrf_token_name(); ?>">
   <meta name="csrf-token-hash" content="<?= $this->security->get_csrf_hash(); ?>">
 
@@ -652,8 +653,19 @@
         <div class="content-wrapper pb-0">
           <div class="px-4 md:px-8 max-w-7xl mx-auto">
 
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
+              <a href="<?= site_url('dashboard/admin') ?>" class="font-semibold text-gray-500 hover:text-red-600 no-underline"><i class="mdi mdi-home-outline"></i> Dashboard</a>
+              <span class="text-gray-300">/</span>
+              <span class="font-bold text-gray-700">Manage Users</span>
+            </div>
+
             <div class="flex items-center justify-between mb-3 gap-2">
-              <h1 class="text-xl md:text-2xl font-bold"><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></h1>
+              <div class="flex items-center gap-3">
+                <h1 class="text-xl md:text-2xl font-bold"><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></h1>
+                <?php if (isset($total_users)): ?>
+                  <span class="pill pill-role"><i class="mdi mdi-account-group-outline"></i> <?= number_format((int)$total_users) ?> total</span>
+                <?php endif; ?>
+              </div>
               <div class="flex items-center gap-2">
                 <button type="button" id="btn-open-create-admin" class="btn-silver" style="display:inline-flex;align-items:center;gap:8px;">
                   <i class="mdi mdi-shield-account-outline"></i>
@@ -701,6 +713,11 @@
                   <button type="submit" class="btn-compact w-full">
                     <i class="mdi mdi-magnify"></i> Search
                   </button>
+                  <?php if (!empty($q) || !empty($role) || !empty($status)): ?>
+                    <a class="btn-compact" href="<?= site_url('users') ?>" style="background:#fff;border:1px solid #e5e7eb;color:#64748b">
+                      <i class="mdi mdi-filter-remove-outline"></i> Clear
+                    </a>
+                  <?php endif; ?>
                 </div>
               </form>
             </div>
@@ -710,9 +727,15 @@
                 <table class="users">
                   <thead>
                     <tr>
-                      <th style="min-width:220px">User</th>
-                      <th>Email</th>
-                      <th>Role</th>
+                      <th style="min-width:220px"><?php $sort = $sort ?? 'created_at'; $dir = $dir ?? 'desc'; $params = (!empty($q) ? '&q=' . urlencode($q) : '') . (!empty($role) ? '&role=' . urlencode($role) : '') . (!empty($status) ? '&status=' . urlencode($status) : ''); ?>
+                        <a href="<?= site_url('users') ?>?sort=first_name&dir=<?= $sort === 'first_name' && $dir === 'asc' ? 'desc' : 'asc' ?><?= $params ?>" style="text-decoration:none;color:inherit">User <?php if ($sort === 'first_name'): ?><i class="mdi mdi-arrow-<?= $dir === 'asc' ? 'up' : 'down' ?>"></i><?php endif; ?></a>
+                      </th>
+                      <th>
+                        <a href="<?= site_url('users') ?>?sort=email&dir=<?= $sort === 'email' && $dir === 'asc' ? 'desc' : 'asc' ?><?= $params ?>" style="text-decoration:none;color:inherit">Email <?php if ($sort === 'email'): ?><i class="mdi mdi-arrow-<?= $dir === 'asc' ? 'up' : 'down' ?>"></i><?php endif; ?></a>
+                      </th>
+                      <th>
+                        <a href="<?= site_url('users') ?>?sort=role&dir=<?= $sort === 'role' && $dir === 'asc' ? 'desc' : 'asc' ?><?= $params ?>" style="text-decoration:none;color:inherit">Role <?php if ($sort === 'role'): ?><i class="mdi mdi-arrow-<?= $dir === 'asc' ? 'up' : 'down' ?>"></i><?php endif; ?></a>
+                      </th>
                       <th>Status</th>
                       <th class="col-actions" style="text-align:center">Action</th>
                     </tr>
@@ -840,12 +863,80 @@
 
                     <?php if (empty($users)): ?>
                       <tr>
-                        <td colspan="5" class="text-center text-gray-500 py-6">No users found.</td>
+                        <td colspan="5" class="text-center py-10">
+                          <div style="font-size:48px;color:#cbd5e1;margin-bottom:8px"><i class="mdi mdi-account-search-outline"></i></div>
+                          <h5 style="font-weight:700;color:#475569;margin-bottom:4px">No users found</h5>
+                          <p style="color:#64748b;font-size:.9rem;margin-bottom:12px">Try adjusting your search or filters.</p>
+                          <a href="<?= site_url('users') ?>" class="btn-silver" style="display:inline-flex;align-items:center;gap:6px">
+                            <i class="mdi mdi-filter-remove-outline"></i> Clear filters
+                          </a>
+                        </td>
                       </tr>
                     <?php endif; ?>
                   </tbody>
                 </table>
               </div>
+
+              <?php if (isset($pagination) && $pagination['total_pages'] > 1): ?>
+                <div class="flex items-center justify-between flex-wrap gap-3 mt-4 pt-3" style="border-top:1px solid #e5e7eb">
+                  <div style="font-size:.85rem;color:#64748b;font-weight:600">
+                    Showing <?= $pagination['from'] ?>–<?= $pagination['to'] ?> of <?= number_format($pagination['total']) ?> users
+                  </div>
+                  <div class="flex gap-1">
+                    <?php
+                      $cur   = (int)$pagination['page'];
+                      $last  = (int)$pagination['total_pages'];
+
+                      // Build URL for a given page, preserving active filters.
+                      $mkUrl = function ($p) use ($q, $role, $status) {
+                        $url = site_url('users') . '?page=' . $p;
+                        if (!empty($q))      $url .= '&q=' . urlencode($q);
+                        if (!empty($role))   $url .= '&role=' . urlencode($role);
+                        if (!empty($status)) $url .= '&status=' . urlencode($status);
+                        return $url;
+                      };
+
+                      // Windowed list of pages: 1 … (cur-1, cur, cur+1) … last
+                      $window = 1;
+                      $pages  = [];
+                      for ($p = 1; $p <= $last; $p++) {
+                        if ($p === 1 || $p === $last || ($p >= $cur - $window && $p <= $cur + $window)) {
+                          $pages[] = $p;
+                        }
+                      }
+
+                      $btnBase = 'display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;border-radius:8px;font-weight:700;font-size:.85rem;padding:0 8px';
+                      $linkSt  = $btnBase . ';border:1px solid #e5e7eb;background:#fff;color:#334155;text-decoration:none';
+                      $curSt   = $btnBase . ';background:#c1272d;color:#fff';
+                      $gapSt   = $btnBase . ';color:#94a3b8';
+                      $disSt   = $linkSt . ';opacity:.45;pointer-events:none';
+                    ?>
+
+                    <?php if ($cur > 1): ?>
+                      <a href="<?= $mkUrl($cur - 1) ?>" style="<?= $linkSt ?>" aria-label="Previous"><i class="mdi mdi-chevron-left"></i></a>
+                    <?php else: ?>
+                      <span style="<?= $disSt ?>"><i class="mdi mdi-chevron-left"></i></span>
+                    <?php endif; ?>
+
+                    <?php $prev = 0; foreach ($pages as $p): ?>
+                      <?php if ($prev && $p - $prev > 1): ?>
+                        <span style="<?= $gapSt ?>">…</span>
+                      <?php endif; ?>
+                      <?php if ($p === $cur): ?>
+                        <span style="<?= $curSt ?>"><?= $p ?></span>
+                      <?php else: ?>
+                        <a href="<?= $mkUrl($p) ?>" style="<?= $linkSt ?>"><?= $p ?></a>
+                      <?php endif; ?>
+                      <?php $prev = $p; endforeach; ?>
+
+                    <?php if ($cur < $last): ?>
+                      <a href="<?= $mkUrl($cur + 1) ?>" style="<?= $linkSt ?>" aria-label="Next"><i class="mdi mdi-chevron-right"></i></a>
+                    <?php else: ?>
+                      <span style="<?= $disSt ?>"><i class="mdi mdi-chevron-right"></i></span>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              <?php endif; ?>
             </div>
 
             <div class="my-6 divider"></div>
@@ -1052,6 +1143,15 @@
         btn.innerHTML = '<i class="mdi mdi-account-cancel-outline"></i>';
       }
 
+      // '/' keyboard shortcut to focus search
+      document.addEventListener('keydown', function(e) {
+        if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT' && document.activeElement.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          const searchInput = document.querySelector('input[name="q"]');
+          if (searchInput) searchInput.focus();
+        }
+      });
+
       // Create Admin modal wiring
       const modal = document.getElementById('create-admin-modal');
       const openBtn = document.getElementById('btn-open-create-admin');
@@ -1092,15 +1192,15 @@
         const pw2 = form.confirm.value;
 
         if (!fn || !ln || !em || !pw || !pw2 || !role) {
-          alert('Please complete the form.');
+          Swal.fire({ title: 'Incomplete form', text: 'Please complete the form.', icon: 'warning', confirmButtonColor: '#c1272d' });
           return;
         }
         if (pw !== pw2) {
-          alert('Passwords do not match.');
+          Swal.fire({ title: 'Mismatch', text: 'Passwords do not match.', icon: 'error', confirmButtonColor: '#c1272d' });
           return;
         }
         if (pw.length < 6) {
-          alert('Password must be at least 6 characters.');
+          Swal.fire({ title: 'Too short', text: 'Password must be at least 6 characters.', icon: 'warning', confirmButtonColor: '#c1272d' });
           return;
         }
 
@@ -1116,10 +1216,10 @@
             password: pw,
             confirm: pw2
           });
-          alert(res.msg || 'Admin account created.');
-          location.reload();
+          Swal.fire({ icon: 'success', title: 'Created', text: res.msg || 'Admin account created.', confirmButtonColor: '#c1272d', timer: 2000 });
+          setTimeout(function() { location.reload(); }, 1500);
         } catch (err) {
-          alert(err.message || 'Failed to create admin.');
+          Swal.fire({ icon: 'error', title: 'Failed', text: err.message || 'Failed to create admin.', confirmButtonColor: '#c1272d' });
         } finally {
           hideBusy();
           submit && (submit.disabled = false);
@@ -1139,20 +1239,24 @@
         if (deBtn) {
           const tr = deBtn.closest('tr');
           const id = parseInt(tr.getAttribute('data-id'), 10);
-          if (!confirm('Deactivate this user?')) return;
-          deBtn.disabled = true;
-          try {
-            await post(URL_TOGGLE, {
-              id,
-              active: '0'
-            });
-            setStatusPillTo(tr, 'inactive');
-            toActivateButton(deBtn);
-          } catch (e) {
-            alert(e.message || 'Failed to deactivate');
-          } finally {
-            deBtn.disabled = false;
-          }
+          Swal.fire({
+            title: 'Deactivate user?',
+            text: 'This user will lose access immediately.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, deactivate'
+          }).then(function(result) {
+            if (!result.isConfirmed) return;
+            deBtn.disabled = true;
+            post(URL_TOGGLE, { id, active: '0' }).then(function() {
+              setStatusPillTo(tr, 'inactive');
+              toActivateButton(deBtn);
+            }).catch(function(e) {
+              Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Failed to deactivate', confirmButtonColor: '#c1272d' });
+            }).finally(function() { deBtn.disabled = false; });
+          });
           return;
         }
 
@@ -1160,20 +1264,24 @@
         if (actBtn) {
           const tr = actBtn.closest('tr');
           const id = parseInt(tr.getAttribute('data-id'), 10);
-          if (!confirm('Activate this user?')) return;
-          actBtn.disabled = true;
-          try {
-            await post(URL_TOGGLE, {
-              id,
-              active: '1'
-            });
-            setStatusPillTo(tr, 'active');
-            toDeactivateButton(actBtn);
-          } catch (e) {
-            alert(e.message || 'Failed to activate');
-          } finally {
-            actBtn.disabled = false;
-          }
+          Swal.fire({
+            title: 'Activate user?',
+            text: 'This user will regain access.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#16a34a',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, activate'
+          }).then(function(result) {
+            if (!result.isConfirmed) return;
+            actBtn.disabled = true;
+            post(URL_TOGGLE, { id, active: '1' }).then(function() {
+              setStatusPillTo(tr, 'active');
+              toDeactivateButton(actBtn);
+            }).catch(function(e) {
+              Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Failed to activate', confirmButtonColor: '#c1272d' });
+            }).finally(function() { actBtn.disabled = false; });
+          });
           return;
         }
 
@@ -1181,27 +1289,32 @@
         if (approveBtn) {
           const tr = approveBtn.closest('tr');
           const id = parseInt(tr.getAttribute('data-id'), 10);
-          if (!confirm('Approve this user manually?')) return;
-          approveBtn.disabled = true;
-          try {
-            await post(URL_APPROVE, {
-              id
-            });
-            setStatusPillTo(tr, 'active');
-            tr.querySelectorAll('.btn-approve-js, .btn-resend-js').forEach(b => b.remove());
-            const bar = tr.querySelector('.actbar');
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'icon-btn bad deactivate-only';
-            btn.dataset.id = String(id);
-            btn.setAttribute('data-tip', 'Deactivate');
-            btn.innerHTML = '<i class="mdi mdi-account-cancel-outline"></i>';
-            bar.appendChild(btn);
-          } catch (e) {
-            alert(e.message || 'Approve failed');
-          } finally {
-            approveBtn.disabled = false;
-          }
+          Swal.fire({
+            title: 'Approve user?',
+            text: 'This will manually approve the user account.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#16a34a',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, approve'
+          }).then(function(result) {
+            if (!result.isConfirmed) return;
+            approveBtn.disabled = true;
+            post(URL_APPROVE, { id }).then(function() {
+              setStatusPillTo(tr, 'active');
+              tr.querySelectorAll('.btn-approve-js, .btn-resend-js').forEach(function(b) { b.remove(); });
+              var bar = tr.querySelector('.actbar');
+              var btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'icon-btn bad deactivate-only';
+              btn.dataset.id = String(id);
+              btn.setAttribute('data-tip', 'Deactivate');
+              btn.innerHTML = '<i class="mdi mdi-account-cancel-outline"></i>';
+              bar.appendChild(btn);
+            }).catch(function(e) {
+              Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Approve failed', confirmButtonColor: '#c1272d' });
+            }).finally(function() { approveBtn.disabled = false; });
+          });
           return;
         }
 
@@ -1210,24 +1323,31 @@
           const tr = resendBtn.closest('tr');
           const id = parseInt(tr.getAttribute('data-id'), 10);
           resendBtn.disabled = true;
-          try {
-            const res = await post(URL_RESEND, {
-              id
-            });
+          post(URL_RESEND, { id }).then(function(res) {
             if (res.items && res.items.link) {
-              if (!confirm((res.msg || 'Done') + '. Open link now?')) {
-                prompt('Copy activation link:', res.items.link);
-              } else {
-                window.open(res.items.link, '_blank');
-              }
+              Swal.fire({
+                icon: 'success',
+                title: 'Activation Link',
+                text: res.msg || 'Done',
+                showCancelButton: true,
+                confirmButtonText: 'Open link',
+                cancelButtonText: 'Copy link',
+                confirmButtonColor: '#c1272d'
+              }).then(function(r) {
+                if (r.isConfirmed) {
+                  window.open(res.items.link, '_blank');
+                } else if (r.dismiss === Swal.DismissReason.cancel) {
+                  navigator.clipboard.writeText(res.items.link).then(function() {
+                    Swal.fire({ icon: 'success', title: 'Copied', text: 'Link copied to clipboard', timer: 1500, showConfirmButton: false });
+                  });
+                }
+              });
             } else {
-              alert(res.msg || 'Activation email sent');
+              Swal.fire({ icon: 'success', title: 'Sent', text: res.msg || 'Activation email sent', timer: 2000, showConfirmButton: false });
             }
-          } catch (e) {
-            alert(e.message || 'Send failed');
-          } finally {
-            resendBtn.disabled = false;
-          }
+          }).catch(function(e) {
+            Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Send failed', confirmButtonColor: '#c1272d' });
+          }).finally(function() { resendBtn.disabled = false; });
           return;
         }
 
@@ -1238,23 +1358,30 @@
           const id = parseInt(tr.getAttribute('data-id'), 10);
           const name = delBtn.getAttribute('data-name') || ('User #' + id);
 
-          if (!confirm(`Permanently delete ${name}? This cannot be undone.`)) return;
-          const extra = prompt('Type DELETE to confirm permanent deletion:');
-          if (extra !== 'DELETE') return;
-
-          delBtn.disabled = true;
-          try {
-            const res = await post(URL_DELETE, {
-              id
-            });
-            alert(res.msg || 'User deleted permanently.');
-            tr.style.opacity = 0.25;
-            setTimeout(() => tr.remove(), 180);
-          } catch (e) {
-            alert(e.message || 'Delete failed');
-          } finally {
-            delBtn.disabled = false;
-          }
+          Swal.fire({
+            title: 'Permanently delete ' + name + '?',
+            text: 'This cannot be undone. All related records will be removed.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, delete',
+            input: 'text',
+            inputPlaceholder: 'Type DELETE to confirm',
+            inputValidator: function(value) {
+              if (value !== 'DELETE') return 'You must type DELETE to confirm';
+            }
+          }).then(function(result) {
+            if (!result.isConfirmed) return;
+            delBtn.disabled = true;
+            post(URL_DELETE, { id }).then(function(res) {
+              Swal.fire({ icon: 'success', title: 'Deleted', text: res.msg || 'User deleted permanently.', timer: 1800, showConfirmButton: false });
+              tr.style.opacity = 0.25;
+              setTimeout(function() { tr.remove(); }, 180);
+            }).catch(function(e) {
+              Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Delete failed', confirmButtonColor: '#c1272d' });
+            }).finally(function() { delBtn.disabled = false; });
+          });
           return;
         }
       });

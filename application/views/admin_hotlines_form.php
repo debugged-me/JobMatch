@@ -19,6 +19,33 @@
     .panel{background:#fff;border:1px solid var(--silver-300);border-radius:12px;box-shadow:var(--shadow-1);padding:12px}
     .panel-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
     .panel-head h6{margin:0;font-size:13px;font-weight:800;color:var(--blue-900)}
+    .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .82rem;
+      color: #64748b;
+      margin-bottom: 8px
+    }
+
+    .breadcrumb-bar a {
+      color: #64748b;
+      text-decoration: none;
+      font-weight: 600
+    }
+
+    .breadcrumb-bar a:hover {
+      color: var(--blue-900)
+    }
+
+    .breadcrumb-bar .sep {
+      color: #cbd5e1
+    }
+
+    .breadcrumb-bar .current {
+      color: #334155;
+      font-weight: 700
+    }
   </style>
 </head>
 <body>
@@ -31,6 +58,14 @@
       <div class="content-wrapper pb-0">
         <div class="app">
 
+          <div class="breadcrumb-bar">
+            <a href="<?= site_url('dashboard/admin') ?>"><i class="mdi mdi-home-outline"></i> Dashboard</a>
+            <span class="sep">/</span>
+            <a href="<?= site_url('admin/hotlines') ?>">Hotlines</a>
+            <span class="sep">/</span>
+            <span class="current"><?= isset($id) ? 'Edit' : 'Add' ?></span>
+          </div>
+
           <div class="eyebrow"><?= htmlspecialchars($page_title ?? 'Hotline', ENT_QUOTES) ?></div>
 
           <?php if ($this->session->flashdata('error')): ?>
@@ -41,6 +76,7 @@
             <div class="panel-head"><i class="mdi mdi-phone-in-talk-outline" style="color:#a7afba"></i><h6>Details</h6></div>
 
             <form method="post">
+              <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
               <div class="row g-3">
                 <div class="col-md-6">
                   <label class="form-label">Title <span class="text-danger">*</span></label>
@@ -66,7 +102,12 @@
                   <label class="form-label">Sort Order</label>
                   <input type="number" name="sort_order" class="form-control" value="<?= (int)($form->sort_order ?? 0) ?>">
                 </div>
-              <div class="col-md-12">
+                <div class="col-md-12">
+                  <label class="form-label">Notes</label>
+                  <textarea name="notes" class="form-control" rows="3" placeholder="Internal notes (optional)"><?= htmlspecialchars($form->notes ?? '', ENT_QUOTES) ?></textarea>
+                </div>
+
+                <div class="col-md-12">
   <div class="form-check m-0">
     <input
       class="form-check-input ms-0 me-2"  

@@ -25,13 +25,14 @@ $page_title = 'Complaint #' . (int)$item->id; ?>
       --surface-2: #fbfcff;
       --radius: 14px;
       --shadow: 0 8px 22px rgba(2, 6, 23, .08);
-      --brand: #2563eb;
-      --brand-600: #1d4ed8;
+      --brand: #c1272d;
+      --brand-600: #9e1b21;
     }
 
     body {
       font-family: "Karla", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
       color: var(--ink);
+      background: linear-gradient(180deg, #f6f8fc, #eef2f7 60%, #e9edf3 100%);
     }
 
     .cardx {
@@ -138,6 +139,101 @@ $page_title = 'Complaint #' . (int)$item->id; ?>
       padding: .55rem 1rem;
       font-weight: 700;
       text-decoration: none;
+    }
+
+    .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .82rem;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .breadcrumb-bar a {
+      color: #64748b;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .breadcrumb-bar a:hover {
+      color: var(--brand);
+    }
+
+    .breadcrumb-bar .sep {
+      color: #cbd5e1;
+    }
+
+    .breadcrumb-bar .current {
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .page-hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-600) 100%);
+      border-radius: 18px;
+      padding: 22px 24px;
+      color: #fff;
+      box-shadow: 0 14px 30px rgba(193, 39, 45, .26);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .page-hero::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 255, 255, .16), transparent 70%);
+      pointer-events: none;
+    }
+
+    .page-hero .hero-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-hero .hero-ic {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .page-hero h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.2px;
+    }
+
+    .page-hero p {
+      margin: 2px 0 0;
+      font-size: 13px;
+      opacity: .9;
+    }
+
+    .panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(2, 6, 23, .08);
+      padding: 14px;
     }
 
     .grid-wrap {
@@ -286,21 +382,32 @@ $page_title = 'Complaint #' . (int)$item->id; ?>
         <div class="content-wrapper pb-0">
           <div class="app">
 
-            <div class="complaint-head">
-              <a href="<?= site_url('admin/complaints') ?>" class="btn-lite"><i class="mdi mdi-arrow-left"></i> Back to list</a>
-              <h4 style="margin:0"><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></h4>
-              <div style="margin-left:auto">
-                <?php
-                $status = (string)($item->status ?? 'open');
-                $pill = [
-                  'open'         => ['cls' => 'pill--open',     'label' => 'Open'],
-                  'under_review' => ['cls' => 'pill--under',    'label' => 'Under review'],
-                  'resolved'     => ['cls' => 'pill--resolved', 'label' => 'Resolved'],
-                  'dismissed'    => ['cls' => 'pill--dismissed', 'label' => 'Dismissed'],
-                ][$status] ?? ['cls' => 'pill--open', 'label' => 'Open'];
-                ?>
-                <span class="pill <?= $pill['cls'] ?>"><span class="dot"></span><?= $pill['label'] ?></span>
+            <div class="breadcrumb-bar">
+              <a href="<?= site_url('dashboard/admin') ?>"><i class="mdi mdi-home-outline"></i> Dashboard</a>
+              <span class="sep">/</span>
+              <a href="<?= site_url('admin/complaints') ?>">Complaints</a>
+              <span class="sep">/</span>
+              <span class="current">#<?= (int)$item->id ?></span>
+            </div>
+
+            <?php
+            $status = (string)($item->status ?? 'open');
+            $pill = [
+              'open'         => ['cls' => 'pill--open',     'label' => 'Open'],
+              'under_review' => ['cls' => 'pill--under',    'label' => 'Under review'],
+              'resolved'     => ['cls' => 'pill--resolved', 'label' => 'Resolved'],
+              'dismissed'    => ['cls' => 'pill--dismissed', 'label' => 'Dismissed'],
+            ][$status] ?? ['cls' => 'pill--open', 'label' => 'Open'];
+            ?>
+            <div class="page-hero">
+              <div class="hero-left">
+                <div class="hero-ic"><i class="mdi mdi-shield-alert-outline"></i></div>
+                <div>
+                  <h1><?= htmlspecialchars($item->title ?? 'Untitled', ENT_QUOTES, 'UTF-8') ?></h1>
+                  <p>Complaint #<?= (int)$item->id ?> · <span class="pill <?= $pill['cls'] ?>"><span class="dot"></span><?= $pill['label'] ?></span></p>
+                </div>
               </div>
+              <a href="<?= site_url('admin/complaints') ?>" class="btn-lite" style="position:relative;z-index:1"><i class="mdi mdi-arrow-left"></i> Back to list</a>
             </div>
 
             <?php if ($this->session->flashdata('success')): ?>

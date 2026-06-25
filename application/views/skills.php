@@ -106,6 +106,81 @@ $count = is_array($skills) ? count($skills) : 0;
       background: #fee2e2
     }
 
+    .btn-edit-soft {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      font-size: .85rem;
+      padding: .25rem .6rem
+    }
+
+    .btn-edit-soft:hover {
+      background: #dbeafe
+    }
+
+    .skill-desc {
+      font-size: .8rem;
+      color: #64748b;
+      font-weight: 400;
+      margin-top: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 400px;
+    }
+
+    .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .82rem;
+      color: #64748b;
+      margin-bottom: 8px
+    }
+
+    .breadcrumb-bar a {
+      color: #64748b;
+      text-decoration: none;
+      font-weight: 600
+    }
+
+    .breadcrumb-bar a:hover {
+      color: var(--blue-900)
+    }
+
+    .breadcrumb-bar .sep {
+      color: #cbd5e1
+    }
+
+    .breadcrumb-bar .current {
+      color: #334155;
+      font-weight: 700
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b
+    }
+
+    .empty-state .empty-icon {
+      font-size: 48px;
+      color: #cbd5e1;
+      margin-bottom: 12px
+    }
+
+    .empty-state h5 {
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px
+    }
+
+    .empty-state p {
+      font-size: .9rem;
+      margin-bottom: 16px
+    }
+
     /* Search box */
     .toolbar .input-group {
       border-radius: 12px;
@@ -137,14 +212,14 @@ $count = is_array($skills) ? count($skills) : 0;
 
     /* Modal polish */
     .modal .form-control {
-      border: 2px solid var(--blue-700) !important;
+      border: 1px solid var(--silver-200) !important;
       border-radius: 10px;
       box-shadow: none !important;
     }
 
     .modal .form-control:focus {
-      border-color: #2980b9 !important;
-      box-shadow: 0 0 0 .25rem rgba(41, 128, 185, .30) !important;
+      border-color: var(--blue-700) !important;
+      box-shadow: 0 0 0 .25rem rgba(193, 39, 45, .15) !important;
       outline: 0;
     }
   </style>
@@ -159,6 +234,12 @@ $count = is_array($skills) ? count($skills) : 0;
       <div class="main-panel">
         <div class="content-wrapper pb-0">
           <div class="app">
+
+            <div class="breadcrumb-bar">
+              <a href="<?= site_url('dashboard/admin') ?>"><i class="mdi mdi-home-outline"></i> Dashboard</a>
+              <span class="sep">/</span>
+              <span class="current">Skills</span>
+            </div>
 
             <!-- Header -->
             <div class="d-flex align-items-center justify-content-between mb-3">
@@ -198,14 +279,22 @@ $count = is_array($skills) ? count($skills) : 0;
                   <?php foreach ($skills as $s):
                     $id   = isset($s->skillID) ? (int)$s->skillID : 0;
                     $t    = trim($s->Title ?? '');
+                    $d    = trim($s->Description ?? '');
                   ?>
                     <li data-title="<?= htmlspecialchars(mb_strtolower($t, 'UTF-8'), ENT_QUOTES, 'UTF-8') ?>">
-                      <?= htmlspecialchars($t, ENT_QUOTES, 'UTF-8') ?>
+                      <div>
+                        <?= htmlspecialchars($t, ENT_QUOTES, 'UTF-8') ?>
+                        <?php if ($d !== ''): ?>
+                          <div class="skill-desc"><?= htmlspecialchars($d, ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php endif; ?>
+                      </div>
                       <div class="skill-actions">
+                        <button type="button" class="btn-edit-soft btn-edit-skill" data-id="<?= $id ?>" data-title="<?= htmlspecialchars($t, ENT_QUOTES, 'UTF-8') ?>" data-desc="<?= htmlspecialchars($d, ENT_QUOTES, 'UTF-8') ?>" title="Edit">
+                          <i class="mdi mdi-pencil-outline"></i>
+                        </button>
                         <form method="post"
                           action="<?= site_url('admin/deleteSkill/' . $id) ?>"
-                          onsubmit="return confirm('Delete this skill?');"
-                          class="m-0 p-0">
+                          class="m-0 p-0 skill-delete-form">
                           <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>"
                             value="<?= $this->security->get_csrf_hash(); ?>">
                           <button type="submit" class="btn-danger-soft" title="Delete">
@@ -217,8 +306,19 @@ $count = is_array($skills) ? count($skills) : 0;
                     </li>
                   <?php endforeach; ?>
                 </ul>
+                <div id="skillsPager" class="skills-pager" style="display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid #e5e7eb">
+                  <div id="skillsPagerInfo" style="font-size:.85rem;color:#64748b;font-weight:600"></div>
+                  <div id="skillsPagerNav" class="d-flex" style="gap:4px"></div>
+                </div>
               <?php else: ?>
-                <div class="text-muted"><i class="mdi mdi-information-outline"></i> No skills yet. Click <b>Add Skill</b> to create your first one.</div>
+                <div class="empty-state">
+                  <div class="empty-icon"><i class="mdi mdi-hammer-wrench"></i></div>
+                  <h5>No skills yet</h5>
+                  <p>Click <b>Add Skill</b> to create your first one.</p>
+                  <button id="btnAddSkillEmpty" type="button" class="btn btn-sm btn-primary">
+                    <i class="mdi mdi-plus"></i> Add Skill
+                  </button>
+                </div>
               <?php endif; ?>
             </section>
           </div>
@@ -230,31 +330,63 @@ $count = is_array($skills) ? count($skills) : 0;
   </div>
 
   <!-- Add Skill Modal -->
-  <div class="modal" id="addSkillModal" tabindex="-1" role="dialog" aria-labelledby="addSkillLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+  <div class="modal" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillLabel" aria-hidden="true">
+    <div class="modal-dialog">
       <div class="modal-content">
         <form method="post" action="<?= site_url('admin/saveSkill') ?>" autocomplete="off">
           <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
           <div class="modal-header">
             <h5 class="modal-title" id="addSkillLabel"><i class="mdi mdi-plus mr-1"></i> Add Skill</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
           <div class="modal-body">
-            <div class="form-group mb-2">
-              <label>Title <span class="text-danger">*</span></label>
+            <div class="mb-2">
+              <label class="form-label">Title <span class="text-danger">*</span></label>
               <input type="text" name="Title" class="form-control" required>
             </div>
-            <div class="form-group mb-0">
-              <label>Description</label>
+            <div class="mb-0">
+              <label class="form-label">Description</label>
               <textarea name="Description" rows="3" class="form-control" placeholder="Description of the skill."></textarea>
             </div>
           </div>
 
           <div class="modal-footer">
             <button class="btn btn-primary" type="submit"><i class="mdi mdi-content-save-outline mr-1"></i> Save</button>
-            <button class="btn btn-light" type="button" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-light" type="button" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Skill Modal -->
+  <div class="modal" id="editSkillModal" tabindex="-1" aria-labelledby="editSkillLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="editSkillForm" method="post" autocomplete="off">
+          <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="editSkillLabel"><i class="mdi mdi-pencil-outline mr-1"></i> Edit Skill</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="mb-2">
+              <label class="form-label">Title <span class="text-danger">*</span></label>
+              <input type="text" name="Title" id="editTitle" class="form-control" required>
+            </div>
+            <div class="mb-0">
+              <label class="form-label">Description</label>
+              <textarea name="Description" id="editDesc" rows="3" class="form-control" placeholder="Description of the skill."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-primary" type="submit"><i class="mdi mdi-content-save-outline mr-1"></i> Update</button>
+            <button class="btn btn-light" type="button" data-bs-dismiss="modal">Cancel</button>
           </div>
         </form>
       </div>
@@ -262,6 +394,7 @@ $count = is_array($skills) ? count($skills) : 0;
   </div>
 
   <!-- Vendor JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="<?= base_url('assets/vendors/js/vendor.bundle.base.js') ?>"></script>
   <script src="<?= base_url('assets/js/off-canvas.js') ?>"></script>
   <script src="<?= base_url('assets/js/hoverable-collapse.js') ?>"></script>
@@ -278,22 +411,95 @@ $count = is_array($skills) ? count($skills) : 0;
         }
       });
 
-      // Filter list by title (keeps your search)
-      function filterList(q) {
+      // Filter list by title + client-side pagination
+      var PER_PAGE = 20;
+      var curPage = 1;
+      var curTerm = '';
+
+      function getRows() {
         var list = document.getElementById('skillsList');
-        if (!list) return;
-        var term = (q || '').trim().toLowerCase();
-        var rows = list.querySelectorAll('li');
-        rows.forEach(function(li) {
+        return list ? Array.prototype.slice.call(list.querySelectorAll('li')) : [];
+      }
+
+      function matched() {
+        return getRows().filter(function(li) {
           var t = li.getAttribute('data-title') || '';
-          li.style.display = (!term || t.indexOf(term) > -1) ? '' : 'none';
+          return !curTerm || t.indexOf(curTerm) > -1;
         });
+      }
+
+      function pagerBtn(label, page, opts) {
+        opts = opts || {};
+        var base = 'display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;border-radius:8px;font-weight:700;font-size:.85rem;padding:0 8px;border:1px solid #e5e7eb;background:#fff;color:#334155;cursor:pointer';
+        if (opts.active)   base = 'display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;border-radius:8px;font-weight:700;font-size:.85rem;padding:0 8px;background:#c1272d;color:#fff;border:1px solid #c1272d';
+        if (opts.gap)      base = 'display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;font-weight:700;font-size:.85rem;color:#94a3b8';
+        if (opts.disabled) base += ';opacity:.45;pointer-events:none';
+        if (opts.gap) {
+          var span = document.createElement('span');
+          span.style.cssText = base; span.textContent = '…';
+          return span;
+        }
+        var b = document.createElement('button');
+        b.type = 'button'; b.style.cssText = base; b.innerHTML = label;
+        if (!opts.active && !opts.disabled) {
+          b.addEventListener('click', function() { curPage = page; render(); });
+        }
+        return b;
+      }
+
+      function render() {
+        var rows = getRows();
+        var visible = matched();
+        var total = visible.length;
+        var totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+        if (curPage > totalPages) curPage = totalPages;
+        if (curPage < 1) curPage = 1;
+
+        var start = (curPage - 1) * PER_PAGE;
+        var end = start + PER_PAGE;
+
+        // Hide everything, then show only this page's slice of matched rows
+        rows.forEach(function(li) { li.style.display = 'none'; });
+        visible.forEach(function(li, i) {
+          li.style.display = (i >= start && i < end) ? '' : 'none';
+        });
+
+        var pager = document.getElementById('skillsPager');
+        var info  = document.getElementById('skillsPagerInfo');
+        var nav   = document.getElementById('skillsPagerNav');
+        if (!pager) return;
+
+        if (total <= PER_PAGE) { pager.style.display = 'none'; return; }
+        pager.style.display = 'flex';
+
+        info.textContent = 'Showing ' + (start + 1) + '–' + Math.min(end, total) + ' of ' + total + ' skills';
+
+        nav.innerHTML = '';
+        nav.appendChild(pagerBtn('<i class="mdi mdi-chevron-left"></i>', curPage - 1, { disabled: curPage <= 1 }));
+
+        var win = 1, prev = 0;
+        for (var p = 1; p <= totalPages; p++) {
+          if (p === 1 || p === totalPages || (p >= curPage - win && p <= curPage + win)) {
+            if (prev && p - prev > 1) nav.appendChild(pagerBtn('', 0, { gap: true }));
+            nav.appendChild(pagerBtn(String(p), p, { active: p === curPage }));
+            prev = p;
+          }
+        }
+
+        nav.appendChild(pagerBtn('<i class="mdi mdi-chevron-right"></i>', curPage + 1, { disabled: curPage >= totalPages }));
+      }
+
+      function filterList(q) {
+        curTerm = (q || '').trim().toLowerCase();
+        curPage = 1;
+        render();
       }
       document.addEventListener('input', function(e) {
         if (e.target && e.target.id === 'skillSearch') {
           filterList(e.target.value);
         }
       });
+      render();
 
       // Robust modal open (fixes "can't add" when overlays conflict)
       function moveModalToBody(modal) {
@@ -399,6 +605,58 @@ $count = is_array($skills) ? count($skills) : 0;
           }, 60);
         <?php endif; ?>
       });
+      // SweetAlert2 delete confirmation
+      document.querySelectorAll('.skill-delete-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          Swal.fire({
+            title: 'Delete this skill?',
+            text: 'This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, delete it'
+          }).then(function(result) {
+            if (result.isConfirmed) form.submit();
+          });
+        });
+      });
+
+      // Edit skill modal
+      document.querySelectorAll('.btn-edit-skill').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var id    = this.getAttribute('data-id');
+          var title = this.getAttribute('data-title');
+          var desc  = this.getAttribute('data-desc');
+          var modal = document.getElementById('editSkillModal');
+          var form  = document.getElementById('editSkillForm');
+          document.getElementById('editTitle').value = title;
+          document.getElementById('editDesc').value = desc;
+          form.action = '<?= site_url('admin/skills/update/') ?>' + id;
+          var bsModal = (typeof bootstrap !== 'undefined') ? new bootstrap.Modal(modal) : null;
+          if (bsModal) { bsModal.show(); }
+          else { modal.style.display = 'block'; modal.classList.add('show'); }
+        });
+      });
+
+      // Empty state add button
+      var btnEmpty = document.getElementById('btnAddSkillEmpty');
+      if (btnEmpty) {
+        btnEmpty.addEventListener('click', function() {
+          var btn = document.getElementById('btnAddSkill');
+          if (btn) btn.click();
+        });
+      }
+
+      // Flash auto-dismiss
+      setTimeout(function() {
+        document.querySelectorAll('.alert').forEach(function(el) {
+          el.style.transition = 'opacity .4s';
+          el.style.opacity = '0';
+          setTimeout(function() { el.remove(); }, 400);
+        });
+      }, 4000);
     })();
   </script>
 </body>

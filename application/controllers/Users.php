@@ -30,15 +30,41 @@ class Users extends CI_Controller
         $q      = trim((string)$this->input->get('q', true));
         $role   = trim((string)$this->input->get('role', true));
         $status = trim((string)$this->input->get('status', true));
+        $page   = max(1, (int)$this->input->get('page', true));
+        $perPage = 20;
+        $sort   = $this->input->get('sort', true);
+        $dir    = $this->input->get('dir', true);
+        $allowedSort = ['first_name', 'email', 'role', 'created_at'];
+        $allowedDir  = ['asc', 'desc'];
+        $sort = in_array($sort, $allowedSort) ? $sort : 'created_at';
+        $dir  = in_array($dir, $allowedDir) ? $dir : 'desc';
+
         $statusInt = null;
         if ($status === 'active')   $statusInt = 1;
         if ($status === 'inactive') $statusInt = 0;
+
+        $offset = ($page - 1) * $perPage;
+        $users  = $this->users->search($q, $role, $statusInt, $perPage, $offset, $status === 'pending' ? 'pending' : null, $sort, $dir);
+
+        $totalUsers = $this->users->count_search($q, $role, $statusInt, $status === 'pending' ? 'pending' : null);
+        $totalPages = max(1, (int)ceil($totalUsers / $perPage));
+        $page       = min($page, $totalPages);
 
         $data['page_title'] = 'Manage Users';
         $data['q']      = $q;
         $data['role']   = $role;
         $data['status'] = $status;
-        $data['users']  = $this->users->search($q, $role, $statusInt, 300, 0, $status === 'pending' ? 'pending' : null);
+        $data['sort']   = $sort;
+        $data['dir']    = $dir;
+        $data['users']  = $users;
+        $data['total_users'] = $totalUsers;
+        $data['pagination'] = [
+            'page'        => $page,
+            'total_pages' => $totalPages,
+            'total'       => $totalUsers,
+            'from'        => $totalUsers > 0 ? $offset + 1 : 0,
+            'to'          => min($offset + $perPage, $totalUsers),
+        ];
 
         $this->load->view('users_list', $data);
     }

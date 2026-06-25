@@ -159,7 +159,7 @@
     }
 
     .form-control {
-      border: 1px solid #0b1220;
+      border: 1px solid #e5e7eb;
       border-radius: 10px;
       padding: .6rem .8rem;
       font-weight: 500
@@ -210,6 +210,134 @@
       padding: .45rem .75rem;
       border-radius: 9px
     }
+
+    .breadcrumb-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .82rem;
+      color: #64748b;
+      margin-bottom: 8px
+    }
+
+    .breadcrumb-bar a {
+      color: #64748b;
+      text-decoration: none;
+      font-weight: 600
+    }
+
+    .breadcrumb-bar a:hover {
+      color: var(--blue)
+    }
+
+    .breadcrumb-bar .sep {
+      color: #cbd5e1
+    }
+
+    .breadcrumb-bar .current {
+      color: #334155;
+      font-weight: 700
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--silver);
+      border-radius: 12px;
+      padding: 28px 20px;
+      background: #fbfcfe;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--blue);
+      background: #fef2f2;
+    }
+
+    .drop-zone .drop-icon {
+      font-size: 36px;
+      color: var(--silver);
+      margin-bottom: 8px;
+    }
+
+    .drop-zone .drop-text {
+      font-weight: 600;
+      color: #334155;
+      font-size: .95rem;
+    }
+
+    .drop-zone .drop-sub {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .file-info {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #f8fafc;
+      margin-top: 10px;
+      font-size: .88rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .file-info.show {
+      display: flex;
+    }
+
+    .file-info .file-clear {
+      margin-left: auto;
+      background: transparent;
+      border: 0;
+      color: #dc2626;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .csv-help {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      font-size: .82rem;
+      color: #475569;
+    }
+
+    .csv-help code {
+      background: #e2e8f0;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: .8rem;
+    }
+
+    .pw-toggle-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: 0;
+      color: #475569;
+      cursor: pointer;
+      padding: 4px;
+    }
   </style>
 </head>
 
@@ -221,6 +349,12 @@
       <div class="main-panel">
         <div class="content-wrapper pb-0">
           <div class="app">
+
+            <div class="breadcrumb-bar">
+              <a href="<?= site_url($dashboardPath) ?>"><i class="mdi mdi-home-outline"></i> Dashboard</a>
+              <span class="sep">/</span>
+              <span class="current">Bulk Upload Workers</span>
+            </div>
 
             <!-- HERO -->
             <div class="hero mb-3">
@@ -247,15 +381,29 @@
 
             <!-- BULK UPLOAD CARD -->
             <div class="card accent">
-              <?= form_open_multipart($workersBase . '/preview'); ?>
-              <label for="file" class="form-label fw-semibold mb-2">Upload CSV</label>
-              <div class="drop mb-3">
-                <input id="file" type="file" name="file" class="form-control" required accept=".csv">
-                <div class="muted mt-2">Last name is sanitized (lowercase, A-Z/0–9). If blank, a random password is used.</div>
+              <?= form_open_multipart($workersBase . '/preview', ['id' => 'uploadForm']); ?>
+              <label for="file" class="form-label fw-semibold mb-2">Upload CSV / Excel</label>
+              <div class="drop-zone" id="dropZone">
+                <div class="drop-icon"><i class="mdi mdi-file-upload-outline"></i></div>
+                <div class="drop-text">Drag & drop your file here, or click to browse</div>
+                <div class="drop-sub">Supported formats: .csv, .xls, .xlsx</div>
+                <input id="file" type="file" name="file" required accept=".csv,.xls,.xlsx">
               </div>
-              <div class="d-flex justify-content-end gap-2">
+              <div class="file-info" id="fileInfo">
+                <i class="mdi mdi-file-document-outline" style="font-size:20px;color:#2563eb"></i>
+                <span id="fileName"></span>
+                <span id="fileSize" style="color:#64748b;font-weight:400"></span>
+                <button type="button" class="file-clear" id="fileClear"><i class="mdi mdi-close-circle"></i></button>
+              </div>
+              <div class="muted mt-2">Last name is sanitized (lowercase, A-Z/0–9). If blank, a random password is used.</div>
+
+              <div class="csv-help">
+                <strong>CSV format:</strong> Use headers: <code>first_name</code>, <code>last_name</code>, <code>email</code>, <code>phone</code>, <code>province</code>, <code>city</code>, <code>barangay</code>, <code>skill</code>, <code>password</code> (optional). Download the template for a ready-to-use example.
+              </div>
+
+              <div class="d-flex justify-content-end gap-2 mt-3">
                 <a class="btn btn-silver" href="<?= site_url($dashboardPath) ?>">Cancel</a>
-                <button class="btn btn-blue">Preview</button>
+                <button class="btn btn-blue" id="previewBtn"><i class="mdi mdi-eye-outline"></i> Preview</button>
               </div>
               <?= form_close(); ?>
             </div>
@@ -334,7 +482,12 @@
 
                 <div class="col-12">
                   <label class="form-label">Password</label>
-                  <input type="text" name="password_override" class="form-control" placeholder="Leave blank to auto-generate from last name">
+                  <div style="position:relative">
+                    <input type="password" name="password_override" id="pwOverride" class="form-control" placeholder="Leave blank to auto-generate from last name" style="padding-right:40px">
+                    <button type="button" class="pw-toggle-btn" data-target="#pwOverride">
+                      <i class="mdi mdi-eye-outline"></i>
+                    </button>
+                  </div>
                   <div class="form-text muted">If blank: uses sanitized last name; random if last name invalid.</div>
                 </div>
                 <div class="col-12 mt-2">
@@ -369,6 +522,79 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
+    // Drag-and-drop file zone
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('file');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const fileClear = document.getElementById('fileClear');
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    function showFileInfo(f) {
+      if (!f) { fileInfo.classList.remove('show'); return; }
+      fileName.textContent = f.name;
+      fileSize.textContent = '(' + formatSize(f.size) + ')';
+      fileInfo.classList.add('show');
+    }
+
+    if (dropZone) {
+      ['dragenter', 'dragover'].forEach(function(ev) {
+        dropZone.addEventListener(ev, function(e) {
+          e.preventDefault();
+          dropZone.classList.add('dragover');
+        });
+      });
+      ['dragleave', 'drop'].forEach(function(ev) {
+        dropZone.addEventListener(ev, function(e) {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+        });
+      });
+      dropZone.addEventListener('drop', function(e) {
+        const files = e.dataTransfer.files;
+        if (files.length) {
+          fileInput.files = files;
+          showFileInfo(files[0]);
+        }
+      });
+      fileInput.addEventListener('change', function() {
+        showFileInfo(this.files[0]);
+      });
+    }
+    if (fileClear) {
+      fileClear.addEventListener('click', function() {
+        fileInput.value = '';
+        showFileInfo(null);
+      });
+    }
+
+    // Password show/hide toggle
+    document.querySelectorAll('.pw-toggle-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const input = document.querySelector(this.dataset.target);
+        if (!input) return;
+        input.type = input.type === 'password' ? 'text' : 'password';
+        this.querySelector('i').classList.toggle('mdi-eye-outline');
+        this.querySelector('i').classList.toggle('mdi-eye-off-outline');
+      });
+    });
+
+    // Preview button loading state
+    const previewBtn = document.getElementById('previewBtn');
+    const uploadForm = document.getElementById('uploadForm');
+    if (previewBtn && uploadForm) {
+      uploadForm.addEventListener('submit', function() {
+        previewBtn.disabled = true;
+        previewBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Uploading...';
+      });
+    }
+
     (function() {
       const $ = (s, ctx = document) => ctx.querySelector(s);
       const apiBase = '<?= site_url('address/api') ?>';

@@ -13,7 +13,28 @@ class AdminHotlines extends CI_Controller
 
     public function index(){
         $data['page_title'] = 'Hotline Numbers';
-        $data['rows'] = $this->Hotlines->all(false);
+
+        $page      = max(1, (int)$this->input->get('page', true));
+        $perPage   = 15;
+
+        $allRows = $this->Hotlines->all(false);
+
+        $total     = count($allRows);
+        $totalPages = max(1, (int)ceil($total / $perPage));
+        $page      = min($page, $totalPages);
+        $offset    = ($page - 1) * $perPage;
+        $rows      = array_slice(array_values($allRows), $offset, $perPage);
+
+        $data['rows']       = $rows;
+        $data['total']      = $total;
+        $data['pagination'] = [
+            'page'        => $page,
+            'total_pages' => $totalPages,
+            'total'       => $total,
+            'from'        => $total > 0 ? $offset + 1 : 0,
+            'to'          => min($offset + $perPage, $total),
+        ];
+
         $this->load->view('admin_hotlines_index', $data);
     }
 
@@ -60,12 +81,14 @@ class AdminHotlines extends CI_Controller
     }
 
     public function delete($id = null){
+        if ($this->input->method() !== 'post') show_error('Method Not Allowed', 405);
         $row = $this->Hotlines->get((int)$id);
         if ($row){ $this->Hotlines->delete((int)$id); $this->session->set_flashdata('success','Hotline deleted.'); }
         redirect('admin/hotlines');
     }
 
     public function toggle($id = null){
+        if ($this->input->method() !== 'post') show_error('Method Not Allowed', 405);
         if ($this->Hotlines->toggle((int)$id)){
             $this->session->set_flashdata('success','Status updated.');
         }

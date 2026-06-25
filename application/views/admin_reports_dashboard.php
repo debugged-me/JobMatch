@@ -68,6 +68,155 @@
                 margin: 4px 0 8px
             }
 
+            /* Hero header */
+            .page-hero {
+                position: relative;
+                overflow: hidden;
+                background: linear-gradient(135deg, #c1272d 0%, #9e1b21 100%);
+                border-radius: 18px;
+                padding: 22px 24px;
+                color: #fff;
+                box-shadow: 0 14px 30px rgba(193, 39, 45, .26);
+                margin-bottom: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 14px
+            }
+
+            .page-hero::after {
+                content: "";
+                position: absolute;
+                right: -40px;
+                top: -60px;
+                width: 220px;
+                height: 220px;
+                background: radial-gradient(circle, rgba(255, 255, 255, .16), transparent 70%);
+                pointer-events: none
+            }
+
+            .page-hero .hero-left {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                position: relative;
+                z-index: 1
+            }
+
+            .page-hero .hero-ic {
+                width: 54px;
+                height: 54px;
+                border-radius: 14px;
+                background: rgba(255, 255, 255, .16);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 28px
+            }
+
+            .page-hero h1 {
+                margin: 0;
+                font-size: 22px;
+                font-weight: 800;
+                letter-spacing: -.2px
+            }
+
+            .page-hero p {
+                margin: 2px 0 0;
+                font-size: 13px;
+                opacity: .9
+            }
+
+            .page-hero .hero-actions {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap
+            }
+
+            .btn-hero {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(255, 255, 255, .16);
+                color: #fff;
+                border: 1px solid rgba(255, 255, 255, .3);
+                border-radius: 10px;
+                padding: .5rem .85rem;
+                font-weight: 700;
+                font-size: 13px;
+                text-decoration: none;
+                transition: background .15s
+            }
+
+            .btn-hero:hover {
+                background: rgba(255, 255, 255, .26);
+                color: #fff
+            }
+
+            .btn-hero.solid {
+                background: #fff;
+                color: #c1272d
+            }
+
+            .btn-hero.solid:hover {
+                color: #9e1b21
+            }
+
+            /* KPI accent + hover */
+            .kpi {
+                position: relative;
+                overflow: hidden;
+                transition: transform .15s, box-shadow .15s;
+                border-left: 4px solid var(--kpi-accent, #cbd5e1)
+            }
+
+            .kpi:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 24px rgba(2, 6, 23, .1)
+            }
+
+            /* Tabs */
+            #reportTabs.nav-tabs {
+                border-bottom: 2px solid var(--silver-200);
+                gap: 4px
+            }
+
+            #reportTabs .nav-link {
+                border: 0;
+                border-radius: 10px 10px 0 0;
+                color: #64748b;
+                font-weight: 700;
+                font-size: 13px;
+                padding: .55rem .9rem
+            }
+
+            #reportTabs .nav-link:hover {
+                color: #c1272d;
+                background: #fbe9ea
+            }
+
+            #reportTabs .nav-link.active {
+                color: #c1272d;
+                background: #fff;
+                box-shadow: inset 0 -3px 0 #c1272d
+            }
+
+            table.table-r thead th {
+                text-transform: uppercase;
+                letter-spacing: .04em;
+                font-size: .72rem;
+                color: #64748b;
+                background: #fbfdff !important;
+                border-bottom: 1px solid var(--silver-300)
+            }
+
+            table.table-r tbody tr:hover {
+                background: #f8fafc
+            }
+
             /* Panels / cards */
             .panel {
                 background: #fff;
@@ -328,7 +477,29 @@
                     <div class="content-wrapper pb-0">
                         <div class="app">
 
-                            <div class="eyebrow"><?= htmlspecialchars($page_title ?? 'Dashboard', ENT_QUOTES, 'UTF-8') ?></div>
+                            <div class="breadcrumb-bar" style="display:flex;align-items:center;gap:6px;font-size:.82rem;color:#64748b;margin-bottom:8px">
+                                <a href="<?= site_url('dashboard/admin') ?>" style="color:#64748b;text-decoration:none;font-weight:600"><i class="mdi mdi-home-outline"></i> Dashboard</a>
+                                <span style="color:#cbd5e1">/</span>
+                                <span style="color:#334155;font-weight:700">Reports</span>
+                            </div>
+
+                            <div class="page-hero">
+                                <div class="hero-left">
+                                    <div class="hero-ic"><i class="mdi mdi-chart-box-outline"></i></div>
+                                    <div>
+                                        <h1>Reports &amp; Analytics</h1>
+                                        <p>Jobs, applicants, and client project activity at a glance.</p>
+                                    </div>
+                                </div>
+                                <div class="hero-actions">
+                                    <a class="btn-hero" href="<?= current_url() ?>?print=1" target="_blank" rel="noopener">
+                                        <i class="mdi mdi-printer"></i> Print
+                                    </a>
+                                    <a class="btn-hero solid" href="<?= site_url('admin/reports/export_csv') ?>">
+                                        <i class="mdi mdi-file-download-outline"></i> CSV Export
+                                    </a>
+                                </div>
+                            </div>
 
                             <?php if ($this->session->flashdata('error')): ?>
                                 <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('error'); ?></div>
@@ -336,17 +507,21 @@
                             <?php if ($this->session->flashdata('success')): ?>
                                 <div class="alert alert-success" role="alert"><?= $this->session->flashdata('success'); ?></div>
                             <?php endif; ?>
-                            <div class="d-flex justify-content-end mb-2">
-                                <div class="btn-group">
-                                    <a class="btn btn-sm btn-light" href="<?= current_url() ?>?print=1" target="_blank" rel="noopener">
-                                        <i class="mdi mdi-printer"></i> Print
-                                    </a>
-                                </div>
+                            <div class="panel mb-3" style="margin-bottom:14px">
+                                <form class="d-flex align-items-center gap-2 flex-wrap" method="get" action="<?= current_url() ?>">
+                                    <span style="font-weight:800;color:#334155;font-size:13px;margin-right:4px"><i class="mdi mdi-calendar-range" style="color:#c1272d"></i> Date range</span>
+                                    <label class="text-muted" style="font-size:.85rem;font-weight:600">From:</label>
+                                    <input type="date" name="from" class="form-control form-control-sm" style="width:auto" value="<?= htmlspecialchars($dateFrom ?? '', ENT_QUOTES) ?>">
+                                    <label class="text-muted" style="font-size:.85rem;font-weight:600">To:</label>
+                                    <input type="date" name="to" class="form-control form-control-sm" style="width:auto" value="<?= htmlspecialchars($dateTo ?? '', ENT_QUOTES) ?>">
+                                    <button class="btn btn-sm btn-primary" type="submit"><i class="mdi mdi-filter-outline"></i> Apply</button>
+                                    <a class="btn btn-sm btn-light" href="<?= current_url() ?>"><i class="mdi mdi-refresh"></i> Reset</a>
+                                </form>
                             </div>
 
                             <!-- KPIs -->
                             <div class="kpi-grid">
-                                <div class="panel kpi">
+                                <div class="panel kpi" style="--kpi-accent:#c1272d">
                                     <div style="display:flex;align-items:center;gap:10px">
                                         <div class="icon" style="background:rgba(193,39,45,.12)"><i class="mdi mdi-briefcase-outline" style="font-size:18px;color:#c1272d"></i></div>
                                         <div>
@@ -357,7 +532,7 @@
                                     <div class="text-muted" style="font-size:12px;margin-top:4px">All posts</div>
                                 </div>
 
-                                <div class="panel kpi">
+                                <div class="panel kpi" style="--kpi-accent:#f59e0b">
                                     <div style="display:flex;align-items:center;gap:10px">
                                         <div class="icon" style="background:rgba(251,191,36,.18)"><i class="mdi mdi-account-multiple-check" style="font-size:18px;color:#b45309"></i></div>
                                         <div>
@@ -365,12 +540,12 @@
                                             <div class="value"><?= number_format((int)($jobs_with_apps ?? 0)) ?></div>
                                         </div>
                                     </div>
-                                    <div class="text-muted" style="font-size:12px;margin-top:4px">Distinct jobs with â‰¥1 application</div>
+                                    <div class="text-muted" style="font-size:12px;margin-top:4px">Distinct jobs with &ge;1 application</div>
                                 </div>
 
-                                <div class="panel kpi">
+                                <div class="panel kpi" style="--kpi-accent:#0ea5e9">
                                     <div style="display:flex;align-items:center;gap:10px">
-                                        <div class="icon" style="background:rgba(245,158,11,.12)"><i class="mdi mdi-briefcase" style="font-size:18px;color:#f59e0b"></i></div>
+                                        <div class="icon" style="background:rgba(14,165,233,.12)"><i class="mdi mdi-briefcase" style="font-size:18px;color:#0ea5e9"></i></div>
                                         <div>
                                             <div class="label">Total Client Projects</div>
                                             <div class="value"><?= number_format((int)($total_client_projects ?? 0)) ?></div>
@@ -379,7 +554,7 @@
                                     <div class="text-muted" style="font-size:12px;margin-top:4px">All client-created projects</div>
                                 </div>
 
-                                <div class="panel kpi">
+                                <div class="panel kpi" style="--kpi-accent:#6366f1">
                                     <div style="display:flex;align-items:center;gap:10px">
                                         <div class="icon" style="background:rgba(99,102,241,.12)"><i class="mdi mdi-account-star" style="font-size:18px;color:#6366f1"></i></div>
                                         <div>
@@ -387,12 +562,32 @@
                                             <div class="value"><?= number_format((int)($projects_with_apps ?? 0)) ?></div>
                                         </div>
                                     </div>
-                                    <div class="text-muted" style="font-size:12px;margin-top:4px">Distinct projects with â‰¥1 application</div>
+                                    <div class="text-muted" style="font-size:12px;margin-top:4px">Distinct projects with &ge;1 application</div>
                                 </div>
                             </div>
 
+                            <!-- Tab navigation -->
+                            <ul class="nav nav-tabs mb-3" id="reportTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="tab-all-jobs" data-bs-toggle="tab" data-bs-target="#pane-all-jobs" type="button" role="tab">
+                                        <i class="mdi mdi-briefcase-outline"></i> All Jobs
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="tab-jobs-applied" data-bs-toggle="tab" data-bs-target="#pane-jobs-applied" type="button" role="tab">
+                                        <i class="mdi mdi-account-multiple-check"></i> Jobs With Applicants
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="tab-clients" data-bs-toggle="tab" data-bs-target="#pane-clients" type="button" role="tab">
+                                        <i class="mdi mdi-account-tie-outline"></i> Client Projects
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+
                             <!-- All Jobs (incl zero applicants) -->
-                            <section class="panel panel--wide">
+                            <section class="panel panel--wide tab-pane fade show active" id="pane-all-jobs" role="tabpanel">
                                 <div class="panel-head"><i class="mdi mdi-briefcase-outline"></i>
                                     <h6>All Jobs (including zero applicants)</h6>
                                 </div>
@@ -434,7 +629,7 @@
                             </section>
 
                             <!-- Jobs with Applicants only -->
-                            <section class="panel panel--wide">
+                            <section class="panel panel--wide tab-pane fade" id="pane-jobs-applied" role="tabpanel">
                                 <div class="panel-head"><i class="mdi mdi-account-multiple-check"></i>
                                     <h6>Jobs That Received Applicants</h6>
                                 </div>
@@ -478,7 +673,7 @@
                             </section>
 
                             <!-- Employer / Client Projects Summary -->
-                            <section class="panel panel--wide">
+                            <section class="panel panel--wide tab-pane fade" id="pane-clients" role="tabpanel">
                                 <div class="panel-head"><i class="mdi mdi-account-tie-outline"></i>
                                     <h6>Employers / Clients - Projects Summary</h6>
                                 </div>
@@ -519,6 +714,8 @@
                                     <?php endif; ?>
                                 </div>
                             </section>
+                            </div>
+
                             <!-- PRINT-ONLY AREA -->
                             <div class="print-area">
                                 <div class="print-title">Admin Report - Jobs & Projects</div>

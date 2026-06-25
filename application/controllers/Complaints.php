@@ -156,13 +156,34 @@ $uid = (int) ($this->session->userdata('user_id') ?: 0);
     {
         if ($this->session->userdata('role') !== 'admin') show_error('Forbidden', 403);
 
+        $page    = max(1, (int)$this->input->get('page', true));
+        $perPage = 15;
+
         $filters = [
             'status' => $this->input->get('status', true),
+            'type'   => $this->input->get('type', true),
             'q'      => $this->input->get('q', true),
         ];
-        $data['title']  = 'Complaints (All)';
-        $data['items']  = $this->complaints->listAll($filters);
-        $data['filter'] = $filters;
+
+        $total    = $this->complaints->countAll($filters);
+        $totalPages = max(1, (int)ceil($total / $perPage));
+        $page     = min($page, $totalPages);
+        $offset   = ($page - 1) * $perPage;
+        $filters['limit']  = $perPage;
+        $filters['offset'] = $offset;
+
+        $data['title']    = 'Complaints (All)';
+        $data['items']    = $this->complaints->listAll($filters);
+        $data['filter']   = $filters;
+        $data['total']    = $total;
+        $data['summary']  = $this->complaints->statusSummary();
+        $data['pagination'] = [
+            'page'        => $page,
+            'total_pages' => $totalPages,
+            'total'       => $total,
+            'from'        => $total > 0 ? $offset + 1 : 0,
+            'to'          => min($offset + $perPage, $total),
+        ];
         $this->load->view('complaints_admin_index', $data);
     }
 
