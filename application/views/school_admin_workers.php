@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=5.1.1') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>

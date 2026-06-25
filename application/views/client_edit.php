@@ -11,6 +11,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/images/logo.png') ?>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <?php
   $editCssPath = FCPATH . 'assets/css/edit.css';
@@ -20,7 +21,7 @@
 
   <style>
     body {
-      font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
     }
 
     .status-badge {

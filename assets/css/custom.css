@@ -49,6 +49,38 @@
   --bs-btn-hover-border-color: var(--brand-blue-dark);
   --bs-btn-active-bg: var(--brand-blue-dark);
   --bs-btn-active-border-color: var(--brand-blue-dark);
+
+  /* Force Karla as the app-wide sans-serif (overrides template's Roboto) */
+  --bs-font-sans-serif: "Karla", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --bs-body-font-family: "Karla", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ===========================================================================
+   Global Karla override
+   The bundled admin template (vertical-light/style.css) hard-codes "Roboto"
+   on headings, cards, nav, buttons and utility classes, which beats the
+   per-page body font rule. Force Karla everywhere except icon fonts and
+   intentional monospace. custom.css loads after the template, so this wins.
+   ========================================================================= */
+body,
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+p, a, span, label, li, td, th, div,
+button, input, select, textarea, optgroup,
+.btn, .nav, .navbar, .card, .card-title, .card-subtitle, .card-description,
+.dropdown-menu, .table, .form-control, .form-select, .form-label,
+.badge, .alert, .modal, .breadcrumb, .pagination,
+[class*="fw-"], .text-muted, .small {
+  font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+/* Keep icon fonts and deliberate monospace untouched */
+.mdi, .mdi::before, [class^="ph-"], [class*=" ph-"], i[class*="icon"],
+.material-icons, code, pre, kbd, samp, .text-monospace, .font-monospace {
+  font-family: revert !important;
 }
 
 .sidebar .nav,

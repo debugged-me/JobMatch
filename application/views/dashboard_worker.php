@@ -12,10 +12,10 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/font-awesome/css/font-awesome.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=5.0.7') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/universal.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-worker.css?v=3.1.0') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-worker.css?v=3.3.0') ?>">
 
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 
@@ -438,7 +438,8 @@
                 </section>
               </div>
 
-              <!-- ===== FIND WORK (below the core profile) ===== -->
+              <!-- ===== FIND WORK + APPLICATIONS (side by side) ===== -->
+              <div class="wd-row wd-row-2">
               <section class="wd-card">
                 <div class="wd-card-head">
                   <h2><i class="mdi mdi-briefcase-search"></i> Recommended Work</h2>
@@ -561,6 +562,7 @@
                   </div>
                 <?php endif; ?>
               </section>
+              </div>
 
               <!-- ===== Analytics: Service mix + Reviews ===== -->
               <div
