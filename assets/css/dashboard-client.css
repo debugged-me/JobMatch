@@ -48,6 +48,33 @@ body {
   font-size: 14px;
 }
 
+/* Narrowed single-column variant (used by unified-feed dashboards) */
+.wd.wd-narrow {
+  max-width: 1120px;
+}
+
+/* ===================== UNIFIED FEED (one continuous card) ===================== */
+/* Facebook-profile style: every section flows under the previous one inside a
+   single white surface, divided only by hairlines — no separate floating boxes. */
+.wd-feed {
+  padding: 0;
+  overflow: hidden;
+}
+
+.wd-feed-sec {
+  padding: 18px 22px;
+}
+
+.wd-feed-sec + .wd-feed-sec {
+  border-top: 1px solid var(--wd-line);
+}
+
+@media (max-width: 760px) {
+  .wd-feed-sec {
+    padding: 16px 16px;
+  }
+}
+
 .wd .alert {
   border-radius: var(--wd-radius-sm);
   font-size: 13.5px;

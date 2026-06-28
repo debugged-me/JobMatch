@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-client.css?v=2.0.0') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-client.css?v=2.1.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 </head>
 
@@ -28,7 +28,7 @@
       <?php $this->load->view('includes_nav_top'); ?>
       <div class="main-panel">
         <div class="content-wrapper pb-0">
-          <div class="wd">
+          <div class="wd wd-narrow">
 
             <?php if ($this->session->flashdata('error')): ?>
               <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('error'); ?></div>
@@ -225,11 +225,10 @@
               </div>
             </div>
 
-            <div class="wd-stack">
+            <div class="wd-card wd-feed">
 
               <!-- ============ Business + Verification ============ -->
-              <div class="wd-row wd-row-2">
-                <section class="wd-card">
+                <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-briefcase-outline"></i> Business / Project</h2></div>
                   <?php if (!$has_business_details && !$is_individual_employer): ?>
                     <div class="wd-empty wd-empty-sm">No business or project details yet.</div>
@@ -245,7 +244,7 @@
                   <?php endif; ?>
                 </section>
 
-                <section class="wd-card">
+                <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-shield-account-outline"></i> Verification &amp; Documents</h2></div>
 
                   <div class="wd-docs">
@@ -327,10 +326,9 @@
                     </div>
                   <?php endif; ?>
                 </section>
-              </div>
 
               <!-- ============ Recent Jobs ============ -->
-              <section class="wd-card">
+              <section class="wd-feed-sec">
                 <div class="wd-card-head">
                   <h2><i class="mdi mdi-clipboard-text-outline"></i> Recent Jobs</h2>
                   <a href="<?= site_url('projects/active') ?>" class="wd-link">View all <i class="mdi mdi-arrow-right"></i></a>

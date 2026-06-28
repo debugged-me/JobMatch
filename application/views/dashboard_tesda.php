@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.0.0') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.2.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 </head>
 
@@ -24,7 +24,7 @@
 
       <div class="main-panel">
         <div class="content-wrapper pb-0">
-          <div class="wd">
+          <div class="wd wd-narrow">
 
             <?php if ($this->session->flashdata('error')): ?>
               <div class="alert alert-danger" role="alert"><?= $this->session->flashdata('error'); ?></div>
@@ -89,10 +89,9 @@
               </div>
             </div>
 
-            <div class="wd-stack">
-              <div class="wd-row wd-row-2">
+            <div class="wd-card wd-feed">
                 <!-- Quick actions -->
-                <section class="wd-card">
+                <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-lightning-bolt-outline"></i> Quick Actions</h2></div>
                   <p class="wd-muted" style="margin-top:-8px">Use these tools to onboard and maintain records. The full upload flow lives on its own page.</p>
                   <div class="wd-hero-actions" style="margin-top:4px">
@@ -102,7 +101,7 @@
                 </section>
 
                 <!-- Guidelines -->
-                <section class="wd-card">
+                <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-information-outline"></i> Guidelines</h2></div>
                   <ul class="wd-list">
                     <li><i class="mdi mdi-check-circle-outline"></i> For bulk onboarding, prepare a CSV using the provided template.</li>
@@ -110,7 +109,6 @@
                     <li><i class="mdi mdi-check-circle-outline"></i> You can also add or edit individual workers from the Upload page after preview.</li>
                   </ul>
                 </section>
-              </div>
             </div>
 
           </div>

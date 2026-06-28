@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.1.0') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.2.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -26,7 +26,7 @@
 
       <div class="main-panel">
         <div class="content-wrapper pb-0">
-          <div class="wd">
+          <div class="wd wd-narrow">
 
             <?php
             $stats = $stats ?? [];
@@ -124,52 +124,10 @@
               </div>
             </div>
 
-            <!-- Quick Actions -->
-            <section class="wd-card wd-quick-actions">
-              <div class="wd-card-head">
-                <h2><i class="mdi mdi-lightning-bolt"></i> Quick Actions</h2>
-              </div>
-              <div class="wd-qa-grid">
-                <a class="wd-qa-item" href="<?= site_url('users') ?>">
-                  <div class="wd-qa-ico tint-red"><i class="mdi mdi-account-multiple-outline"></i></div>
-                  <span>Manage Users</span>
-                </a>
-                <a class="wd-qa-item" href="<?= site_url('admin-reports') ?>">
-                  <div class="wd-qa-ico tint-green"><i class="mdi mdi-chart-box-outline"></i></div>
-                  <span>Reports</span>
-                </a>
-                <a class="wd-qa-item" href="<?= site_url('admin/complaints') ?>">
-                  <div class="wd-qa-ico tint-amber"><i class="mdi mdi-flag-outline"></i></div>
-                  <span>Complaints</span>
-                </a>
-                <a class="wd-qa-item" href="<?= site_url('admin/skills') ?>">
-                  <div class="wd-qa-ico tint-indigo"><i class="mdi mdi-hammer-wrench"></i></div>
-                  <span>Skills</span>
-                </a>
-                <a class="wd-qa-item" href="<?= site_url('hotlines') ?>">
-                  <div class="wd-qa-ico tint-red"><i class="mdi mdi-phone-outline"></i></div>
-                  <span>Hotlines</span>
-                </a>
-                <a class="wd-qa-item" href="<?= site_url('admin/workers/upload') ?>">
-                  <div class="wd-qa-ico tint-green"><i class="mdi mdi-database-import-outline"></i></div>
-                  <span>Bulk Upload</span>
-                </a>
-                <a class="wd-qa-item" href="<?= site_url('admin/pending_users') ?>">
-                  <div class="wd-qa-ico tint-amber"><i class="mdi mdi-account-clock-outline"></i></div>
-                  <span>Pending Users</span>
-                </a>
-                <a class="wd-qa-item" href="<?= site_url('admin/change_password') ?>">
-                  <div class="wd-qa-ico tint-indigo"><i class="mdi mdi-lock-reset"></i></div>
-                  <span>Change Password</span>
-                </a>
-              </div>
-            </section>
-
-            <!-- Main content row: Chart + Recent Activity -->
-            <div class="wd-stack">
-              <div class="wd-row wd-row-2">
+            <!-- Main content: unified feed -->
+            <div class="wd-card wd-feed">
                 <!-- Chart -->
-                <section class="wd-card">
+                <section class="wd-feed-sec">
                   <div class="wd-card-head">
                     <h2><i class="mdi mdi-chart-line"></i> Hires (last 30 days)</h2>
                     <span class="wd-muted">Auto-updated</span>
@@ -183,7 +141,7 @@
                 </section>
 
                 <!-- Recent Activity -->
-                <section class="wd-card">
+                <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-history"></i> Recent Activity</h2></div>
                   <?php if (empty($activity)): ?>
                     <div class="wd-empty"><i class="mdi mdi-timeline-text-outline"></i>
@@ -203,12 +161,9 @@
                     </div>
                   <?php endif; ?>
                 </section>
-              </div>
 
-              <!-- Second row: Pending Verifications + Top Skills -->
-              <div class="wd-row wd-row-2">
                 <!-- Pending Verifications -->
-                <section class="wd-card">
+                <section class="wd-feed-sec">
                   <div class="wd-card-head">
                     <h2><i class="mdi mdi-account-clock-outline"></i> Pending Verifications</h2>
                     <a class="wd-link" href="<?= site_url('admin/pending_users') ?>">View all <i class="mdi mdi-arrow-right"></i></a>
@@ -252,7 +207,7 @@
                 </section>
 
                 <!-- Top Skills -->
-                <section class="wd-card">
+                <section class="wd-feed-sec">
                   <div class="wd-card-head">
                     <h2><i class="mdi mdi-hammer-wrench"></i> Top In-Demand Skills</h2>
                   </div>
@@ -283,10 +238,9 @@
                     </div>
                   <?php endif; ?>
                 </section>
-              </div>
 
-              <!-- Third row: Recent Registrations (full width) -->
-              <section class="wd-card">
+              <!-- Recent Registrations -->
+              <section class="wd-feed-sec">
                 <div class="wd-card-head">
                   <h2><i class="mdi mdi-account-plus-outline"></i> Recent Registrations</h2>
                   <a class="wd-link" href="<?= site_url('users') ?>">View all users <i class="mdi mdi-arrow-right"></i></a>
