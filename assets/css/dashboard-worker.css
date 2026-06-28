@@ -36,7 +36,7 @@ body {
 }
 
 .wd {
-  max-width: 100%;
+  max-width: 1060px;
   margin: 0 auto;
   padding: 0 12px 20px;
   font-size: 14px;
@@ -322,6 +322,77 @@ body {
 @media (max-width: 900px) {
   .wd-row-2 {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ===================== UNIFIED FEED (one continuous card) ===================== */
+/* Facebook-profile style: a single white surface where every section flows
+   one under another, divided only by hairlines — no separate floating boxes. */
+.wd-feed {
+  padding: 0;
+  overflow: hidden;
+}
+
+.wd-feed-sec {
+  padding: 18px 22px;
+}
+
+.wd-feed-sec + .wd-feed-sec {
+  border-top: 1px solid var(--wd-line);
+}
+
+@media (max-width: 760px) {
+  .wd-feed-sec {
+    padding: 16px 16px;
+  }
+}
+
+/* ===================== MERGED / SEGMENTED PANELS ===================== */
+/* One card surface that holds several "widgets" split by hairline dividers,
+   so related info reads as a single panel instead of many floating boxes. */
+.wd-panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.wd-segrow {
+  display: grid;
+}
+
+.wd-segrow-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.wd-segrow-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.wd-seg {
+  padding: 16px 18px;
+  min-width: 0;
+}
+
+.wd-segrow-2 > .wd-seg + .wd-seg,
+.wd-segrow-3 > .wd-seg + .wd-seg {
+  border-left: 1px solid var(--wd-line);
+}
+
+.wd-seg-full {
+  grid-column: 1 / -1;
+  border-left: none !important;
+  border-top: 1px solid var(--wd-line);
+}
+
+@media (max-width: 760px) {
+  .wd-segrow-2,
+  .wd-segrow-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .wd-segrow-2 > .wd-seg + .wd-seg,
+  .wd-segrow-3 > .wd-seg + .wd-seg {
+    border-left: none;
+    border-top: 1px solid var(--wd-line);
   }
 }
 

@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/universal.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-worker.css?v=3.3.0') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-worker.css?v=4.0.0') ?>">
 
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 
@@ -287,11 +287,10 @@
               </div>
             </section>
 
-            <div class="wd-stack">
+            <div class="wd-card wd-feed">
 
-              <!-- ===== CORE PROFILE: strength / skills / availability ===== -->
-              <div class="wd-row wd-row-3">
-                <section class="wd-card">
+              <!-- ===== Profile Strength ===== -->
+              <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-shield-check-outline"></i> Profile Strength</h2></div>
                   <div class="wd-completion">
                     <div class="progress-ring" style="--val: <?= $pc ?>; --accent: <?= $pc >= 100 ? '#16a34a' : '#e23b41' ?>;">
@@ -313,7 +312,8 @@
                   <?php endif; ?>
                 </section>
 
-                <section class="wd-card">
+              <!-- ===== Skills ===== -->
+              <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-lightbulb-on-outline"></i> Skills</h2></div>
                   <?php if (!empty($skills)): ?>
                     <div class="wd-chips">
@@ -324,7 +324,8 @@
                   <?php else: ?><div class="wd-empty wd-empty-sm">No skills added.</div><?php endif; ?>
                 </section>
 
-                <section class="wd-card">
+              <!-- ===== Availability ===== -->
+              <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-calendar-clock"></i> Availability</h2></div>
                   <?php if (!empty($days)): ?>
                     <div class="wd-chips">
@@ -334,18 +335,17 @@
                     </div>
                   <?php else: ?><div class="wd-empty wd-empty-sm">No availability set.</div><?php endif; ?>
                 </section>
-              </div>
 
-              <!-- ===== About + Experience ===== -->
-              <div class="wd-row wd-row-2">
-                <section class="wd-card">
+              <!-- ===== About ===== -->
+              <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-information-outline"></i> About</h2></div>
                   <?php if ($bio): ?>
                     <div class="wd-about"><?= nl2br(htmlspecialchars($bio, ENT_QUOTES, 'UTF-8')) ?></div>
                   <?php else: ?><div class="wd-empty wd-empty-sm">No bio yet. Add a short summary about your background and strengths.</div><?php endif; ?>
                 </section>
 
-                <section class="wd-card">
+              <!-- ===== Work Experience ===== -->
+              <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-briefcase-outline"></i> Work Experience</h2></div>
                   <?php if (empty($xp)): ?>
                     <div class="wd-empty wd-empty-sm">No experience added yet. Adding past work boosts your hire rate.</div>
@@ -364,11 +364,9 @@
                     </div>
                   <?php endif; ?>
                 </section>
-              </div>
 
-              <!-- ===== Education + Documents ===== -->
-              <div class="wd-row wd-row-2">
-                <section class="wd-card">
+              <!-- ===== Education & Links ===== -->
+              <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-school-outline"></i> Education &amp; Links</h2></div>
                   <?php
                   $eduPrimary = trim((string)$course) !== '' ? trim((string)$course) : trim((string)$edu);
@@ -393,7 +391,8 @@
                   <?php endif; ?>
                 </section>
 
-                <section class="wd-card">
+              <!-- ===== Saved Documents ===== -->
+              <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-folder-outline"></i> Saved Documents</h2></div>
                   <?php
                   $docs = $docs ?? [];
@@ -436,11 +435,9 @@
                     </div>
                   <?php endif; ?>
                 </section>
-              </div>
 
-              <!-- ===== FIND WORK + APPLICATIONS (side by side) ===== -->
-              <div class="wd-row wd-row-2">
-              <section class="wd-card">
+              <!-- ===== Recommended Work ===== -->
+              <section class="wd-feed-sec">
                 <div class="wd-card-head">
                   <h2><i class="mdi mdi-briefcase-search"></i> Recommended Work</h2>
                   <a href="<?= site_url('worker/feed') ?>" class="wd-link">Browse all <i class="mdi mdi-arrow-right"></i></a>
@@ -504,7 +501,7 @@
               </section>
 
               <!-- ===== My Applications ===== -->
-              <section class="wd-card">
+              <section class="wd-feed-sec">
                 <div class="wd-card-head">
                   <h2><i class="mdi mdi-clipboard-text-clock-outline"></i> My Applications</h2>
                   <div class="wd-app-pills">
@@ -562,7 +559,6 @@
                   </div>
                 <?php endif; ?>
               </section>
-              </div>
 
               <!-- ===== Analytics: Service mix + Reviews ===== -->
               <div
@@ -571,8 +567,8 @@
                 data-labels="<?= htmlspecialchars(json_encode($labels ?? []), ENT_QUOTES, 'UTF-8') ?>"
                 data-values="<?= htmlspecialchars(json_encode($counts ?? []), ENT_QUOTES, 'UTF-8') ?>"></div>
 
-              <div class="wd-row wd-row-2">
-                <section class="wd-card" id="svcMixPanel" data-mix-url="<?= site_url('services/mix') ?>">
+              <!-- ===== Types of Service ===== -->
+              <section class="wd-feed-sec" id="svcMixPanel" data-mix-url="<?= site_url('services/mix') ?>">
                   <div class="wd-card-head">
                     <h2><i class="mdi mdi-chart-pie"></i> Types of Service</h2>
                     <div id="svcMixPills" class="wd-app-pills" style="display:none"></div>
@@ -586,7 +582,8 @@
                   </div>
                 </section>
 
-                <section class="wd-card">
+              <!-- ===== Latest Reviews ===== -->
+              <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-comment-text-outline"></i> Latest Reviews</h2></div>
                   <?php if (empty($latest_reviews)): ?>
                     <div class="wd-empty"><i class="mdi mdi-star-outline"></i>
@@ -626,7 +623,6 @@
                     </div>
                   <?php endif; ?>
                 </section>
-              </div>
 
             </div>
 
