@@ -222,4 +222,122 @@ class SchoolAdminModel extends CI_Model
     {
         return isset($map[$key]) ? trim((string)$row[$map[$key]]) : null;
     }
+
+    /* ============================================================
+       Student-worker reports (ported from trabawho)
+       Owner-scoped by approved_by: a School Admin sees the workers
+       they approved; admins (ownerUserId === null) see all.
+       ============================================================ */
+
+    private function report_roles(): array
+    {
+        return ['worker'];
+    }
+
+    private function apply_report_owner_scope(string $alias, ?int $ownerUserId): void
+    {
+        if ($ownerUserId === null) {
+            return; // admin / global
+        }
+        $ownerUserId = (int)$ownerUserId;
+        $prefix = trim($alias) !== '' ? rtrim($alias, '.') . '.' : '';
+        if ($ownerUserId <= 0) {
+            $this->db->where('1 = 0', null, false);
+            return;
+        }
+        if ($this->db->field_exists('approved_by', $this->table)) {
+            $this->db->where($prefix . 'approved_by', $ownerUserId);
+        } else {
+            $this->db->where('1 = 0', null, false);
+        }
+    }
+
+    public function report_summary(?int $ownerUserId = null): array
+    {
+        $roles = $this->report_roles();
+
+        $this->db->from($this->table)->where_in('role', $roles);
+        $this->apply_report_owner_scope('', $ownerUserId);
+        $totalCreated = (int)$this->db->count_all_results();
+
+        $createdThisMonth = 0;
+        if ($this->db->field_exists('created_at', $this->table)) {
+            $this->db->from($this->table)
+                ->where_in('role', $roles)
+                ->where('created_at >=', date('Y-m-01 00:00:00'));
+            $this->apply_report_owner_scope('', $ownerUserId);
+            $createdThisMonth = (int)$this->db->count_all_results();
+        }
+
+        $hiredTotal = 0;
+        $hiredThisMonth = 0;
+        if ($this->db->table_exists('personnel_hired')) {
+            $this->db->from('personnel_hired ph')
+                ->join($this->table . ' u', 'u.id = ph.worker_id', 'inner')
+                ->where_in('u.role', $roles);
+            $this->apply_report_owner_scope('u', $ownerUserId);
+            $hiredTotal = (int)$this->db->count_all_results();
+
+            if ($this->db->field_exists('created_at', 'personnel_hired')) {
+                $this->db->from('personnel_hired ph')
+                    ->join($this->table . ' u', 'u.id = ph.worker_id', 'inner')
+                    ->where_in('u.role', $roles)
+                    ->where('ph.created_at >=', date('Y-m-01 00:00:00'));
+                $this->apply_report_owner_scope('u', $ownerUserId);
+                $hiredThisMonth = (int)$this->db->count_all_results();
+            }
+        }
+
+        return [
+            'total_created'      => $totalCreated,
+            'created_this_month' => $createdThisMonth,
+            'hired_total'        => $hiredTotal,
+            'hired_this_month'   => $hiredThisMonth,
+        ];
+    }
+
+    public function report_rows(?string $q = null, ?int $ownerUserId = null): array
+    {
+        $roles = $this->report_roles();
+        $q = trim((string)$q);
+        $hasPhone = $this->db->field_exists('phone', $this->table);
+        $phoneExpr = $hasPhone ? 'u.phone' : 'NULL AS phone';
+
+        $this->db->from($this->table . ' u')
+            ->select("u.id, u.email, u.first_name, u.last_name, {$phoneExpr}, u.role, u.is_active, u.status, u.created_at", false)
+            ->where_in('u.role', $roles);
+
+        if ($q !== '') {
+            $this->db->group_start()
+                ->like('u.email', $q)
+                ->or_like('u.first_name', $q)
+                ->or_like('u.last_name', $q);
+            if ($hasPhone) {
+                $this->db->or_like('u.phone', $q);
+            }
+            $this->db->group_end();
+        }
+
+        $this->apply_report_owner_scope('u', $ownerUserId);
+
+        if ($this->db->table_exists('personnel_hired')) {
+            $this->db->join('personnel_hired ph', 'ph.worker_id = u.id', 'left');
+            if ($this->db->field_exists('created_at', 'personnel_hired')) {
+                $this->db->select('COUNT(ph.id) AS hire_count, MAX(ph.created_at) AS latest_hired_at', false);
+            } else {
+                $this->db->select('COUNT(ph.id) AS hire_count, NULL AS latest_hired_at', false);
+            }
+        } else {
+            $this->db->select('0 AS hire_count, NULL AS latest_hired_at', false);
+        }
+
+        $this->db->group_by('u.id');
+        if ($this->db->field_exists('created_at', $this->table)) {
+            $this->db->order_by('u.created_at', 'DESC');
+        } else {
+            $this->db->order_by('u.id', 'DESC');
+        }
+
+        return $this->db->limit(500)->get()->result();
+    }
 }

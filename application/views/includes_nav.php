@@ -260,6 +260,9 @@ list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin
             <li class="nav-item">
               <a class="nav-link <?= $active('school-admin/bulk') ?>" href="<?= site_url('school-admin/bulk') ?>">Bulk Upload</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link <?= $active('school-admin/reports') ?>" href="<?= site_url('school-admin/reports') ?>">Reports</a>
+            </li>
           </ul>
         </div>
       </li>

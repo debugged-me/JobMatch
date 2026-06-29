@@ -175,3 +175,7 @@ $route['school-admin/resend/(:num)']   = 'SchoolAdmin/resend_email/$1';
 $route['school-admin/bulk']            = 'SchoolAdmin/bulk';
 $route['school-admin/bulk_preview']    = 'SchoolAdmin/bulk_preview';
 $route['school-admin/bulk_commit']     = 'SchoolAdmin/bulk_commit';
+
+$route['school-admin/reports']            = 'SchoolAdmin/reports';
+$route['school-admin/reports/export-csv'] = 'SchoolAdmin/reports_export_csv';
+$route['school-admin/reports/export-pdf'] = 'SchoolAdmin/reports_export_pdf';

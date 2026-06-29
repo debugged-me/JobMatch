@@ -306,4 +306,275 @@ class SchoolAdmin extends CI_Controller
         $this->email->clear(TRUE);
         return $ok;
     }
+
+    /* ============================================================
+       Student-worker reports (ported from trabawho) + CSV/PDF export
+       ============================================================ */
+
+    public function reports()
+    {
+        $ownerId = $this->_scope_owner_user_id();
+        $scopeSchoolName = $this->_scope_school_name($this->_scope_school_id());
+        $scopeSchoolNameShort = $this->_trim_school_label($scopeSchoolName, 54);
+        $q = trim((string)$this->input->get('q', true));
+
+        $this->load->view('school_admin_reports', [
+            'title'                   => 'Student Worker Reports',
+            'q'                       => $q,
+            'summary'                 => $this->SchoolAdminModel->report_summary($ownerId),
+            'rows'                    => $this->SchoolAdminModel->report_rows($q, $ownerId),
+            'scope_school_name'       => $scopeSchoolName,
+            'scope_school_name_short' => $scopeSchoolNameShort,
+        ]);
+    }
+
+    public function reports_export_csv()
+    {
+        $ownerId = $this->_scope_owner_user_id();
+        $q = trim((string)$this->input->get('q', true));
+        $scopeSchoolName = $this->_scope_school_name($this->_scope_school_id());
+        $rows = $this->SchoolAdminModel->report_rows($q, $ownerId);
+
+        $filename = 'school_reports_' . date('Ymd_His') . '.csv';
+        if (ob_get_length()) {
+            @ob_end_clean();
+        }
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $out = fopen('php://output', 'w');
+        if (!$out) {
+            exit;
+        }
+
+        fwrite($out, "\xEF\xBB\xBF");
+        fputcsv($out, ['Student Worker Reports']);
+        fputcsv($out, ['School', $scopeSchoolName !== '' ? $scopeSchoolName : 'N/A']);
+        fputcsv($out, ['Generated At', date('Y-m-d H:i:s')]);
+        if ($q !== '') {
+            fputcsv($out, ['Filter', $q]);
+        }
+        fputcsv($out, []);
+        fputcsv($out, ['Student', 'Email', 'Created', 'Hire Count', 'Latest Hired', 'Status']);
+
+        foreach ($rows as $r) {
+            $ln = trim((string)($r->last_name ?? ''));
+            $fn = trim((string)($r->first_name ?? ''));
+            $full = ($ln !== '' || $fn !== '') ? ($ln . ($ln && $fn ? ', ' : '') . $fn) : ('User #' . (int)($r->id ?? 0));
+            $email = (string)($r->email ?? '');
+            $createdAt = !empty($r->created_at) ? date('Y-m-d h:i A', strtotime($r->created_at)) : '-';
+            $latestHired = !empty($r->latest_hired_at) ? date('Y-m-d h:i A', strtotime($r->latest_hired_at)) : '-';
+            $hireCount = (int)($r->hire_count ?? 0);
+            $statusText = $this->_report_status_label($r);
+
+            fputcsv($out, [$full, $email, $createdAt, $hireCount, $latestHired, $statusText]);
+        }
+
+        fclose($out);
+        exit;
+    }
+
+    public function reports_export_pdf()
+    {
+        if (!class_exists('FPDF')) {
+            $autoload = FCPATH . 'vendor/autoload.php';
+            if (is_file($autoload)) {
+                require_once $autoload;
+            }
+            if (!class_exists('FPDF')) {
+                $fpdf = FCPATH . 'vendor/setasign/fpdf/fpdf.php';
+                if (is_file($fpdf)) {
+                    require_once $fpdf;
+                }
+            }
+            if (!class_exists('FPDF')) {
+                show_error('PDF library (FPDF) is not available.', 500);
+                return;
+            }
+        }
+
+        $ownerId = $this->_scope_owner_user_id();
+        $q = trim((string)$this->input->get('q', true));
+        $scopeSchoolName = $this->_scope_school_name($this->_scope_school_id());
+        $rows = $this->SchoolAdminModel->report_rows($q, $ownerId);
+
+        $pdf = new FPDF('L', 'mm', 'A4');
+        $pdf->SetTitle($this->_pdf_text('Student Worker Reports'));
+        $pdf->SetAuthor($this->_pdf_text('JobMatch DavOr'));
+        $pdf->SetMargins(10, 10, 10);
+        $pdf->SetAutoPageBreak(true, 10);
+        $pdf->AddPage();
+
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->Cell(0, 8, $this->_pdf_text('Student Worker Reports'), 0, 1, 'L');
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(0, 6, $this->_pdf_text('School: ' . ($scopeSchoolName !== '' ? $scopeSchoolName : 'N/A')), 0, 1, 'L');
+        $meta = 'Generated: ' . date('M d, Y h:i A');
+        if ($q !== '') {
+            $meta .= '  |  Filter: ' . $q;
+        }
+        $pdf->Cell(0, 6, $this->_pdf_text($meta), 0, 1, 'L');
+        $pdf->Ln(2);
+
+        $headers = ['Student', 'Email', 'Created', 'Hire Count', 'Latest Hired', 'Status'];
+        $widths  = [62, 84, 38, 24, 38, 26];
+
+        $pdf->SetFont('Arial', 'B', 9);
+        foreach ($headers as $i => $h) {
+            $pdf->Cell($widths[$i], 8, $this->_pdf_text($h), 1, 0, 'C');
+        }
+        $pdf->Ln();
+
+        $pdf->SetFont('Arial', '', 9);
+        foreach ($rows as $r) {
+            if ($pdf->GetY() > 188) {
+                $pdf->AddPage();
+                $pdf->SetFont('Arial', 'B', 9);
+                foreach ($headers as $i => $h) {
+                    $pdf->Cell($widths[$i], 8, $this->_pdf_text($h), 1, 0, 'C');
+                }
+                $pdf->Ln();
+                $pdf->SetFont('Arial', '', 9);
+            }
+
+            $ln = trim((string)($r->last_name ?? ''));
+            $fn = trim((string)($r->first_name ?? ''));
+            $full = ($ln !== '' || $fn !== '') ? ($ln . ($ln && $fn ? ', ' : '') . $fn) : ('User #' . (int)($r->id ?? 0));
+            $email = (string)($r->email ?? '');
+            $createdAt = !empty($r->created_at) ? date('M d, Y h:i A', strtotime($r->created_at)) : '-';
+            $latestHired = !empty($r->latest_hired_at) ? date('M d, Y h:i A', strtotime($r->latest_hired_at)) : '-';
+            $hireCount = (int)($r->hire_count ?? 0);
+            $statusText = $this->_report_status_label($r);
+
+            $values = [
+                $this->_trim_school_label($full, 34),
+                $this->_trim_school_label($email, 44),
+                $createdAt,
+                (string)$hireCount,
+                $latestHired,
+                $statusText,
+            ];
+
+            foreach ($values as $i => $value) {
+                $align = $i === 3 ? 'C' : 'L';
+                $pdf->Cell($widths[$i], 7, $this->_pdf_text($value), 1, 0, $align);
+            }
+            $pdf->Ln();
+        }
+
+        $filename = 'school_reports_' . date('Ymd_His') . '.pdf';
+        $pdf->Output('D', $filename);
+        exit;
+    }
+
+    private function _current_role_normalized(): string
+    {
+        $role = strtolower(trim((string)$this->session->userdata('role')));
+        $role = str_replace(['_', '-'], ' ', $role);
+        $role = preg_replace('/\s+/', ' ', $role);
+        return (string)$role;
+    }
+
+    private function _scope_owner_user_id(): ?int
+    {
+        if ($this->_current_role_normalized() !== 'school admin') {
+            return null;
+        }
+        $id = (int)($this->session->userdata('id') ?: $this->session->userdata('user_id') ?: 0);
+        return $id > 0 ? $id : -1;
+    }
+
+    private function _scope_school_id(): ?int
+    {
+        if ($this->_current_role_normalized() !== 'school admin') {
+            return null;
+        }
+
+        $uid = (int)($this->session->userdata('id') ?: $this->session->userdata('user_id') ?: 0);
+        if ($uid <= 0) {
+            return null;
+        }
+
+        if ($this->db->field_exists('school_id', 'users')) {
+            $u = $this->db->select('school_id')->from('users')->where('id', $uid)->limit(1)->get()->row();
+            $sid = isset($u->school_id) ? (int)$u->school_id : 0;
+            if ($sid > 0) {
+                return $sid;
+            }
+        }
+
+        if ($this->db->table_exists('school_admin_accounts')) {
+            $a = $this->db->select('school_id')
+                ->from('school_admin_accounts')
+                ->where('user_id', $uid)
+                ->limit(1)
+                ->get()
+                ->row();
+            $sid = isset($a->school_id) ? (int)$a->school_id : 0;
+            if ($sid > 0) {
+                return $sid;
+            }
+        }
+
+        return null;
+    }
+
+    private function _scope_school_name(?int $schoolId): string
+    {
+        $schoolId = (int)$schoolId;
+        if ($schoolId <= 0 || !$this->db->table_exists('schools')) {
+            return '';
+        }
+        $s = $this->db->select('school_name')->from('schools')->where('school_id', $schoolId)->limit(1)->get()->row();
+        return $s ? trim((string)($s->school_name ?? '')) : '';
+    }
+
+    private function _trim_school_label(?string $schoolName, int $maxLength = 54): string
+    {
+        $schoolName = trim((string)$schoolName);
+        if ($schoolName === '' || $maxLength < 4) {
+            return $schoolName;
+        }
+
+        if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+            if (mb_strlen($schoolName, 'UTF-8') <= $maxLength) {
+                return $schoolName;
+            }
+            return rtrim(mb_substr($schoolName, 0, $maxLength - 3, 'UTF-8')) . '...';
+        }
+
+        if (strlen($schoolName) <= $maxLength) {
+            return $schoolName;
+        }
+        return rtrim(substr($schoolName, 0, $maxLength - 3)) . '...';
+    }
+
+    private function _report_status_label($row): string
+    {
+        $statusLower = strtolower((string)($row->status ?? 'active'));
+        $isActive = (int)($row->is_active ?? 0) === 1;
+
+        if ($statusLower === 'pending') {
+            return 'Pending';
+        }
+        if ($isActive) {
+            return 'Active';
+        }
+        return 'Inactive';
+    }
+
+    private function _pdf_text(string $text): string
+    {
+        $text = trim($text);
+        if ($text === '') {
+            return '';
+        }
+        $converted = @iconv('UTF-8', 'windows-1252//TRANSLIT', $text);
+        if ($converted !== false) {
+            return $converted;
+        }
+        return preg_replace('/[^\x20-\x7E]/', '', $text);
+    }
 }
