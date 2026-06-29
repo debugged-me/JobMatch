@@ -217,6 +217,18 @@ list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin
           <span class="menu-title">Upload Workers</span>
         </a>
       </li>
+      <li class="nav-item <?= $active('tesda/trainings') ?>">
+        <a class="nav-link" href="<?= site_url('tesda/trainings') ?>">
+          <i class="mdi mdi-school-outline menu-icon"></i>
+          <span class="menu-title">Trainings</span>
+        </a>
+      </li>
+      <li class="nav-item <?= $active('tesda/reports') ?>">
+        <a class="nav-link" href="<?= site_url('tesda/reports') ?>">
+          <i class="mdi mdi-chart-box-outline menu-icon"></i>
+          <span class="menu-title">Reports</span>
+        </a>
+      </li>
     <?php endif; ?>
 
     <?php if ($isPeso): ?>
