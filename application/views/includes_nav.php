@@ -220,6 +220,12 @@ list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin
     <?php endif; ?>
 
     <?php if ($isPeso): ?>
+      <li class="nav-item <?= $active('peso/reports/hired-workers') ?>">
+        <a class="nav-link" href="<?= site_url('peso/reports/hired-workers') ?>">
+          <i class="mdi mdi-chart-box-outline menu-icon"></i>
+          <span class="menu-title">Reports</span>
+        </a>
+      </li>
     <?php endif; ?>
 
     <?php if ($isSchoolAdmin): ?>

@@ -270,16 +270,170 @@ class PesoDashboard extends CI_Controller
         }
     }
 
+    private function normalize_report_filters(): array
+    {
+        $dateFrom = trim((string)$this->input->get('date_from', true));
+        $dateTo = trim((string)$this->input->get('date_to', true));
+        $clientId = (int)$this->input->get('client_id', true);
+        $workerId = (int)$this->input->get('worker_id', true);
+        $projectId = (int)$this->input->get('project_id', true);
+
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
+            $dateFrom = '';
+        }
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
+            $dateTo = '';
+        }
+
+        return [
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
+            'client_id' => $clientId > 0 ? $clientId : 0,
+            'worker_id' => $workerId > 0 ? $workerId : 0,
+            'project_id' => $projectId > 0 ? $projectId : 0,
+        ];
+    }
+
+    private function report_filter_labels(array $filters, array $options): array
+    {
+        $clientLabels = [];
+        foreach ($options['clients'] ?? [] as $opt) {
+            $clientLabels[(int)($opt['id'] ?? 0)] = (string)($opt['label'] ?? '');
+        }
+
+        $workerLabels = [];
+        foreach ($options['workers'] ?? [] as $opt) {
+            $workerLabels[(int)($opt['id'] ?? 0)] = (string)($opt['label'] ?? '');
+        }
+
+        $projectLabels = [];
+        foreach ($options['projects'] ?? [] as $opt) {
+            $projectLabels[(int)($opt['id'] ?? 0)] = (string)($opt['label'] ?? '');
+        }
+
+        $labels = [];
+        if (!empty($filters['date_from'])) {
+            $labels['date_from'] = 'From: ' . $filters['date_from'];
+        }
+        if (!empty($filters['date_to'])) {
+            $labels['date_to'] = 'To: ' . $filters['date_to'];
+        }
+        if (!empty($filters['client_id'])) {
+            $id = (int)$filters['client_id'];
+            $labels['client_id'] = 'Client: ' . ($clientLabels[$id] ?? ('Client #' . $id));
+        }
+        if (!empty($filters['worker_id'])) {
+            $id = (int)$filters['worker_id'];
+            $labels['worker_id'] = 'Worker: ' . ($workerLabels[$id] ?? ('Worker #' . $id));
+        }
+        if (!empty($filters['project_id'])) {
+            $id = (int)$filters['project_id'];
+            $labels['project_id'] = 'Project: ' . ($projectLabels[$id] ?? ('Project #' . $id));
+        }
+
+        return $labels;
+    }
+
+    private function report_url_with_query(array $filters, bool $print = false): string
+    {
+        $query = [];
+        if (!empty($filters['date_from'])) {
+            $query['date_from'] = $filters['date_from'];
+        }
+        if (!empty($filters['date_to'])) {
+            $query['date_to'] = $filters['date_to'];
+        }
+        if (!empty($filters['client_id'])) {
+            $query['client_id'] = (int)$filters['client_id'];
+        }
+        if (!empty($filters['worker_id'])) {
+            $query['worker_id'] = (int)$filters['worker_id'];
+        }
+        if (!empty($filters['project_id'])) {
+            $query['project_id'] = (int)$filters['project_id'];
+        }
+        if ($print) {
+            $query['print'] = 1;
+        }
+
+        $base = site_url('peso/reports/hired-workers');
+        return empty($query) ? $base : ($base . '?' . http_build_query($query));
+    }
+
     public function index()
     {
         $uid = $this->me();
         $list = $this->peso->mine($uid);
 
+        // Vacancy KPI counts derived from this PESO user's own postings.
+        $kOpen = $kClosed = $kPublic = 0;
+        foreach ($list as $r) {
+            $st = strtolower((string)($r['status'] ?? ''));
+            if ($st === 'open') {
+                $kOpen++;
+            } else {
+                $kClosed++;
+            }
+            if (strtolower((string)($r['visibility'] ?? 'public')) === 'public') {
+                $kPublic++;
+            }
+        }
+
         $this->load->view('dashboard_peso', [
             'page_title' => 'PESO Dashboard',
             'list'       => $list,
+            'k_open'     => $kOpen,
+            'k_closed'   => $kClosed,
+            'k_public'   => $kPublic,
+            'hired'      => $this->peso->hired_summary(),
             'force_public_visibility' => $this->should_force_public_visibility(),
         ]);
+    }
+
+    public function hired_workers_report()
+    {
+        $filters = $this->normalize_report_filters();
+        $rows = $this->peso->hired_workers_report($filters);
+        $options = $this->peso->hired_workers_filter_options();
+
+        $workerIds = [];
+        $clientIds = [];
+        foreach ($rows as $row) {
+            $wid = (int)($row['worker_id'] ?? 0);
+            $cid = (int)($row['client_id'] ?? 0);
+            if ($wid > 0) {
+                $workerIds[$wid] = true;
+            }
+            if ($cid > 0) {
+                $clientIds[$cid] = true;
+            }
+        }
+
+        $summary = $this->peso->hired_summary();
+        $activeFilterLabels = $this->report_filter_labels($filters, $options);
+        $data = [
+            'page_title' => 'PESO Report: Hired Workers',
+            'rows' => $rows,
+            'filters' => $filters,
+            'filter_options' => $options,
+            'active_filter_labels' => $activeFilterLabels,
+            'print_url' => $this->report_url_with_query($filters, true),
+            'reset_url' => site_url('peso/reports/hired-workers'),
+            'stats' => [
+                'total_hires' => count($rows),
+                'total_workers' => count($workerIds),
+                'total_clients' => count($clientIds),
+                'hired_this_month' => (int)($summary['this_month'] ?? 0),
+                'hired_this_year' => (int)($summary['this_year'] ?? 0),
+            ],
+        ];
+
+        if ((int)$this->input->get('print') === 1) {
+            $this->load->view('peso_hired_workers_report_print', $data);
+            return;
+        }
+
+        $this->load->view('peso_hired_workers_report', $data);
     }
 
     public function store()

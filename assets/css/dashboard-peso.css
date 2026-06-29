@@ -792,6 +792,30 @@ html {
       background: linear-gradient(135deg, #c1272d, #d63031);
     }
 
+    .stat-card--hired .stat-card__icon {
+      background: linear-gradient(135deg, #9b1f24, #c1272d);
+    }
+
+    a.stat-card {
+      text-decoration: none;
+      transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+    }
+
+    a.stat-card:hover {
+      box-shadow: 0 16px 36px rgba(15, 23, 42, .12);
+      transform: translateY(-2px);
+      border-color: rgba(193, 39, 45, .4);
+    }
+
+    a.stat-card .stat-card__hint {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-size: 1.1rem;
+      color: #c1272d;
+      opacity: .55;
+    }
+
     .chip.-followers {
       background: #fef3c7;
       color: #92400e;

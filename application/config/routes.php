@@ -152,6 +152,7 @@ $route['peso/edit/(:num)']      = 'PesoDashboard/edit/$1';
 $route['peso/update/(:num)']    = 'PesoDashboard/update/$1';
 $route['peso/toggle/(:num)']    = 'PesoDashboard/toggle/$1';
 $route['peso/delete/(:num)']    = 'PesoDashboard/delete/$1';
+$route['peso/reports/hired-workers'] = 'PesoDashboard/hired_workers_report';
 
 $route['school-admin']                 = 'SchoolAdmin/index';
 $route['school-admin/workers']         = 'SchoolAdmin/workers';

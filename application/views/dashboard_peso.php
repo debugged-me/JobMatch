@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-peso.css?v=1.0.0') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-peso.css?v=1.1.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -62,6 +62,14 @@
                   </button>
                   <a
                     class="iconbtn"
+                    href="<?= site_url('peso/reports/hired-workers') ?>"
+                    title="Employment Reports"
+                    aria-label="Employment Reports">
+                    <i class="mdi mdi-chart-box-outline"></i>
+                    <span class="iconbtn__label">Reports</span>
+                  </a>
+                  <a
+                    class="iconbtn"
                     href="<?= site_url('dashboard/peso') ?>"
                     title="Refresh"
                     aria-label="Refresh">
@@ -76,6 +84,7 @@
             $k_open = isset($k_open) ? (int)$k_open : 0;
             $k_closed = isset($k_closed) ? (int)$k_closed : 0;
             $k_public = isset($k_public) ? (int)$k_public : 0;
+            $hired_this_month = isset($hired['this_month']) ? (int)$hired['this_month'] : 0;
             ?>
 
             <section class="stats-grid">
@@ -106,6 +115,16 @@
                   <span class="stat-card__value"><?= number_format($k_public) ?></span>
                 </div>
               </article>
+              <a class="stat-card stat-card--hired" href="<?= site_url('peso/reports/hired-workers') ?>" title="View employment reports">
+                <div class="stat-card__icon">
+                  <i class="mdi mdi-account-check"></i>
+                </div>
+                <div class="stat-card__meta">
+                  <span class="stat-card__label">Employed This Month</span>
+                  <span class="stat-card__value"><?= number_format($hired_this_month) ?></span>
+                </div>
+                <i class="mdi mdi-arrow-top-right stat-card__hint"></i>
+              </a>
             </section>
 
             <div class="mt-4">
