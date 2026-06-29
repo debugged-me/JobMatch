@@ -48,6 +48,11 @@ $pwdList = ['Visual','Hearing','Speech','Physical','Mental'];
     .nsrp .peso-box{background:#fffdf3}
     .nsrp .page-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
     .nsrp .badge-status{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}
+    /* Force native checkboxes (admin template hides them by default) */
+    .nsrp input[type=checkbox],.nsrp input[type=radio]{appearance:auto;-webkit-appearance:auto;opacity:1!important;position:static!important;float:none!important;margin:0 .4rem 0 0!important;width:16px;height:16px;vertical-align:-2px;pointer-events:auto}
+    .nsrp .form-check{padding-left:0;min-height:auto;display:inline-flex;align-items:center}
+    .nsrp .form-check .form-check-input{margin-left:0}
+    .nsrp .form-check-inline{margin-right:1rem}
   </style>
 </head>
 <body>
