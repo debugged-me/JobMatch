@@ -41,6 +41,105 @@ class WorkerProfile_model extends CI_Model
         return $this->db->get()->row();
     }
 
+    /* ===================================================================
+     * NSRP Form 1 (Rev.3) — Jobseeker Registration
+     * =================================================================== */
+
+    /** Columns on worker_profile that the NSRP Form 1 jobseeker form owns. */
+    private $nsrp_fields = [
+        // I. Personal information
+        'sex','date_of_birth','place_of_birth','civil_status','citizenship',
+        'religion','height_cm','weight_kg','phoneNo','landline','mobile_secondary',
+        'brgy','city','province','present_street',
+        'perm_same_as_present','perm_street','perm_brgy','perm_city','perm_province',
+        'disability',
+        // Employment status & flags
+        'employment_status','employment_substatus','actively_looking','looking_duration',
+        'willing_immediate','available_when','is_4ps','fourps_household_id','is_ofw','ofw_returning',
+        // II. Job preference
+        'pref_occupations','pref_locations_local','pref_locations_overseas','salary_expectation',
+        // III. Education (reuse existing columns)
+        'education_level','school','course','year_graduated',
+        // IV/V. Training, eligibility, languages
+        'tesda_certs','eligibilities','language_certs','languages',
+        // VI. Work experience (reuse exp JSON)
+        'exp',
+        // VII/IX. Skills self-assessment
+        'century_skills','tech_skills_informal','skills',
+    ];
+
+    /** JSON-stored NSRP fields (arrays in PHP, text in DB). */
+    private $nsrp_json_fields = [
+        'pref_occupations','pref_locations_local','pref_locations_overseas',
+        'tesda_certs','eligibilities','language_certs','century_skills',
+        'tech_skills_informal','exp',
+    ];
+
+    /** Full joined row (users + worker_profile, all columns) for the NSRP form. */
+    public function get_full($user_id)
+    {
+        $this->db->select('u.id as user_id, u.email, u.first_name, u.last_name, u.role, w.*', false);
+        $this->db->from('users u');
+        $this->db->join($this->table . ' w', 'w.workerID = u.id', 'left');
+        $this->db->where('u.id', (int)$user_id);
+        $row = $this->db->get()->row();
+
+        if ($row) {
+            foreach ($this->nsrp_json_fields as $f) {
+                if (isset($row->$f) && is_string($row->$f) && $row->$f !== '') {
+                    $tmp = json_decode($row->$f, true);
+                    if (is_array($tmp)) $row->$f = $tmp;
+                }
+            }
+        }
+        return $row;
+    }
+
+    /**
+     * Save the jobseeker-editable portion of NSRP Form 1.
+     * $data may contain arrays for JSON fields; they are encoded here.
+     * Only known NSRP columns are persisted.
+     */
+    public function save_nsrp($user_id, array $data): bool
+    {
+        $clean = array_intersect_key($data, array_flip($this->nsrp_fields));
+
+        foreach ($this->nsrp_json_fields as $f) {
+            if (array_key_exists($f, $clean)) {
+                $val = $clean[$f];
+                if (is_array($val)) {
+                    $val = array_values(array_filter($val, function ($x) {
+                        if (is_array($x)) return count(array_filter($x, fn($y) => $y !== '' && $y !== null)) > 0;
+                        return $x !== '' && $x !== null;
+                    }));
+                    $clean[$f] = !empty($val) ? json_encode($val, JSON_UNESCAPED_UNICODE) : null;
+                } elseif ($val === '' || $val === null) {
+                    $clean[$f] = null;
+                }
+            }
+        }
+
+        // update_fields() drops nulls, so map intentional "clear" to empty string.
+        foreach ($clean as $k => $v) {
+            if ($v === null) $clean[$k] = '';
+        }
+
+        if (empty($clean)) return true;
+        return (bool) $this->update_fields($user_id, $clean);
+    }
+
+    /** PESO-only assessment block (FOR USE OF PESO ONLY). */
+    public function assess_nsrp($user_id, array $data): bool
+    {
+        $allowed = ['peso_eligibility','assessed_by','assessed_at','nsrp_reference','nsrp_status'];
+        $clean = array_intersect_key($data, array_flip($allowed));
+        foreach ($clean as $k => $v) {
+            if ($v === null) $clean[$k] = '';
+        }
+        if (empty($clean)) return true;
+        return (bool) $this->update_fields($user_id, $clean);
+    }
+
     public function upsert($user_id, $data)
     {
         // You can optionally whitelist here; leaving open to keep all fields (incl. tesda_certs).

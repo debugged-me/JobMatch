@@ -324,6 +324,59 @@ class ClientProfile_model extends CI_Model
         return ['ok' => true, 'changed' => true, 'row' => $this->get($user_id)];
     }
 
+    /* ===================================================================
+     * NSRP Form 2 — Establishment Registration
+     * =================================================================== */
+
+    /** Establishment/contact columns the NSRP Form 2 owns on client_profile. */
+    private $nsrp_establishment_fields = [
+        // Business identity
+        'companyName','business_name','trade_name','acronym','office_type','tin',
+        'employer_type','employer_subtype','workforce_size','line_of_business',
+        // Address
+        'street_village','brgy','city','province','address',
+        // Contact details
+        'owner_name','contact_person','contact_position','phoneNo','telephone','fax',
+        // First/last/middle name of the registering user (kept for parity with client_profile)
+        'fName','mName','lName',
+    ];
+
+    /** Full joined row (users + client_profile, all columns) for the NSRP form. */
+    public function get_full($user_id)
+    {
+        $this->db->select('u.id as user_id, u.email, u.first_name, u.last_name, u.role, c.*', false);
+        $this->db->from('users u');
+        $this->db->join($this->table . ' c', 'c.clientID = u.id', 'left');
+        $this->db->where('u.id', (int)$user_id);
+        return $this->db->get()->row();
+    }
+
+    /** Save the establishment/contact portion of NSRP Form 2. */
+    public function save_establishment($user_id, array $data): bool
+    {
+        $user_id = (int)$user_id;
+        $this->ensure_row($user_id);
+
+        $clean = array_intersect_key($data, array_flip($this->nsrp_establishment_fields));
+        foreach ($clean as $k => $v) {
+            if ($v === null) $clean[$k] = '';
+        }
+        if (empty($clean)) return true;
+
+        $clean['updated_at'] = date('Y-m-d H:i:s');
+        $this->db->where('clientID', $user_id)->update($this->table, $clean);
+        return $this->db->error()['code'] == 0;
+    }
+
+    /** PESO-only: set establishment registration status. */
+    public function set_nsrp_status($user_id, string $status): bool
+    {
+        if (!in_array($status, ['draft','submitted','assessed'], true)) return false;
+        $this->db->where('clientID', (int)$user_id)
+            ->update($this->table, ['nsrp_status' => $status, 'updated_at' => date('Y-m-d H:i:s')]);
+        return $this->db->error()['code'] == 0;
+    }
+
     /* =======================
      * Notifications
      * ======================= */

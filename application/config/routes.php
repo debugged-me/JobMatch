@@ -161,6 +161,22 @@ $route['peso/toggle/(:num)']    = 'PesoDashboard/toggle/$1';
 $route['peso/delete/(:num)']    = 'PesoDashboard/delete/$1';
 $route['peso/reports/hired-workers'] = 'PesoDashboard/hired_workers_report';
 
+// NSRP Form 1 — Jobseeker Registration (PESO only)
+$route['nsrp/jobseeker/(:num)']        = 'Nsrp/jobseeker/$1';
+$route['nsrp/save/(:num)']             = 'Nsrp/save/$1';
+$route['nsrp/assess/(:num)']           = 'Nsrp/assess/$1';
+$route['nsrp/print_jobseeker/(:num)']  = 'Nsrp/print_jobseeker/$1';
+$route['nsrp/send_jobseeker/(:num)']   = 'Nsrp/send_jobseeker/$1';
+$route['nsrp/encode']                  = 'Nsrp/encode';
+
+// NSRP Form 2 — Establishment Registration (PESO only)
+$route['nsrp/establishment/(:num)']        = 'Nsrp/establishment/$1';
+$route['nsrp/save_establishment/(:num)']   = 'Nsrp/save_establishment/$1';
+$route['nsrp/establishment_assess/(:num)'] = 'Nsrp/establishment_assess/$1';
+$route['nsrp/print_establishment/(:num)']  = 'Nsrp/print_establishment/$1';
+$route['nsrp/send_establishment/(:num)']   = 'Nsrp/send_establishment/$1';
+$route['nsrp/encode_establishment']        = 'Nsrp/encode_establishment';
+
 $route['school-admin']                 = 'SchoolAdmin/index';
 $route['school-admin/workers']         = 'SchoolAdmin/workers';
 $route['school-admin/create']          = 'SchoolAdmin/create';

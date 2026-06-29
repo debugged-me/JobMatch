@@ -91,6 +91,60 @@ class Peso_model extends CI_Model
     }
 
     /* ============================================================
+       NSRP Form 2 — Establishment vacancies (jobs table)
+       ============================================================ */
+
+    /** Columns the NSRP Form 2 vacancy section owns on `jobs`. */
+    private $nsrp_vacancy_fields = [
+        'title','description','nature_of_work','place_of_work','salary','vacancy_count',
+        'work_experience_months','other_qualifications','accepts_pwd','pwd_types','accepts_ofw',
+        'educational_level','course_strand','license','eligibility','certification','language',
+        'posting_date','valid_until','location_text','visibility',
+    ];
+
+    public function nsrp_vacancies(int $establishmentId): array
+    {
+        return $this->db->from('jobs')
+            ->where('establishment_id', $establishmentId)
+            ->order_by('created_at', 'DESC')
+            ->get()->result_array();
+    }
+
+    public function nsrp_find_vacancy(int $jobId): ?array
+    {
+        $row = $this->db->from('jobs')->where('id', $jobId)->get()->row_array();
+        return $row ?: null;
+    }
+
+    public function nsrp_create_vacancy(int $establishmentId, int $posterId, array $data): int
+    {
+        $row = array_intersect_key($data, array_flip($this->nsrp_vacancy_fields));
+        $row['establishment_id'] = $establishmentId;
+        $row['poster_id']        = $posterId;
+        $row['post_type']        = 'hire';
+        $row['status']           = 'open';
+        if (empty($row['visibility'])) $row['visibility'] = 'public';
+        $this->db->insert('jobs', $row);
+        return (int)$this->db->insert_id();
+    }
+
+    public function nsrp_update_vacancy(int $jobId, array $data): bool
+    {
+        $row = array_intersect_key($data, array_flip($this->nsrp_vacancy_fields));
+        if (empty($row)) return true;
+        return (bool)$this->db->where('id', $jobId)->update('jobs', $row);
+    }
+
+    /** PESO-only assessment block on a vacancy. */
+    public function nsrp_assess_vacancy(int $jobId, array $data): bool
+    {
+        $allowed = ['assessed_by','encoded_by'];
+        $row = array_intersect_key($data, array_flip($allowed));
+        if (empty($row)) return true;
+        return (bool)$this->db->where('id', $jobId)->update('jobs', $row);
+    }
+
+    /* ============================================================
        Employment reporting (hired workers)
        ============================================================ */
 

@@ -62,6 +62,22 @@
                   </button>
                   <a
                     class="iconbtn"
+                    href="<?= site_url('nsrp/encode') ?>"
+                    title="Register Jobseeker (NSRP Form 1)"
+                    aria-label="Register Jobseeker">
+                    <i class="mdi mdi-account-plus-outline"></i>
+                    <span class="iconbtn__label">Register Jobseeker</span>
+                  </a>
+                  <a
+                    class="iconbtn"
+                    href="<?= site_url('nsrp/encode_establishment') ?>"
+                    title="Register Establishment (NSRP Form 2)"
+                    aria-label="Register Establishment">
+                    <i class="mdi mdi-domain"></i>
+                    <span class="iconbtn__label">Register Establishment</span>
+                  </a>
+                  <a
+                    class="iconbtn"
                     href="<?= site_url('peso/reports/hired-workers') ?>"
                     title="Employment Reports"
                     aria-label="Employment Reports">
