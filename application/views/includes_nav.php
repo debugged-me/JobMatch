@@ -244,6 +244,12 @@ list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin
           <span class="menu-title">NSRP Form 2 (Establishment)</span>
         </a>
       </li>
+      <li class="nav-item <?= $active('nsrp/records') ?>">
+        <a class="nav-link" href="<?= site_url('nsrp/records') ?>">
+          <i class="mdi mdi-clipboard-list-outline menu-icon"></i>
+          <span class="menu-title">NSRP Records</span>
+        </a>
+      </li>
       <li class="nav-item <?= $active('peso/reports/hired-workers') ?>">
         <a class="nav-link" href="<?= site_url('peso/reports/hired-workers') ?>">
           <i class="mdi mdi-chart-box-outline menu-icon"></i>

@@ -100,6 +100,54 @@ class Nsrp extends CI_Controller
         return $user_id;
     }
 
+    /* ---------------- Records report ---------------- */
+
+    public function records()
+    {
+        $q      = trim((string)$this->input->get('q', true));
+        $status = (string)$this->input->get('status', true);
+        $type   = (string)$this->input->get('type', true);
+        if (!in_array($type, ['jobseeker','establishment'], true)) {
+            $type = 'jobseeker';
+        }
+
+        $perPageOptions = [10, 25, 50, 100];
+        $perPage = (int)$this->input->get('per_page', true);
+        if (!in_array($perPage, $perPageOptions, true)) {
+            $perPage = 25;
+        }
+
+        $page = max(1, (int)$this->input->get('page', true));
+        $total = $type === 'jobseeker'
+            ? $this->wp->nsrp_total($q, $status)
+            : $this->cp->nsrp_total($q, $status);
+        $totalPages = max(1, (int)ceil($total / $perPage));
+        if ($page > $totalPages) {
+            $page = $totalPages;
+        }
+        $offset = ($page - 1) * $perPage;
+
+        $this->load->view('nsrp_records', [
+            'page_title'     => 'NSRP Records',
+            'type'           => $type,
+            'q'              => $q,
+            'status'         => $status,
+            'jobseekers'     => $type === 'jobseeker' ? $this->wp->nsrp_list($q, $status, $perPage, $offset) : [],
+            'establishments' => $type === 'establishment' ? $this->cp->nsrp_list($q, $status, $perPage, $offset) : [],
+            'worker_counts'  => $this->wp->nsrp_counts(),
+            'est_counts'     => $this->cp->nsrp_counts(),
+            'pagination'     => [
+                'page'             => $page,
+                'per_page'         => $perPage,
+                'per_page_options' => $perPageOptions,
+                'total'            => $total,
+                'total_pages'      => $totalPages,
+                'from'             => $total > 0 ? $offset + 1 : 0,
+                'to'               => min($total, $offset + $perPage),
+            ],
+        ]);
+    }
+
     /* ---------------- Form 1: Jobseeker ---------------- */
 
     public function jobseeker($worker_id = 0)

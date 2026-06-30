@@ -161,6 +161,9 @@ $route['peso/toggle/(:num)']    = 'PesoDashboard/toggle/$1';
 $route['peso/delete/(:num)']    = 'PesoDashboard/delete/$1';
 $route['peso/reports/hired-workers'] = 'PesoDashboard/hired_workers_report';
 
+// NSRP records report (PESO only)
+$route['nsrp/records']                 = 'Nsrp/records';
+
 // NSRP Form 1 — Jobseeker Registration (PESO only)
 $route['nsrp/jobseeker/(:num)']        = 'Nsrp/jobseeker/$1';
 $route['nsrp/save/(:num)']             = 'Nsrp/save/$1';

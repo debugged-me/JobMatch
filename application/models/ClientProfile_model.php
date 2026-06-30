@@ -341,6 +341,65 @@ class ClientProfile_model extends CI_Model
         'fName','mName','lName',
     ];
 
+    private function apply_nsrp_filters(string $q = '', string $status = ''): void
+    {
+        if ($status !== '' && in_array($status, ['draft','submitted','assessed'], true)) {
+            $this->db->where('c.nsrp_status', $status);
+        }
+        if ($q !== '') {
+            $this->db->group_start()
+                ->like('c.business_name', $q)->or_like('c.companyName', $q)->or_like('u.email', $q)
+                ->group_end();
+        }
+    }
+
+    /** List establishment NSRP registrations for the PESO records report. */
+    public function nsrp_list(string $q = '', string $status = '', int $limit = 25, int $offset = 0): array
+    {
+        $limit = max(1, min(100, $limit));
+        $offset = max(0, $offset);
+
+        $this->db->select("u.id, u.email,
+                COALESCE(NULLIF(TRIM(c.business_name), ''), NULLIF(TRIM(c.companyName), ''), u.email) AS business,
+                c.nsrp_status, c.updated_at,
+                (SELECT COUNT(*) FROM jobs j WHERE j.establishment_id = u.id) AS vacancy_count", false)
+            ->from('users u')
+            ->join($this->table . ' c', 'c.clientID = u.id', 'inner')
+            ->where('u.role', 'client');
+
+        $this->apply_nsrp_filters($q, $status);
+        return $this->db->order_by('c.updated_at', 'DESC')->limit($limit, $offset)->get()->result_array();
+    }
+
+    public function nsrp_total(string $q = '', string $status = ''): int
+    {
+        $this->db->from('users u')
+            ->join($this->table . ' c', 'c.clientID = u.id', 'inner')
+            ->where('u.role', 'client');
+
+        $this->apply_nsrp_filters($q, $status);
+        return (int)$this->db->count_all_results();
+    }
+
+    /** Status counts for the records report header. */
+    public function nsrp_counts(): array
+    {
+        $out = ['total' => 0, 'draft' => 0, 'submitted' => 0, 'assessed' => 0];
+        $rows = $this->db->select('c.nsrp_status AS s, COUNT(*) AS c', false)
+            ->from('users u')
+            ->join($this->table . ' c', 'c.clientID = u.id', 'inner')
+            ->where('u.role', 'client')
+            ->group_by('c.nsrp_status')
+            ->get()->result_array();
+        foreach ($rows as $r) {
+            $s = (string)($r['s'] ?? 'draft');
+            $cc = (int)($r['c'] ?? 0);
+            if (isset($out[$s])) $out[$s] += $cc;
+            $out['total'] += $cc;
+        }
+        return $out;
+    }
+
     /** Full joined row (users + client_profile, all columns) for the NSRP form. */
     public function get_full($user_id)
     {

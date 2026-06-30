@@ -75,6 +75,64 @@ class WorkerProfile_model extends CI_Model
         'tech_skills_informal','exp',
     ];
 
+    private function apply_nsrp_filters(string $q = '', string $status = ''): void
+    {
+        if ($status !== '' && in_array($status, ['draft','submitted','assessed'], true)) {
+            $this->db->where('w.nsrp_status', $status);
+        }
+        if ($q !== '') {
+            $this->db->group_start()
+                ->like('u.first_name', $q)->or_like('u.last_name', $q)->or_like('u.email', $q)
+                ->or_like('w.nsrp_reference', $q)
+                ->group_end();
+        }
+    }
+
+    /** List jobseeker NSRP registrations for the PESO records report. */
+    public function nsrp_list(string $q = '', string $status = '', int $limit = 25, int $offset = 0): array
+    {
+        $limit = max(1, min(100, $limit));
+        $offset = max(0, $offset);
+
+        $this->db->select("u.id, u.email, u.first_name, u.last_name,
+                w.nsrp_status, w.assessed_by, w.assessed_at, w.nsrp_reference, w.updated_at", false)
+            ->from('users u')
+            ->join($this->table . ' w', 'w.workerID = u.id', 'inner')
+            ->where('u.role', 'worker');
+
+        $this->apply_nsrp_filters($q, $status);
+        return $this->db->order_by('w.updated_at', 'DESC')->limit($limit, $offset)->get()->result_array();
+    }
+
+    public function nsrp_total(string $q = '', string $status = ''): int
+    {
+        $this->db->from('users u')
+            ->join($this->table . ' w', 'w.workerID = u.id', 'inner')
+            ->where('u.role', 'worker');
+
+        $this->apply_nsrp_filters($q, $status);
+        return (int)$this->db->count_all_results();
+    }
+
+    /** Status counts for the records report header. */
+    public function nsrp_counts(): array
+    {
+        $out = ['total' => 0, 'draft' => 0, 'submitted' => 0, 'assessed' => 0];
+        $rows = $this->db->select('w.nsrp_status AS s, COUNT(*) AS c', false)
+            ->from('users u')
+            ->join($this->table . ' w', 'w.workerID = u.id', 'inner')
+            ->where('u.role', 'worker')
+            ->group_by('w.nsrp_status')
+            ->get()->result_array();
+        foreach ($rows as $r) {
+            $s = (string)($r['s'] ?? 'draft');
+            $c = (int)($r['c'] ?? 0);
+            if (isset($out[$s])) $out[$s] += $c;
+            $out['total'] += $c;
+        }
+        return $out;
+    }
+
     /** Full joined row (users + worker_profile, all columns) for the NSRP form. */
     public function get_full($user_id)
     {
