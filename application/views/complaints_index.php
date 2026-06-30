@@ -1,5 +1,6 @@
 ﻿<?php defined('BASEPATH') or exit('No direct script access allowed');
-$page_title = 'My Scam Reports'; ?>
+$isAdmin    = !empty($isAdmin);
+$page_title = $title ?? ($isAdmin ? 'All Scam Reports' : 'My Scam Reports'); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,15 +20,16 @@ $page_title = 'My Scam Reports'; ?>
 
   <style>
     :root {
-      --ink: #1e3a8a;
-      --brand: #2563eb;
-      --muted: #64748b;
-      --line: #d9dee7;
-      --chip: #eef2ff;
-      --bg: #f6f8fc;
-      --bg2: #eef2f7;
+      --ink: #202826;
+      --brand: #c1272d;
+      --brand-dark: #9b1f24;
+      --muted: #5c6663;
+      --line: #e2e8e3;
+      --chip: rgba(193, 39, 45, .08);
+      --bg: #f7f9f6;
+      --bg2: #eef2ee;
       --radius: 14px;
-      --shadow: 0 8px 22px rgba(2, 6, 23, .10)
+      --shadow: 0 2px 14px rgba(32, 40, 38, .06)
     }
 
     body {
@@ -101,16 +103,18 @@ $page_title = 'My Scam Reports'; ?>
     }
 
     .btn-brand {
-      background: #f5f8ff;
+      background: var(--brand);
       border: 1px solid var(--brand);
-      color: var(--ink);
+      color: #fff;
       border-radius: 12px;
       font-weight: 700;
       padding: .45rem .85rem
     }
 
     .btn-brand:hover {
-      background: #e9f0ff
+      background: var(--brand-dark);
+      border-color: var(--brand-dark);
+      color: #fff
     }
 
     .table-wrap {
@@ -122,7 +126,7 @@ $page_title = 'My Scam Reports'; ?>
     }
 
     .table-r thead th {
-      background: #f9fbff;
+      background: var(--bg);
       border-top: 0;
       position: sticky;
       top: 0;
@@ -139,7 +143,7 @@ $page_title = 'My Scam Reports'; ?>
     }
 
     .table-r tbody tr:hover {
-      background: #fbfdff
+      background: var(--chip)
     }
 
     .badge-chip {
@@ -370,7 +374,7 @@ $page_title = 'My Scam Reports'; ?>
 
     .title-txt {
       font-weight: 600;
-      color: #1e3a8a;
+      color: var(--ink);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -414,7 +418,7 @@ $page_title = 'My Scam Reports'; ?>
               <div class="icon"><i class="mdi mdi-shield-alert-outline"></i></div>
               <div>
                 <h1 class="title"><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></h1>
-                <div class="page-sub">Track the status of your submitted reports.</div>
+                <div class="page-sub"><?= $isAdmin ? 'Review all scam reports submitted by workers and clients.' : 'Track the status of your submitted reports.' ?></div>
               </div>
             </div>
 
@@ -427,11 +431,13 @@ $page_title = 'My Scam Reports'; ?>
 
             <section class="card">
               <div class="card-head">
-                <h6>My Reports</h6>
+                <h6><?= $isAdmin ? 'All Reports' : 'My Reports' ?></h6>
                 <div class="toolbar">
-                  <a href="<?= site_url('complaints/create') ?>" class="btn btn-sm btn-brand">
-                    <i class="mdi mdi-plus"></i> New Report
-                  </a>
+                  <?php if (!$isAdmin): ?>
+                    <a href="<?= site_url('complaints/create') ?>" class="btn btn-sm btn-brand">
+                      <i class="mdi mdi-plus"></i> New Report
+                    </a>
+                  <?php endif; ?>
                 </div>
               </div>
 
@@ -441,6 +447,9 @@ $page_title = 'My Scam Reports'; ?>
                     <thead>
                       <tr>
                         <th>Title & Details</th>
+                        <?php if ($isAdmin): ?>
+                          <th style="width:170px">Reported by</th>
+                        <?php endif; ?>
                         <th style="width:180px">Reported user</th>
                         <th style="width:110px">Type</th>
                         <th style="width:140px">Status</th>
@@ -451,8 +460,12 @@ $page_title = 'My Scam Reports'; ?>
                     <tbody>
                       <?php if (empty($items)): ?>
                         <tr class="empty-row">
-                          <td colspan="6" class="text-center muted">
-                            <i class="mdi mdi-information-outline"></i> No reports yet. Click <strong>New Report</strong> to file your first complaint.
+                          <td colspan="<?= $isAdmin ? 7 : 6 ?>" class="text-center muted">
+                            <?php if ($isAdmin): ?>
+                              <i class="mdi mdi-information-outline"></i> No scam reports have been submitted yet.
+                            <?php else: ?>
+                              <i class="mdi mdi-information-outline"></i> No reports yet. Click <strong>New Report</strong> to file your first complaint.
+                            <?php endif; ?>
                           </td>
                         </tr>
                         <?php else: foreach ($items as $r): ?>
@@ -467,6 +480,10 @@ $page_title = 'My Scam Reports'; ?>
 
                           $accused = trim((string)($r->against_user_name ?? ''));
                           if ($accused === '' && !empty($r->against_user_id)) $accused = 'User #' . (int)$r->against_user_id;
+
+                          $reporter = trim((string)($r->reporter_name ?? ''));
+                          if ($reporter === '' && !empty($r->reporter_id)) $reporter = 'User #' . (int)$r->reporter_id;
+                          $reporterRole = trim((string)($r->r_role ?? ''));
 
                           $titleSafe   = htmlspecialchars($r->title ?? 'Untitled', ENT_QUOTES, 'UTF-8');
                           $detailsRaw  = (string)($r->details ?? '');
@@ -484,6 +501,16 @@ $page_title = 'My Scam Reports'; ?>
                                 <?php endif; ?>
                               </div>
                             </td>
+
+                            <?php if ($isAdmin): ?>
+                              <!-- Reported by -->
+                              <td data-th="Reported by" class="text-truncate" style="max-width:190px" title="<?= htmlspecialchars($reporter, ENT_QUOTES, 'UTF-8') ?>">
+                                <span class="title-txt" style="max-width:160px;display:inline-block;vertical-align:bottom"><?= htmlspecialchars($reporter ?: '—', ENT_QUOTES, 'UTF-8') ?></span>
+                                <?php if ($reporterRole !== ''): ?>
+                                  <div class="muted" style="font-size:11px;text-transform:capitalize"><?= htmlspecialchars($reporterRole, ENT_QUOTES, 'UTF-8') ?></div>
+                                <?php endif; ?>
+                              </td>
+                            <?php endif; ?>
 
                             <!-- Reported user -->
                             <td class="text-truncate" style="max-width:200px" title="<?= $accused ? htmlspecialchars($accused, ENT_QUOTES, 'UTF-8') : '' ?>">

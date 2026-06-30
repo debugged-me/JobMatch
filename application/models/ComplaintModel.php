@@ -44,12 +44,14 @@ public function listByReporter($userId)
     public function listAll($filters = [])
     {
         $this->db->from($this->table.' c');
-        $this->db->select('
+        $this->db->select("
             c.*,
             ur.first_name AS r_first, ur.last_name AS r_last, ur.role AS r_role,
-            ua.first_name AS a_first, ua.last_name AS a_last, ua.role AS a_role
-        ');
-        $this->db->join('users ur', 'ur.id = c.reporter_id', 'left'); 
+            ua.first_name AS a_first, ua.last_name AS a_last, ua.role AS a_role,
+            CONCAT_WS(' ', ur.first_name, ur.last_name) AS reporter_name,
+            CONCAT_WS(' ', ua.first_name, ua.last_name) AS against_user_name
+        ", false);
+        $this->db->join('users ur', 'ur.id = c.reporter_id', 'left');
         $this->db->join('users ua', 'ua.id = c.against_user_id', 'left');
 
         if (!empty($filters['status'])) {

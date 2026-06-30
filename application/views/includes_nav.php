@@ -158,6 +158,13 @@ list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin
         </a>
       </li>
 
+      <li class="nav-item <?= $active('complaints') ?>">
+        <a class="nav-link" href="<?= site_url('complaints') ?>">
+          <i class="mdi mdi-shield-alert-outline menu-icon"></i>
+          <span class="menu-title">Report a Scam</span>
+        </a>
+      </li>
+
       <li class="nav-item <?= $active('hotlines') ?>">
         <a class="nav-link" href="<?= site_url('hotlines') ?>">
           <i class="mdi mdi-phone-in-talk-outline menu-icon"></i>
@@ -182,13 +189,6 @@ list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin
       </li>
     <?php endif; ?>
     <?php if ($isWorker): ?>
-      <li class="nav-item <?= $active('profile/edit') ?>">
-        <a class="nav-link" href="<?= site_url('profile/edit?tab=info') ?>">
-          <i class="mdi mdi-account-badge-outline menu-icon"></i>
-          <span class="menu-title">Profile</span>
-        </a>
-      </li>
-
       <li class="nav-item">
         <a class="nav-link<?= $collapsedProjW ?>" href="#" data-bs-toggle="collapse" data-bs-target="#workerProjects" aria-expanded="<?= $ariaProjW ?>" aria-controls="workerProjects" role="button">
           <i class="mdi mdi-clipboard-check-outline menu-icon"></i>
@@ -200,6 +200,13 @@ list($ariaSchAcc, $showSchAcc, $collapsedSchAcc) = $submenu_state(['school-admin
             <li class="nav-item"><a class="nav-link <?= $active('projects/history') ?>" href="<?= site_url('projects/history') ?>">History</a></li>
           </ul>
         </div>
+      </li>
+
+      <li class="nav-item <?= $active('complaints') ?>">
+        <a class="nav-link" href="<?= site_url('complaints') ?>">
+          <i class="mdi mdi-shield-alert-outline menu-icon"></i>
+          <span class="menu-title">Report a Scam</span>
+        </a>
       </li>
 
       <li class="nav-item <?= $active('hotlines') ?>">

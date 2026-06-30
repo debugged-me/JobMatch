@@ -4,15 +4,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <?php $page_title = $page_title ?? 'Change Password'; ?>
-  <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
+  <?php $page_title = $page_title ?? "Change Password"; ?>
+  <title><?= htmlspecialchars($page_title, ENT_QUOTES, "UTF-8") ?></title>
 
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
+  <link rel="stylesheet" href="<?= base_url("assets/fonts/karla/karla.css") ?>">
+  <link rel="stylesheet" href="<?= base_url(
+      "assets/vendors/mdi/css/materialdesignicons.min.css",
+  ) ?>">
+  <link rel="stylesheet" href="<?= base_url(
+      "assets/vendors/css/vendor.bundle.base.css",
+  ) ?>">
+  <link rel="stylesheet" href="<?= base_url(
+      "assets/css/vertical-light/style.css",
+  ) ?>">
+  <link rel="stylesheet" href="<?= base_url(
+      "assets/css/custom.css?v=20260625b",
+  ) ?>">
+  <link rel="shortcut icon" href="<?= base_url("assets/images/logo.png") ?>" />
 
   <style>
     :root {
@@ -295,15 +303,17 @@
 
 <body>
   <div class="container-scroller">
-    <?php $this->load->view('includes_nav'); ?>
+    <?php $this->load->view("includes_nav"); ?>
     <div class="container-fluid page-body-wrapper">
-      <?php $this->load->view('includes_nav_top'); ?>
+      <?php $this->load->view("includes_nav_top"); ?>
       <div class="main-panel">
         <div class="content-wrapper pb-0">
           <div class="app">
 
             <div class="breadcrumb-bar">
-              <a href="<?= site_url('dashboard/admin') ?>"><i class="mdi mdi-home-outline"></i> Dashboard</a>
+              <a href="<?= site_url(
+                  "dashboard/admin",
+              ) ?>"><i class="mdi mdi-home-outline"></i> Dashboard</a>
               <span class="sep">/</span>
               <span class="current">Change Password</span>
             </div>
@@ -312,21 +322,39 @@
             <div class="hero mb-3">
               <div class="ico"><i class="mdi mdi-lock-reset text-white"></i></div>
               <div>
-                <h4><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></h4>
+                <h4><?= htmlspecialchars(
+                    $page_title,
+                    ENT_QUOTES,
+                    "UTF-8",
+                ) ?></h4>
                 <div class="sub">Update your admin password securely</div>
               </div>
               <div class="ms-auto">
-                <a class="btn btn-gold btn-sm" href="<?= site_url('dashboard/admin') ?>">
+                <a class="btn btn-gold btn-sm" href="<?= site_url(
+                    "dashboard/admin",
+                ) ?>">
                   <i class="mdi mdi-view-dashboard-outline"></i> Back to Dashboard
                 </a>
               </div>
             </div>
 
             <!-- FLASH / VALIDATION -->
-            <?php foreach (['success' => 'success', 'error' => 'danger', 'info' => 'info', 'msg' => 'success'] as $key => $class): ?>
+            <?php foreach (
+                [
+                    "success" => "success",
+                    "error" => "danger",
+                    "info" => "info",
+                    "msg" => "success",
+                ]
+                as $key => $class
+            ): ?>
               <?php if ($this->session->flashdata($key)): ?>
                 <div class="alert alert-<?= $class ?> alert-dismissible fade show" role="alert">
-                  <?= htmlspecialchars($this->session->flashdata($key), ENT_QUOTES, 'UTF-8') ?>
+                  <?= htmlspecialchars(
+                      $this->session->flashdata($key),
+                      ENT_QUOTES,
+                      "UTF-8",
+                  ) ?>
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
               <?php endif; ?>
@@ -335,17 +363,17 @@
             <?php if (validation_errors()): ?>
               <div class="alert alert-danger d-flex align-items-center">
                 <i class="mdi mdi-alert-circle-outline me-2"></i>
-                <div><?= validation_errors(); ?></div>
+                <div><?= validation_errors() ?></div>
               </div>
             <?php endif; ?>
 
             <!-- FORM CARD -->
             <div class="card accent">
-              <?= form_open('admin/change_password'); ?>
+              <?= form_open("admin/change_password") ?>
               <?php if (isset($this->security)): ?>
                 <input type="hidden"
-                  name="<?= $this->security->get_csrf_token_name(); ?>"
-                  value="<?= $this->security->get_csrf_hash(); ?>">
+                  name="<?= $this->security->get_csrf_token_name() ?>"
+                  value="<?= $this->security->get_csrf_hash() ?>">
               <?php endif; ?>
 
               <div class="mb-3">
@@ -375,7 +403,7 @@
                 </div>
                 <div class="chips">
                   <span class="chip"><i class="mdi mdi-shield-key-outline"></i> Min. 8 chars</span>
-                  <span class="chip"><i class="mdi mdi-alphabetical-variant"></i> Mix of letters & numbers</span>
+                  <span class="chip"><i class="mdi mdi-alphabetical-variant"></i>Mix of letters & numbers</span>
                   <span class="chip"><i class="mdi mdi-lock-outline"></i> Avoid common words</span>
                 </div>
               </div>
@@ -392,29 +420,33 @@
               </div>
 
               <div class="d-flex justify-content-end gap-2">
-                <a class="btn btn-silver" href="<?= site_url('dashboard/admin') ?>">
+                <a class="btn btn-silver" href="<?= site_url(
+                    "dashboard/admin",
+                ) ?>">
                   <i class="mdi mdi-close-circle-outline"></i> Cancel
                 </a>
                 <button class="btn btn-blue">
                   <i class="mdi mdi-content-save-outline"></i> Update Password
                 </button>
               </div>
-              <?= form_close(); ?>
+              <?= form_close() ?>
             </div>
 
             <div class="my-4"></div>
           </div>
         </div>
-        <?php $this->load->view('includes_footer'); ?>
+        <?php $this->load->view("includes_footer"); ?>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="<?= base_url('assets/vendors/js/vendor.bundle.base.js') ?>"></script>
-  <script src="<?= base_url('assets/js/off-canvas.js') ?>"></script>
-  <script src="<?= base_url('assets/js/hoverable-collapse.js') ?>"></script>
-  <script src="<?= base_url('assets/js/misc.js') ?>"></script>
+  <script src="<?= base_url(
+      "assets/vendors/js/vendor.bundle.base.js",
+  ) ?>"></script>
+  <script src="<?= base_url("assets/js/off-canvas.js") ?>"></script>
+  <script src="<?= base_url("assets/js/hoverable-collapse.js") ?>"></script>
+  <script src="<?= base_url("assets/js/misc.js") ?>"></script>
   <script>
     setTimeout(function() {
       document.querySelectorAll('.alert').forEach(function(el) {

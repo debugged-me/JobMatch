@@ -17,9 +17,21 @@ if (!$this->session->userdata('logged_in')) {
     // ===== USER =====
     public function index()
     {
-$userId = (int) ($this->session->userdata('user_id') ?: 0);
-        $data['title'] = 'My Scam Reports';
-        $data['items'] = $this->complaints->listByReporter($userId);
+        $userId = (int) ($this->session->userdata('user_id') ?: 0);
+        $role   = (string) $this->session->userdata('role');
+        $isAdmin = ($role === 'admin');
+
+        if ($isAdmin) {
+            // Admin sees every report (with reporter info)
+            $data['title'] = 'All Scam Reports';
+            $data['items'] = $this->complaints->listAll();
+        } else {
+            // Worker / client see only their own reports
+            $data['title'] = 'My Scam Reports';
+            $data['items'] = $this->complaints->listByReporter($userId);
+        }
+
+        $data['isAdmin'] = $isAdmin;
         $this->load->view('complaints_index', $data);
     }
 
