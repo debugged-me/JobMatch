@@ -80,6 +80,15 @@ mysql -u <user> -p <db> < database/migrations/001_schema_consolidation.sql
   shim onto it automatically. CSS self-injects — adding the script tag is
   enough on any new standalone page.
 
+- Design system conventions (all documented in `assets/css/tokens.css`):
+  semantic `--jm-*` tokens for new code; FIXED ramps (`--jm-slate-*`,
+  `--jm-gray-*`, …) for literal parity; z-index tiers 10/100/500/1000/1050/
+  1060/1070(JM modal)/1080(JM toast); media tiers 576/768/992/1200;
+  `.u-note`/`.u-flexrow` micro-utilities in custom.css; every themed page
+  uses `partials/head.php`; single font family (Karla); all JS/CSS/fonts
+  vendored locally — the only external request is conditional reCAPTCHA.
+  Forms auto-busy their submit button (opt out: `data-no-autobusy`).
+
 ## Still outstanding / known debt
 
 - Public GitHub history contains old SMTP + reCAPTCHA credentials — they

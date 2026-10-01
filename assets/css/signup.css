@@ -1,16 +1,16 @@
   /* =========================================================
      PESO-like Light Red Palette (soft + professional)
      - primary: #cf2f3a (PESO-ish red)
-     - primary dark: #a61f2b
+     - primary dark: var(--jm-primary-700)
      - accent: #ffe6e8 (light red tint)
      - rings/shadows: rgba(207,47,58, .xx)
      ========================================================= */
 
   :root {
-    --peso-red: #c1272d;
-    --peso-red-dark: #a61f2b;
-    --peso-red-ink: #7f1d1d;
-    --peso-rose-50: #fff1f2;
+    --peso-red: var(--jm-primary);
+    --peso-red-dark: var(--jm-primary-700);
+    --peso-red-ink: var(--jm-red-900);
+    --peso-rose-50: var(--jm-rose-50);
     --peso-rose-100: #ffe4e6;
     --peso-rose-200: #fecdd3;
     --peso-rose-300: #fda4af;
@@ -46,8 +46,8 @@
     height: 3rem;
     width: 100%;
     background: #fff !important;
-    color: #0f172a !important;
-    border: 1px solid #e5e7eb !important;
+    color: var(--jm-slate-900) !important;
+    border: 1px solid var(--jm-gray-200) !important;
     border-radius: .5rem;
     padding: .75rem 1rem;
   }
@@ -59,7 +59,7 @@
   }
 
   .field-select option {
-    color: #0f172a;
+    color: var(--jm-slate-900);
     background: #fff;
   }
 
@@ -80,7 +80,7 @@
 
   /* make "danger" align with palette */
   .alert-danger {
-    color: #7f1d1d;
+    color: var(--jm-red-900);
     background: var(--peso-rose-100);
     border-color: var(--peso-rose-200);
   }

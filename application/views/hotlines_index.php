@@ -2,18 +2,12 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'Hotlines', ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.0.1') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'Hotlines',
+    'css' => [
+      'assets/css/dashboard-shell.css?v=1.0.1',
+    ],
+  ]); ?>
 </head>
 
 <body>

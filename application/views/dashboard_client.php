@@ -4,22 +4,14 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'JobMatch — Client Dashboard', ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/universal.css') ?>">
-
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/font-awesome/css/font-awesome.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-client.css?v=2.1.0') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'JobMatch — Client Dashboard',
+    'css' => [
+      'assets/vendors/font-awesome/css/font-awesome.min.css',
+      'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css',
+      'assets/css/dashboard-client.css?v=2.1.0',
+    ],
+  ]); ?>
 </head>
 
 <body>
@@ -300,8 +292,8 @@
                             <?= $img ? 'style="background-image:url(\'' . htmlspecialchars($it['abs'], ENT_QUOTES) . '\')"' : '' ?>>
                             <?php if (!$img): ?>
                               <div class="text-center">
-                                <i class="mdi <?= $pdf ? 'mdi-file-pdf-box' : 'mdi-file' ?>" style="font-size:38px;<?= $pdf ? 'color:#b91c1c' : 'color:#64748b' ?>"></i>
-                                <div style="font-size:11px;margin-top:4px;color:#475569;max-width:92%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <i class="mdi <?= $pdf ? 'mdi-file-pdf-box' : 'mdi-file' ?>" style="font-size:38px;<?= $pdf ? 'color:var(--jm-red-700)' : 'color:var(--jm-slate-500)' ?>"></i>
+                                <div style="font-size:11px;margin-top:4px;color:var(--jm-slate-600);max-width:92%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                   <?= htmlspecialchars($it['title'], ENT_QUOTES) ?>
                                 </div>
                               </div>

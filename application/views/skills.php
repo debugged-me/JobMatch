@@ -9,220 +9,182 @@ $count = is_array($skills) ? count($skills) : 0;
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'JobMatch — Admin', ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'JobMatch — Admin',
+    'css' => [
+      'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css',
+    ],
+  ]); ?>
   <style>
-    :root {
-      --blue-700: #d63031;
-      --blue-900: #c1272d;
-      --silver-200: #e5e7eb;
-      --silver-100: #f9fafb;
-    }
-
-    body {
-      font-family: "Karla", ui-sans-serif;
-      background: #f9fafb;
-    }
-
-    .app {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 12px
-    }
-
-    .panel {
-      background: #fff;
-      border: 1px solid var(--silver-200);
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(2, 6, 23, .08);
-      padding: 16px
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: .3rem .6rem;
-      border-radius: 9999px;
-      border: 1px solid var(--silver-200);
-      background: #fff;
-      font-weight: 700;
-      font-size: 12px;
-      color: #334155
-    }
-
-    /* List style */
-    .skill-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .skill-list li {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--silver-200);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-weight: 600;
-      color: #1e3a8a;
-      transition: background .15s ease;
-    }
-
-    .skill-list li:last-child {
-      border-bottom: none;
-    }
-
-    .skill-list li:hover {
-      background: var(--silver-100);
-    }
-
-    .skill-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-danger-soft {
-      background: #fff5f5;
-      color: #dc2626;
-      border: 1px solid #fecaca;
-      border-radius: 8px;
-      font-size: .85rem;
-      padding: .25rem .6rem
-    }
-
-    .btn-danger-soft:hover {
-      background: #fee2e2
-    }
-
-    .btn-edit-soft {
-      background: #eff6ff;
-      color: #2563eb;
-      border: 1px solid #bfdbfe;
-      border-radius: 8px;
-      font-size: .85rem;
-      padding: .25rem .6rem
-    }
-
-    .btn-edit-soft:hover {
-      background: #dbeafe
-    }
-
-    .skill-desc {
-      font-size: .8rem;
-      color: #64748b;
-      font-weight: 400;
-      margin-top: 2px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 400px;
-    }
-
-    .breadcrumb-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: .82rem;
-      color: #64748b;
-      margin-bottom: 8px
-    }
-
-    .breadcrumb-bar a {
-      color: #64748b;
-      text-decoration: none;
-      font-weight: 600
-    }
-
-    .breadcrumb-bar a:hover {
-      color: var(--blue-900)
-    }
-
-    .breadcrumb-bar .sep {
-      color: #cbd5e1
-    }
-
-    .breadcrumb-bar .current {
-      color: #334155;
-      font-weight: 700
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: #64748b
-    }
-
-    .empty-state .empty-icon {
-      font-size: 48px;
-      color: #cbd5e1;
-      margin-bottom: 12px
-    }
-
-    .empty-state h5 {
-      font-weight: 700;
-      color: #475569;
-      margin-bottom: 4px
-    }
-
-    .empty-state p {
-      font-size: .9rem;
-      margin-bottom: 16px
-    }
-
-    /* Search box */
-    .toolbar .input-group {
-      border-radius: 12px;
-      overflow: hidden;
-      max-width: 360px;
-    }
-
-    .toolbar .input-group .input-group-text {
-      background: #fff;
-      border: 1px solid var(--silver-200);
-      border-right: 0
-    }
-
-    .toolbar .input-group .form-control {
-      border: 1px solid var(--silver-200);
-      border-left: 0
-    }
-
-    .btn-primary {
-      background: var(--blue-700);
-      border-color: var(--blue-700);
-      border-radius: 10px;
-      font-weight: 700
-    }
-
-    .btn-primary:hover {
-      filter: brightness(.95)
-    }
-
-    /* Modal polish */
-    .modal .form-control {
-      border: 1px solid var(--silver-200) !important;
-      border-radius: 10px;
-      box-shadow: none !important;
-    }
-
-    .modal .form-control:focus {
-      border-color: var(--blue-700) !important;
-      box-shadow: 0 0 0 .25rem rgba(193, 39, 45, .15) !important;
-      outline: 0;
-    }
+  :root {
+  --blue-700: var(--jm-primary-600);
+  --blue-900: var(--jm-primary);
+  --silver-200: var(--jm-gray-200);
+  --silver-100: var(--jm-gray-50);
+  }
+  body {
+  font-family: "Karla", ui-sans-serif;
+  background: var(--jm-gray-50);
+  }
+  .app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 12px
+  }
+  .panel {
+  background: #fff;
+  border: 1px solid var(--silver-200);
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(2, 6, 23, .08);
+  padding: 16px
+  }
+  .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: .3rem .6rem;
+  border-radius: 9999px;
+  border: 1px solid var(--silver-200);
+  background: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--jm-slate-700)
+  }
+  /* List style */
+  .skill-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  }
+  .skill-list li {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--silver-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  color: var(--jm-blue-900);
+  transition: background .15s ease;
+  }
+  .skill-list li:last-child {
+  border-bottom: none;
+  }
+  .skill-list li:hover {
+  background: var(--silver-100);
+  }
+  .skill-actions {
+  display: flex;
+  gap: 8px;
+  }
+  .btn-danger-soft {
+  background: #fff5f5;
+  color: var(--jm-danger);
+  border: 1px solid var(--jm-red-200);
+  border-radius: 8px;
+  font-size: .85rem;
+  padding: .25rem .6rem
+  }
+  .btn-danger-soft:hover {
+  background: var(--jm-red-100)
+  }
+  .btn-edit-soft {
+  background: var(--jm-blue-50);
+  color: var(--jm-blue-600);
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  font-size: .85rem;
+  padding: .25rem .6rem
+  }
+  .btn-edit-soft:hover {
+  background: #dbeafe
+  }
+  .skill-desc {
+  font-size: .8rem;
+  color: var(--jm-slate-500);
+  font-weight: 400;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 400px;
+  }
+  .breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .82rem;
+  color: var(--jm-slate-500);
+  margin-bottom: 8px
+  }
+  .breadcrumb-bar a {
+  color: var(--jm-slate-500);
+  text-decoration: none;
+  font-weight: 600
+  }
+  .breadcrumb-bar a:hover {
+  color: var(--blue-900)
+  }
+  .breadcrumb-bar .sep {
+  color: var(--jm-slate-300)
+  }
+  .breadcrumb-bar .current {
+  color: var(--jm-slate-700);
+  font-weight: 700
+  }
+  .empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--jm-slate-500)
+  }
+  .empty-state .empty-icon {
+  font-size: 48px;
+  color: var(--jm-slate-300);
+  margin-bottom: 12px
+  }
+  .empty-state h5 {
+  font-weight: 700;
+  color: var(--jm-slate-600);
+  margin-bottom: 4px
+  }
+  .empty-state p {
+  font-size: .9rem;
+  margin-bottom: 16px
+  }
+  /* Search box */
+  .toolbar .input-group {
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 360px;
+  }
+  .toolbar .input-group .input-group-text {
+  background: #fff;
+  border: 1px solid var(--silver-200);
+  border-right: 0
+  }
+  .toolbar .input-group .form-control {
+  border: 1px solid var(--silver-200);
+  border-left: 0
+  }
+  .btn-primary {
+  background: var(--blue-700);
+  border-color: var(--blue-700);
+  border-radius: 10px;
+  font-weight: 700
+  }
+  .btn-primary:hover {
+  filter: brightness(.95)
+  }
+  /* Modal polish */
+  .modal .form-control {
+  border: 1px solid var(--silver-200) !important;
+  border-radius: 10px;
+  box-shadow: none !important;
+  }
+  .modal .form-control:focus {
+  border-color: var(--blue-700) !important;
+  box-shadow: 0 0 0 .25rem rgba(193, 39, 45, .15) !important;
+  outline: 0;
+  }
   </style>
 </head>
 
@@ -307,8 +269,8 @@ $count = is_array($skills) ? count($skills) : 0;
                     </li>
                   <?php endforeach; ?>
                 </ul>
-                <div id="skillsPager" class="skills-pager" style="display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid #e5e7eb">
-                  <div id="skillsPagerInfo" style="font-size:.85rem;color:#64748b;font-weight:600"></div>
+                <div id="skillsPager" class="skills-pager" style="display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid var(--jm-gray-200)">
+                  <div id="skillsPagerInfo" style="font-size:.85rem;color:var(--jm-slate-500);font-weight:600"></div>
                   <div id="skillsPagerNav" class="d-flex" style="gap:4px"></div>
                 </div>
               <?php else: ?>
@@ -395,7 +357,6 @@ $count = is_array($skills) ? count($skills) : 0;
   </div>
 
   <!-- Vendor JS -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="<?= base_url('assets/vendors/js/vendor.bundle.base.js') ?>"></script>
   <script src="<?= base_url('assets/js/off-canvas.js') ?>"></script>
   <script src="<?= base_url('assets/js/hoverable-collapse.js') ?>"></script>
@@ -600,26 +561,26 @@ $count = is_array($skills) ? count($skills) : 0;
         <?php if ($openAdd): ?>
           if (canBS) {
             jQuery('#addSkillModal').modal('show');
-          }
-          setTimeout(function() {
+            setTimeout(function() {
+              var mm = document.getElementById('addSkillModal');
+              if (!mm.classList.contains('show') || mm.style.display === 'none') hardOpen();
+            }, 60);
+          } else {
             hardOpen();
-          }, 60);
+          }
         <?php endif; ?>
       });
-      // SweetAlert2 delete confirmation
+      // Shared confirm dialog (jm-ui.js)
       document.querySelectorAll('.skill-delete-form').forEach(function(form) {
         form.addEventListener('submit', function(e) {
           e.preventDefault();
-          Swal.fire({
+          JM.confirm({
             title: 'Delete this skill?',
             text: 'This action cannot be undone.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Yes, delete it'
-          }).then(function(result) {
-            if (result.isConfirmed) form.submit();
+            danger: true,
+            confirmText: 'Yes, delete it'
+          }).then(function(ok) {
+            if (ok) form.submit();
           });
         });
       });

@@ -95,6 +95,14 @@
 }
 .jm-modal__close:hover { color: var(--jmc-text); }
 .jm-modal__body { padding: 10px 20px 4px; font-size: 14px; color: var(--jmc-muted); }
+.jm-modal__confirm { margin-top: 10px; }
+.jm-confirm-input {
+  width: 100%; padding: 8px 10px; box-sizing: border-box;
+  border: 1px solid var(--jmc-border); border-radius: 8px;
+  font: 500 13px/1.4 var(--jmc-font); color: var(--jmc-text);
+  background: var(--jmc-card);
+}
+.jm-confirm-input:focus { outline: 2px solid var(--jm-focus, rgba(18,58,109,.35)); outline-offset: 1px; }
 .jm-modal__foot {
   display: flex; justify-content: flex-end; gap: 8px;
   padding: 16px 20px;

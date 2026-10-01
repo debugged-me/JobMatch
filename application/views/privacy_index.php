@@ -3,178 +3,149 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'Privacy / Visibility', ENT_QUOTES, 'UTF-8') ?> - JobMatch</title>
-
-  <!-- match global assets from your design -->
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/font-awesome/css/font-awesome.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'Privacy / Visibility',
+    'css' => [
+      'assets/vendors/font-awesome/css/font-awesome.min.css',
+      'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css',
+    ],
+  ]); ?>
   <style>
-    :root {
-      --blue-900: #1e3a8a;
-      --blue-700: #1d4ed8;
-      --blue-600: #2563eb;
-      --blue-500: #2563eb;
-      --gold-700: #c89113;
-      --gold-600: #f0b429;
-      --silver-600: #a7afba;
-      --silver-500: #c0c6d0;
-      --silver-300: #d9dee7;
-      --silver-200: #e7ebf2;
-      --silver-100: #f6f8fc;
-      --radius: 12px;
-      --pad-panel: 12px;
-      --fs-title: 20px;
-      --fs-sub: 12.5px;
-      --fs-body: 13px;
-      --shadow-1: 0 6px 16px rgba(2, 6, 23, .08);
-    }
-
-    html,
-    body {
-      height: 100%;
-    }
-
-    body {
-      font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      font-size: var(--fs-body);
-      background: linear-gradient(180deg, var(--silver-100), #eef2f7 60%, #e9edf3 100%);
-      color: #0f172a;
-    }
-
-    .content-wrapper {
-      padding-top: .6rem
-    }
-
-    .app {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 12px
-    }
-
-    .eyebrow {
-      font-size: 12px;
-      color: #64748b;
-      font-weight: 600;
-      letter-spacing: .2px;
-      margin: 4px 0 8px
-    }
-
-    .panel {
-      background: #fff;
-      border: 1px solid var(--silver-300);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-1);
-      padding: var(--pad-panel)
-    }
-
-    .panel-head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px
-    }
-
-    .panel-head i {
-      font-size: 18px;
-      color: var(--silver-600)
-    }
-
-    .panel-head h6 {
-      margin: 0;
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--blue-900)
-    }
-
-    .muted {
-      color: #64748b
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px
-    }
-
-    @media (max-width:992px) {
-      .grid-2 {
-        grid-template-columns: 1fr
-      }
-    }
-
-    .cta {
-      border: 1px solid var(--silver-300);
-      border-radius: 12px;
-      padding: 12px;
-      background: linear-gradient(180deg, #fff, #fbfcff)
-    }
-
-    .cta h5 {
-      margin: 0 0 4px;
-      font-weight: 800;
-      color: var(--blue-900);
-      font-size: 14px
-    }
-
-    .cta .muted {
-      font-size: 12.5px
-    }
-
-    .pill {
-      display: inline-flex;
-      gap: .5rem;
-      align-items: center;
-      padding: .35rem .7rem;
-      border-radius: 9999px;
-      border: 1px solid var(--silver-300);
-      background: #fff;
-      font-weight: 700;
-      font-size: 12px
-    }
-
-    .pill--warn {
-      background: #fffbeb;
-      border-color: #fde68a;
-      color: #b45309
-    }
-
-    .divider {
-      height: 1px;
-      background: var(--silver-200);
-      margin: 10px 0
-    }
-
-    .btn-brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: .45rem .8rem;
-      border-radius: 10px;
-      border: 1px solid var(--blue-600);
-      background: #f5f8ff;
-      font-weight: 700;
-      color: #1e3a8a;
-      text-decoration: none;
-      transition: all .25s ease;
-    }
-
-    .btn-brand:hover {
-      background: var(--gold-600);
-      border-color: var(--gold-700);
-      color: #111;
-      transform: translateY(-1px);
-    }
+  :root {
+  --blue-900: var(--jm-blue-900);
+  --blue-700: var(--jm-blue-700);
+  --blue-600: var(--jm-blue-600);
+  --blue-500: var(--jm-blue-600);
+  --gold-700: #c89113;
+  --gold-600: #f0b429;
+  --silver-600: var(--jm-gray-flat-2);
+  --silver-500: #c0c6d0;
+  --silver-300: var(--jm-line-2);
+  --silver-200: #e7ebf2;
+  --silver-100: var(--jm-wash-1);
+  --radius: 12px;
+  --pad-panel: 12px;
+  --fs-title: 20px;
+  --fs-sub: 12.5px;
+  --fs-body: 13px;
+  --shadow-1: 0 6px 16px rgba(2, 6, 23, .08);
+  }
+  html,
+  body {
+  height: 100%;
+  }
+  body {
+  font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size: var(--fs-body);
+  background: linear-gradient(180deg, var(--silver-100), var(--jm-wash-2) 60%, var(--jm-wash-3) 100%);
+  color: var(--jm-slate-900);
+  }
+  .content-wrapper {
+  padding-top: .6rem
+  }
+  .app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 12px
+  }
+  .eyebrow {
+  font-size: 12px;
+  color: var(--jm-slate-500);
+  font-weight: 600;
+  letter-spacing: .2px;
+  margin: 4px 0 8px
+  }
+  .panel {
+  background: #fff;
+  border: 1px solid var(--silver-300);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
+  padding: var(--pad-panel)
+  }
+  .panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px
+  }
+  .panel-head i {
+  font-size: 18px;
+  color: var(--silver-600)
+  }
+  .panel-head h6 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--blue-900)
+  }
+  .muted {
+  color: var(--jm-slate-500)
+  }
+  .grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px
+  }
+  @media (max-width:992px) {
+  .grid-2 {
+  grid-template-columns: 1fr
+  }
+  }
+  .cta {
+  border: 1px solid var(--silver-300);
+  border-radius: 12px;
+  padding: 12px;
+  background: linear-gradient(180deg, #fff, var(--jm-wash-4))
+  }
+  .cta h5 {
+  margin: 0 0 4px;
+  font-weight: 800;
+  color: var(--blue-900);
+  font-size: 14px
+  }
+  .cta .muted {
+  font-size: 12.5px
+  }
+  .pill {
+  display: inline-flex;
+  gap: .5rem;
+  align-items: center;
+  padding: .35rem .7rem;
+  border-radius: 9999px;
+  border: 1px solid var(--silver-300);
+  background: #fff;
+  font-weight: 700;
+  font-size: 12px
+  }
+  .pill--warn {
+  background: var(--jm-amber-50);
+  border-color: #fde68a;
+  color: var(--jm-amber-700)
+  }
+  .divider {
+  height: 1px;
+  background: var(--silver-200);
+  margin: 10px 0
+  }
+  .btn-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: .45rem .8rem;
+  border-radius: 10px;
+  border: 1px solid var(--blue-600);
+  background: #f5f8ff;
+  font-weight: 700;
+  color: var(--jm-blue-900);
+  text-decoration: none;
+  transition: all .25s ease;
+  }
+  .btn-brand:hover {
+  background: var(--gold-600);
+  border-color: var(--gold-700);
+  color: #111;
+  transform: translateY(-1px);
+  }
   </style>
 </head>
 

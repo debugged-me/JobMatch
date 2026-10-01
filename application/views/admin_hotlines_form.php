@@ -1,52 +1,39 @@
 ﻿<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'Hotline', ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'Hotline',
+  ]); ?>
   <style>
-    :root{ --silver-300:#d9dee7; --blue-900:#1e3a8a; --shadow-1:0 6px 16px rgba(2,6,23,.08) }
-    .app{max-width:900px;margin:0 auto;padding:0 12px}
-    .eyebrow{font-size:12px;color:#64748b;font-weight:600;letter-spacing:.2px;margin:4px 0 8px}
-    .panel{background:#fff;border:1px solid var(--silver-300);border-radius:12px;box-shadow:var(--shadow-1);padding:12px}
-    .panel-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-    .panel-head h6{margin:0;font-size:13px;font-weight:800;color:var(--blue-900)}
-    .breadcrumb-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: .82rem;
-      color: #64748b;
-      margin-bottom: 8px
-    }
-
-    .breadcrumb-bar a {
-      color: #64748b;
-      text-decoration: none;
-      font-weight: 600
-    }
-
-    .breadcrumb-bar a:hover {
-      color: var(--blue-900)
-    }
-
-    .breadcrumb-bar .sep {
-      color: #cbd5e1
-    }
-
-    .breadcrumb-bar .current {
-      color: #334155;
-      font-weight: 700
-    }
+  :root{ --silver-300:var(--jm-line-2); --blue-900:var(--jm-blue-900); --shadow-1:0 6px 16px rgba(2,6,23,.08) }
+  .app{max-width:900px;margin:0 auto;padding:0 12px}
+  .eyebrow{font-size:12px;color:var(--jm-slate-500);font-weight:600;letter-spacing:.2px;margin:4px 0 8px}
+  .panel{background:#fff;border:1px solid var(--silver-300);border-radius:12px;box-shadow:var(--shadow-1);padding:12px}
+  .panel-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .panel-head h6{margin:0;font-size:13px;font-weight:800;color:var(--blue-900)}
+  .breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .82rem;
+  color: var(--jm-slate-500);
+  margin-bottom: 8px
+  }
+  .breadcrumb-bar a {
+  color: var(--jm-slate-500);
+  text-decoration: none;
+  font-weight: 600
+  }
+  .breadcrumb-bar a:hover {
+  color: var(--blue-900)
+  }
+  .breadcrumb-bar .sep {
+  color: var(--jm-slate-300)
+  }
+  .breadcrumb-bar .current {
+  color: var(--jm-slate-700);
+  font-weight: 700
+  }
   </style>
 </head>
 <body>
@@ -73,7 +60,7 @@
           <?php endif; ?>
 
           <section class="panel">
-            <div class="panel-head"><i class="mdi mdi-phone-in-talk-outline" style="color:#a7afba"></i><h6>Details</h6></div>
+            <div class="panel-head"><i class="mdi mdi-phone-in-talk-outline" style="color:var(--jm-gray-flat-2)"></i><h6>Details</h6></div>
 
             <form method="post">
               <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">

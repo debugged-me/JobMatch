@@ -183,7 +183,7 @@
       });
     }
 
-    setInterval(refreshMessages, 8000);
+    setInterval(refreshMessages, 20000);
     window.addEventListener('focus', refreshMessages);
   }
 
@@ -341,7 +341,7 @@
       });
     }
 
-    setInterval(tick, 5000);
+    setInterval(tick, 15000);
     window.addEventListener('focus', tick);
     tick();
   }

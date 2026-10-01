@@ -3,23 +3,23 @@ html {
     }
 
     :root {
-      --ink: #0f172a;
-      --muted: #6b7280;
-      --line: #e5e7eb;
+      --ink: var(--jm-slate-900);
+      --muted: var(--jm-gray-500);
+      --line: var(--jm-gray-200);
       --ring: #dbeafe;
-      --primary: #c1272d;
-      --primary-600: #c1272d;
-      --primary-700: #c1272d;
+      --primary: var(--jm-primary);
+      --primary-600: var(--jm-primary);
+      --primary-700: var(--jm-primary);
       --card: #fff;
-      --card-br: #e5e7eb;
+      --card-br: var(--jm-gray-200);
       --hover: rgba(2, 6, 23, .03);
-      --danger: #dc2626;
+      --danger: var(--jm-danger);
     }
 
     body {
       font-family: "Karla", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      background: #f8fafc;
-      color: #0f172a;
+      background: var(--jm-slate-50);
+      color: var(--jm-slate-900);
     }
 
     .admin-header {
@@ -59,15 +59,6 @@ html {
       border-color: var(--primary-700);
     }
 
-    .btn-ghost {
-      background: #fff;
-      border: 1px solid var(--line);
-      color: #111827;
-    }
-
-    .btn-ghost:hover {
-      background: var(--hover);
-    }
 
     .btn-icon {
       padding: .45rem .6rem;
@@ -88,27 +79,27 @@ html {
 
     .badge-open {
       background: rgba(5, 150, 105, .12);
-      color: #065f46;
+      color: var(--jm-emerald-700);
     }
 
     .badge-closed {
       background: rgba(55, 65, 81, .12);
-      color: #374151;
+      color: var(--jm-gray-700);
     }
 
     .badge-public {
       background: rgba(193, 39, 45, .12);
-      color: #c1272d;
+      color: var(--jm-primary);
     }
 
     .badge-followers {
       background: rgba(217, 119, 6, .12);
-      color: #92400e;
+      color: var(--jm-amber-800);
     }
 
     .table thead th {
       font-weight: 700;
-      color: #374151;
+      color: var(--jm-gray-700);
       border-bottom: 1px solid var(--line) !important;
     }
 
@@ -117,7 +108,7 @@ html {
     }
 
     .muted {
-      color: #64748b;
+      color: var(--jm-slate-500);
     }
 
     .form-control {
@@ -131,7 +122,7 @@ html {
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 2000;
+      z-index: 1050;
       padding: 1rem;
     }
 
@@ -247,7 +238,7 @@ html {
       border-radius: 12px;
       border: 1px solid var(--line);
       background: #fff;
-      color: #111827;
+      color: var(--jm-gray-900);
       font-weight: 600;
       text-decoration: none;
       cursor: pointer;
@@ -292,26 +283,26 @@ html {
     }
 
     .iconbtn--primary {
-      background: #eef2ff;
-      border-color: #c7d2fe;
+      background: var(--jm-indigo-50);
+      border-color: var(--jm-indigo-200);
       color: #1e1b4b;
     }
 
     .iconbtn--primary:hover,
     .iconbtn--primary:focus-visible {
       background: #e0e7ff;
-      border-color: #c7d2fe;
+      border-color: var(--jm-indigo-200);
     }
 
     .iconbtn--danger {
-      background: #fee2e2;
-      border-color: #fecaca;
-      color: #7f1d1d;
+      background: var(--jm-red-100);
+      border-color: var(--jm-red-200);
+      color: var(--jm-red-900);
     }
 
     .iconbtn--danger:hover,
     .iconbtn--danger:focus-visible {
-      background: #fecaca;
+      background: var(--jm-red-200);
       border-color: #fca5a5;
     }
 
@@ -334,13 +325,13 @@ html {
     }
 
     .btn-ghost.-danger {
-      border-color: #fecaca;
-      color: #b91c1c;
+      border-color: var(--jm-red-200);
+      color: var(--jm-red-700);
     }
 
     .btn-ghost.-danger:hover {
-      background: #fee2e2;
-      color: #991b1b;
+      background: var(--jm-red-100);
+      color: var(--jm-red-800);
     }
 
     .jobs-shell {
@@ -349,7 +340,7 @@ html {
       margin-top: 1.5rem;
     }
 
-    @media (min-width: 640px) {
+    @media (min-width:576px) {
       .jobs-shell {
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       }
@@ -362,12 +353,12 @@ html {
       padding: 1.6rem;
       border: 1px solid rgba(148, 163, 184, .35);
       border-radius: 22px;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      background: linear-gradient(180deg, var(--jm-white) 0%, var(--jm-slate-50) 100%);
       box-shadow: 0 12px 28px rgba(15, 23, 42, .08);
       transition: box-shadow .2s ease, transform .2s ease;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width:768px) {
       .job-card {
         padding: 1.3rem;
       }
@@ -378,7 +369,7 @@ html {
       box-shadow: 0 18px 36px rgba(15, 23, 42, .12);
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width:992px) {
       .job-card {
         flex-direction: row;
         align-items: stretch;
@@ -401,7 +392,7 @@ html {
     .job-card__title {
       font-size: 1.2rem;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--jm-slate-900);
       display: flex;
       align-items: center;
       gap: .6rem;
@@ -428,7 +419,7 @@ html {
       padding: .22rem .6rem;
       border-radius: 999px;
       background: rgba(148, 163, 184, .18);
-      color: #475569;
+      color: var(--jm-slate-600);
       font-weight: 600;
     }
 
@@ -439,7 +430,7 @@ html {
     .job-card__desc {
       font-size: .95rem;
       line-height: 1.65;
-      color: #334155;
+      color: var(--jm-slate-700);
       max-width: 62ch;
     }
 
@@ -465,7 +456,7 @@ html {
       border-radius: 18px;
       overflow: hidden;
       border: 1px solid rgba(148, 163, 184, .35);
-      background: #f6f8fc;
+      background: var(--jm-wash-1);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -493,10 +484,10 @@ html {
 
     .job-card__media--pdf .mdi {
       font-size: 2.4rem;
-      color: #dc2626;
+      color: var(--jm-danger);
     }
 
-    @media (max-width: 1023px) {
+    @media (max-width:992px) {
       .job-card__media {
         max-width: 100%;
         flex-basis: auto;
@@ -509,7 +500,7 @@ html {
       gap: 1rem;
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width:992px) {
       .job-card__footer {
         min-width: 210px;
         align-items: flex-end;
@@ -552,7 +543,7 @@ html {
       background: #fff;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width:768px) {
       .card-panel {
         padding: 1.4rem 1.5rem;
       }
@@ -581,7 +572,7 @@ html {
     .dashboard-header__title {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--jm-slate-900);
     }
 
     .dashboard-header__sub {
@@ -609,7 +600,7 @@ html {
       }
     }
 
-    @media (max-width: 640px) {
+    @media (max-width:768px) {
       .stats-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -745,7 +736,7 @@ html {
       gap: 1rem;
       padding: 1.1rem 1.25rem;
       border-radius: 18px;
-      background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+      background: linear-gradient(135deg, var(--jm-white) 0%, var(--jm-slate-100) 100%);
       border: 1px solid rgba(148, 163, 184, .35);
       box-shadow: 0 10px 30px rgba(15, 23, 42, .06);
     }
@@ -785,15 +776,15 @@ html {
     }
 
     .stat-card--closed .stat-card__icon {
-      background: linear-gradient(135deg, #94a3b8, #475569);
+      background: linear-gradient(135deg, var(--jm-slate-400), var(--jm-slate-600));
     }
 
     .stat-card--public .stat-card__icon {
-      background: linear-gradient(135deg, #c1272d, #d63031);
+      background: linear-gradient(135deg, var(--jm-primary), var(--jm-primary-600));
     }
 
     .stat-card--hired .stat-card__icon {
-      background: linear-gradient(135deg, #9b1f24, #c1272d);
+      background: linear-gradient(135deg, var(--jm-crimson-900), var(--jm-primary));
     }
 
     a.stat-card {
@@ -812,32 +803,32 @@ html {
       top: 12px;
       right: 14px;
       font-size: 1.1rem;
-      color: #c1272d;
+      color: var(--jm-primary);
       opacity: .55;
     }
 
     .chip.-followers {
       background: #fef3c7;
-      color: #92400e;
+      color: var(--jm-amber-800);
     }
 
     .chip.-closed {
-      background: #fee2e2;
-      color: #7f1d1d;
+      background: var(--jm-red-100);
+      color: var(--jm-red-900);
     }
 
     .chip.-open {
       background: #dcfce7;
-      color: #166534;
+      color: var(--jm-emerald-800);
     }
 
     .chip.-attachment {
       background: #dbeafe;
-      color: #c1272d;
+      color: var(--jm-primary);
     }
 
     .text-link {
-      color: #c1272d;
+      color: var(--jm-primary);
       font-weight: 600;
       font-size: .85rem;
     }
@@ -854,7 +845,7 @@ html {
       flex-direction: column;
       align-items: center;
       gap: .75rem;
-      background: #f8fafc;
+      background: var(--jm-slate-50);
       border-radius: 18px;
       border: 1px dashed var(--line);
     }
@@ -878,13 +869,13 @@ html {
       padding: .5rem .8rem;
       border-radius: 12px;
       border: 1px solid var(--line);
-      background: #f8fafc;
+      background: var(--jm-slate-50);
       font-size: .86rem;
     }
 
     .file-pill .mdi {
       font-size: 1.1rem;
-      color: #c1272d;
+      color: var(--jm-primary);
     }
 
     .attachment-actions {
@@ -901,7 +892,7 @@ html {
       padding: .55rem .75rem;
       border-radius: 10px;
       background: #fef3c7;
-      color: #92400e;
+      color: var(--jm-amber-800);
       font-size: .86rem;
       flex-wrap: wrap;
     }
@@ -951,7 +942,7 @@ html {
       gap: .75rem;
       font-size: 1rem;
       font-weight: 700;
-      color: #0f172a;
+      color: var(--jm-slate-900);
       background: none;
       border: none;
       padding: 0;
@@ -971,7 +962,7 @@ html {
 
     .toggle-icon {
       font-size: 1.2rem;
-      color: #64748b;
+      color: var(--jm-slate-500);
       transition: transform .18s ease;
     }
 
@@ -1035,7 +1026,7 @@ html {
       gap: 1rem;
     }
 
-    @media (min-width: 900px) {
+    @media (min-width:768px) {
       .form-grid {
         grid-template-columns: 1.15fr .85fr;
         /* left wider */

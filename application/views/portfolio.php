@@ -2,292 +2,246 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'JobMatch', ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'JobMatch',
+  ]); ?>
   <style>
-    :root {
-      --ink: #0f172a;
-      --muted: #6b7280;
-      --line: #e5e7eb;
-      --card: #fff;
-      --indigo-200: #c7d2fe;
-      --indigo-300: #a5b4fc;
-      --indigo-400: #818cf8;
-      --indigo-500: #6366f1;
-      --blue-focus: #1e3a8a;
-      --shadow-1: 0 6px 18px rgba(2, 6, 23, .06), 0 1px 0 rgba(2, 6, 23, .04);
-      --shadow-2: 0 16px 36px rgba(2, 6, 23, .12), 0 3px 10px rgba(2, 6, 23, .08)
-    }
-
-    body {
-      background: #f6f7fb;
-      color: var(--ink);
-      font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
-    }
-
-    .content-wrapper {
-      padding-top: 1rem
-    }
-
-    .app {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 16px
-    }
-
-    .eyebrow {
-      font-size: .85rem;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: .3px
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .5rem .9rem;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: .9rem;
-      transition: all .18s ease
-    }
-
-    .btn i {
-      font-size: 1.05rem
-    }
-
-    .btn-brand {
-      background: var(--indigo-500);
-      border: 1px solid var(--indigo-500);
-      color: #fff
-    }
-
-    .btn-brand:hover {
-      background: var(--indigo-400);
-      border-color: var(--indigo-400)
-    }
-
-    .btn-light {
-      background: #fff;
-      border: 1px solid var(--line);
-      color: var(--ink)
-    }
-
-    .btn-light:hover {
-      background: #f1f5f9
-    }
-
-    .form-control,
-    select.form-control {
-      width: 100%;
-      background: #fff;
-      border: 1px solid #111827;
-      border-radius: 10px;
-      padding: .70rem .9rem;
-      font-size: 1rem;
-      transition: border-color .18s ease, box-shadow .18s ease
-    }
-
-    .form-control:focus,
-    select.form-control:focus {
-      outline: 0;
-      border-color: var(--blue-focus);
-      box-shadow: 0 0 0 3px rgba(43, 77, 165, .15)
-    }
-
-    .form-text {
-      color: var(--muted)
-    }
-
-    .card-flat {
-      background: var(--card);
-      border: 1px solid var(--indigo-200);
-      border-radius: 14px;
-      box-shadow: var(--shadow-1);
-      transition: transform .16s ease, box-shadow .18s ease, border-color .18s ease
-    }
-
-    .card-flat:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-2);
-      border-color: var(--indigo-400)
-    }
-
-    .stat {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      padding: 14px
-    }
-
-    .stat .icon {
-      font-size: 22px;
-      opacity: .9
-    }
-
-    .stat .label {
-      color: var(--muted);
-      font-size: .85rem
-    }
-
-    .stat .val {
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: var(--ink)
-    }
-
-    .pgrid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 18px
-    }
-
-    .p-card {
-      overflow: hidden;
-      display: flex;
-      flex-direction: column
-    }
-
-    .p-cover {
-      position: relative;
-      height: 160px;
-      background: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset 0 -12px 22px rgba(2, 6, 23, .05);
-      overflow: hidden
-    }
-
-    .p-cover.hasimg {
-      background-size: cover;
-      background-position: center;
-      box-shadow: inset 0 -38px 54px rgba(2, 6, 23, .18)
-    }
-
-    .p-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 14px;
-      background: linear-gradient(to top, rgba(15, 23, 42, .55), rgba(15, 23, 42, .15) 45%, rgba(15, 23, 42, 0));
-      color: #fff;
-      text-decoration: none;
-      font-weight: 700;
-      gap: .5rem;
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity .18s ease, transform .18s ease
-    }
-
-    .p-overlay .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
-      padding: .35rem .6rem;
-      border-radius: 9999px;
-      background: rgba(255, 255, 255, .12);
-      backdrop-filter: saturate(140%);
-      font-weight: 700
-    }
-
-    .p-overlay .more {
-      font-style: normal;
-      font-weight: 600;
-      opacity: .9;
-      margin-left: .25rem;
-      background: rgba(255, 255, 255, .18);
-      padding: .05rem .4rem;
-      border-radius: 9999px;
-      font-size: .8rem
-    }
-
-    .p-card:hover .p-overlay {
-      opacity: 1;
-      transform: translateY(0)
-    }
-
-    .p-overlay:focus {
-      outline: 2px solid #fff;
-      outline-offset: -2px;
-      opacity: 1
-    }
-
-    .section {
-      padding: 16px
-    }
-
-    .badge-soft {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 9999px;
-      padding: .2rem .55rem;
-      font-weight: 600;
-      font-size: .8rem;
-      border: 1px solid var(--indigo-200);
-      background: #eef2ff;
-      color: #3730a3;
-      transition: all .18s ease
-    }
-
-    .badge-muted {
-      border-color: #cbd5e1;
-      background: #f1f5f9;
-      color: #334155
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .4rem
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: .28rem .6rem;
-      border-radius: 9999px;
-      border: 1px solid var(--line);
-      background: #fff;
-      font-size: .8rem;
-      color: #334155;
-      text-decoration: none;
-      transition: all .18s ease;
-      box-shadow: 0 2px 6px rgba(2, 6, 23, .06)
-    }
-
-    .chip:hover {
-      border-color: var(--indigo-300);
-      color: #1f2937
-    }
-
-    .meta {
-      color: #94a3b8;
-      font-size: .85rem
-    }
-
-    .table.align-middle td,
-    .table.align-middle th {
-      vertical-align: middle;
-    }
-
-    .table thead.bg-light th {
-      border-bottom: 1px solid var(--line);
-    }
+  :root {
+  --ink: var(--jm-slate-900);
+  --muted: var(--jm-gray-500);
+  --line: var(--jm-gray-200);
+  --card: #fff;
+  --indigo-200: var(--jm-indigo-200);
+  --indigo-300: #a5b4fc;
+  --indigo-400: #818cf8;
+  --indigo-500: var(--jm-indigo-500);
+  --blue-focus: var(--jm-blue-900);
+  --shadow-1: 0 6px 18px rgba(2, 6, 23, .06), 0 1px 0 rgba(2, 6, 23, .04);
+  --shadow-2: 0 16px 36px rgba(2, 6, 23, .12), 0 3px 10px rgba(2, 6, 23, .08)
+  }
+  body {
+  background: var(--jm-wash-5);
+  color: var(--ink);
+  font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
+  }
+  .content-wrapper {
+  padding-top: 1rem
+  }
+  .app {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px
+  }
+  .eyebrow {
+  font-size: .85rem;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: .3px
+  }
+  .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .9rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: .9rem;
+  transition: all .18s ease
+  }
+  .btn i {
+  font-size: 1.05rem
+  }
+  .btn-brand {
+  background: var(--indigo-500);
+  border: 1px solid var(--indigo-500);
+  color: #fff
+  }
+  .btn-brand:hover {
+  background: var(--indigo-400);
+  border-color: var(--indigo-400)
+  }
+  .btn-light {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink)
+  }
+  .btn-light:hover {
+  background: var(--jm-slate-100)
+  }
+  .form-control,
+  select.form-control {
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--jm-gray-900);
+  border-radius: 10px;
+  padding: .70rem .9rem;
+  font-size: 1rem;
+  transition: border-color .18s ease, box-shadow .18s ease
+  }
+  .form-control:focus,
+  select.form-control:focus {
+  outline: 0;
+  border-color: var(--blue-focus);
+  box-shadow: 0 0 0 3px rgba(43, 77, 165, .15)
+  }
+  .form-text {
+  color: var(--muted)
+  }
+  .card-flat {
+  background: var(--card);
+  border: 1px solid var(--indigo-200);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  transition: transform .16s ease, box-shadow .18s ease, border-color .18s ease
+  }
+  .card-flat:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--indigo-400)
+  }
+  .stat {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: 14px
+  }
+  .stat .icon {
+  font-size: 22px;
+  opacity: .9
+  }
+  .stat .label {
+  color: var(--muted);
+  font-size: .85rem
+  }
+  .stat .val {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--ink)
+  }
+  .pgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px
+  }
+  .p-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column
+  }
+  .p-cover {
+  position: relative;
+  height: 160px;
+  background: var(--jm-slate-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 -12px 22px rgba(2, 6, 23, .05);
+  overflow: hidden
+  }
+  .p-cover.hasimg {
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 -38px 54px rgba(2, 6, 23, .18)
+  }
+  .p-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  background: linear-gradient(to top, rgba(15, 23, 42, .55), rgba(15, 23, 42, .15) 45%, rgba(15, 23, 42, 0));
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  gap: .5rem;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .18s ease, transform .18s ease
+  }
+  .p-overlay .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .35rem .6rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, .12);
+  backdrop-filter: saturate(140%);
+  font-weight: 700
+  }
+  .p-overlay .more {
+  font-style: normal;
+  font-weight: 600;
+  opacity: .9;
+  margin-left: .25rem;
+  background: rgba(255, 255, 255, .18);
+  padding: .05rem .4rem;
+  border-radius: 9999px;
+  font-size: .8rem
+  }
+  .p-card:hover .p-overlay {
+  opacity: 1;
+  transform: translateY(0)
+  }
+  .p-overlay:focus {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+  opacity: 1
+  }
+  .section {
+  padding: 16px
+  }
+  .badge-soft {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: .2rem .55rem;
+  font-weight: 600;
+  font-size: .8rem;
+  border: 1px solid var(--indigo-200);
+  background: var(--jm-indigo-50);
+  color: #3730a3;
+  transition: all .18s ease
+  }
+  .badge-muted {
+  border-color: var(--jm-slate-300);
+  background: var(--jm-slate-100);
+  color: var(--jm-slate-700)
+  }
+  .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem
+  }
+  .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: .28rem .6rem;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: .8rem;
+  color: var(--jm-slate-700);
+  text-decoration: none;
+  transition: all .18s ease;
+  box-shadow: 0 2px 6px rgba(2, 6, 23, .06)
+  }
+  .chip:hover {
+  border-color: var(--indigo-300);
+  color: var(--jm-gray-800)
+  }
+  .meta {
+  color: var(--jm-slate-400);
+  font-size: .85rem
+  }
+  .table.align-middle td,
+  .table.align-middle th {
+  vertical-align: middle;
+  }
+  .table thead.bg-light th {
+  border-bottom: 1px solid var(--line);
+  }
   </style>
 </head>
 
@@ -522,14 +476,14 @@
                           <a href="<?= htmlspecialchars($t['viewer'], ENT_QUOTES, 'UTF-8') ?>"
                             target="_blank" rel="noopener"
                             class="d-block text-decoration-none">
-                            <div class="border rounded-3 overflow-hidden ratio ratio-4x3" style="background:#0b1220">
+                            <div class="border rounded-3 overflow-hidden ratio ratio-4x3" style="background:var(--jm-ink)">
                               <?php if ($t['isImg']): ?>
                                 <img src="<?= htmlspecialchars($t['abs'], ENT_QUOTES, 'UTF-8') ?>"
                                   alt="<?= htmlspecialchars($t['title'], ENT_QUOTES, 'UTF-8') ?>"
                                   class="w-100 h-100 object-fit-cover">
                               <?php else: ?>
                                 <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-                                  <i class="mdi mdi-file-pdf-box" style="font-size:56px;color:#ef4444"></i>
+                                  <i class="mdi mdi-file-pdf-box" style="font-size:56px;color:var(--jm-red-500)"></i>
                                 </div>
                               <?php endif; ?>
                             </div>
@@ -549,7 +503,7 @@
 
               <?php if (empty($items)): ?>
                 <div class="card-flat section text-center">
-                  <i class="mdi mdi-folder-outline" style="font-size:42px;color:#94a3b8"></i>
+                  <i class="mdi mdi-folder-outline" style="font-size:42px;color:var(--jm-slate-400)"></i>
                   <p class="mb-2">No portfolio items yet</p>
                   <a class="btn btn-light" href="<?= site_url('portfolio/create') ?>"><i class="mdi mdi-plus"></i> Add your first item</a>
                 </div>
@@ -564,7 +518,7 @@
                   ?>
                     <div class="card-flat p-card">
                       <div class="p-cover <?= $cover ? 'hasimg' : '' ?>" style="<?= $cover ? 'background-image:url(' . htmlspecialchars(base_url($cover), ENT_QUOTES, 'UTF-8') . ')' : '' ?>">
-                        <?php if (!$cover): ?><i class="mdi mdi-image-multiple-outline" style="font-size:40px;color:#cbd5e1"></i><?php endif; ?>
+                        <?php if (!$cover): ?><i class="mdi mdi-image-multiple-outline" style="font-size:40px;color:var(--jm-slate-300)"></i><?php endif; ?>
                         <?php if (!empty($first)): ?>
                           <a class="p-overlay" href="<?= site_url('media/preview?f=' . rawurlencode($first)) ?>" target="_blank" rel="noopener" aria-label="<?= html_escape($label) ?>">
                             <span class="tag"><i class="mdi <?= $icon ?>"></i> <?= html_escape($label) ?><?= $more > 0 ? '<em class="more">+' . (int)$more . ' more</em>' : '' ?></span>
@@ -744,7 +698,7 @@
                           <a href="<?= htmlspecialchars($t['viewer'], ENT_QUOTES, 'UTF-8') ?>"
                             target="_blank" rel="noopener"
                             class="d-block border rounded-3 overflow-hidden"
-                            style="background:#0b1220">
+                            style="background:var(--jm-ink)">
                             <div class="ratio ratio-4x3">
                               <?php if ($t['isImg']): ?>
                                 <img src="<?= htmlspecialchars($t['abs'], ENT_QUOTES, 'UTF-8') ?>"
@@ -752,7 +706,7 @@
                                   class="w-100 h-100 object-fit-cover">
                               <?php else: ?>
                                 <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-                                  <i class="mdi mdi-file-pdf-box" style="font-size:48px;color:#ef4444"></i>
+                                  <i class="mdi mdi-file-pdf-box" style="font-size:48px;color:var(--jm-red-500)"></i>
                                 </div>
                               <?php endif; ?>
                             </div>

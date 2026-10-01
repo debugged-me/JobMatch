@@ -48,53 +48,45 @@ $qs = function ($overrides = []) use ($type, $q, $status, $page, $perPage) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= html_escape($page_title ?? 'NSRP Records') ?> - JobMatch</title>
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'NSRP Records',
+  ]); ?>
   <style>
-    .nsrp-rec .kpi{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:.8rem 1rem}
-    .nsrp-rec .kpi .n{font-size:1.4rem;font-weight:700}
-    .nsrp-rec .kpi .l{font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:0}
-    .nsrp-rec .tabbtn{border:1px solid #e2e8f0;background:#fff;border-radius:8px;padding:.45rem .9rem;font-weight:600;color:#475569;text-decoration:none;font-size:.85rem}
-    .nsrp-rec .tabbtn.active{background:#c1272d;color:#fff;border-color:#c1272d}
-    .nsrp-rec .filter-panel{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;display:grid;grid-template-columns:minmax(260px,1fr) minmax(160px,190px) minmax(150px,170px) auto;gap:.85rem;align-items:end}
-    .nsrp-rec .filter-field label{display:block;font-size:.76rem;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0;margin-bottom:.35rem}
-    .nsrp-rec .filter-field .form-control,.nsrp-rec .filter-field .form-select{height:40px;border-radius:8px}
-    .nsrp-rec .filter-search .input-group-text{height:40px;background:#f8fafc;border-color:#ced4da;border-radius:8px 0 0 8px;color:#64748b}
-    .nsrp-rec .filter-search .form-control{border-left:0;border-radius:0 8px 8px 0}
-    .nsrp-rec .filter-actions{display:flex;gap:.5rem;justify-content:flex-end}
-    .nsrp-rec .filter-actions .btn{height:40px;border-radius:8px;white-space:nowrap}
-    .nsrp-rec .record-card{border:1px solid #e2e8f0;border-radius:8px;overflow:hidden}
-    .nsrp-rec .nsrp-table{min-width:980px;table-layout:fixed}
-    .nsrp-rec .nsrp-table th{background:#f8fafc;color:#475569;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0;border-top:0;white-space:nowrap}
-    .nsrp-rec .nsrp-table td,.nsrp-rec .nsrp-table th{vertical-align:middle;padding:.85rem .95rem}
-    .nsrp-rec .cell-title{font-weight:700;color:#1f2937;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .nsrp-rec .cell-sub{font-size:.8rem;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .nsrp-rec .cell-muted{color:#64748b;font-size:.84rem}
-    .nsrp-rec .action-group{display:flex;justify-content:flex-end;gap:.4rem;flex-wrap:wrap}
-    .nsrp-rec .action-group .btn{font-size:.78rem;padding:.3rem .55rem;line-height:1.2}
-    .nsrp-rec .record-footer{border-top:1px solid #e2e8f0;padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
-    .nsrp-rec .record-range{font-size:.85rem;color:#64748b}
-    .nsrp-rec .pagination .page-link{color:#475569}
-    .nsrp-rec .pagination .active .page-link{background:#c1272d;border-color:#c1272d;color:#fff}
-    .nsrp-rec .table-col-person{width:30%}
-    .nsrp-rec .table-col-ref{width:14%}
-    .nsrp-rec .table-col-status{width:11%}
-    .nsrp-rec .table-col-assessed{width:14%}
-    .nsrp-rec .table-col-updated{width:14%}
-    .nsrp-rec .table-col-actions{width:17%}
-    .nsrp-rec .table-col-establishment{width:40%}
-    .nsrp-rec .table-col-vacancies{width:12%}
-    @media (max-width: 991.98px){.nsrp-rec .filter-panel{grid-template-columns:1fr 1fr}.nsrp-rec .filter-actions{justify-content:flex-start}}
-    @media (max-width: 575.98px){.nsrp-rec .filter-panel{grid-template-columns:1fr}.nsrp-rec .filter-actions{display:grid;grid-template-columns:1fr 1fr}.nsrp-rec .record-footer{align-items:flex-start}.nsrp-rec .pagination{width:100%;overflow-x:auto;padding-bottom:.1rem}}
+  .nsrp-rec .kpi{background:#fff;border:1px solid var(--jm-slate-200);border-radius:8px;padding:.8rem 1rem}
+  .nsrp-rec .kpi .n{font-size:1.4rem;font-weight:700}
+  .nsrp-rec .kpi .l{font-size:.72rem;color:var(--jm-slate-500);text-transform:uppercase;letter-spacing:0}
+  .nsrp-rec .tabbtn{border:1px solid var(--jm-slate-200);background:#fff;border-radius:8px;padding:.45rem .9rem;font-weight:600;color:var(--jm-slate-600);text-decoration:none;font-size:.85rem}
+  .nsrp-rec .tabbtn.active{background:var(--jm-primary);color:#fff;border-color:var(--jm-primary)}
+  .nsrp-rec .filter-panel{background:#fff;border:1px solid var(--jm-slate-200);border-radius:8px;padding:1rem;display:grid;grid-template-columns:minmax(260px,1fr) minmax(160px,190px) minmax(150px,170px) auto;gap:.85rem;align-items:end}
+  .nsrp-rec .filter-field label{display:block;font-size:.76rem;font-weight:700;color:var(--jm-slate-600);text-transform:uppercase;letter-spacing:0;margin-bottom:.35rem}
+  .nsrp-rec .filter-field .form-control,.nsrp-rec .filter-field .form-select{height:40px;border-radius:8px}
+  .nsrp-rec .filter-search .input-group-text{height:40px;background:var(--jm-slate-50);border-color:#ced4da;border-radius:8px 0 0 8px;color:var(--jm-slate-500)}
+  .nsrp-rec .filter-search .form-control{border-left:0;border-radius:0 8px 8px 0}
+  .nsrp-rec .filter-actions{display:flex;gap:.5rem;justify-content:flex-end}
+  .nsrp-rec .filter-actions .btn{height:40px;border-radius:8px;white-space:nowrap}
+  .nsrp-rec .record-card{border:1px solid var(--jm-slate-200);border-radius:8px;overflow:hidden}
+  .nsrp-rec .nsrp-table{min-width:980px;table-layout:fixed}
+  .nsrp-rec .nsrp-table th{background:var(--jm-slate-50);color:var(--jm-slate-600);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0;border-top:0;white-space:nowrap}
+  .nsrp-rec .nsrp-table td,.nsrp-rec .nsrp-table th{vertical-align:middle;padding:.85rem .95rem}
+  .nsrp-rec .cell-title{font-weight:700;color:var(--jm-gray-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .nsrp-rec .cell-sub{font-size:.8rem;color:var(--jm-slate-500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .nsrp-rec .cell-muted{color:var(--jm-slate-500);font-size:.84rem}
+  .nsrp-rec .action-group{display:flex;justify-content:flex-end;gap:.4rem;flex-wrap:wrap}
+  .nsrp-rec .action-group .btn{font-size:.78rem;padding:.3rem .55rem;line-height:1.2}
+  .nsrp-rec .record-footer{border-top:1px solid var(--jm-slate-200);padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap}
+  .nsrp-rec .record-range{font-size:.85rem;color:var(--jm-slate-500)}
+  .nsrp-rec .pagination .page-link{color:var(--jm-slate-600)}
+  .nsrp-rec .pagination .active .page-link{background:var(--jm-primary);border-color:var(--jm-primary);color:#fff}
+  .nsrp-rec .table-col-person{width:30%}
+  .nsrp-rec .table-col-ref{width:14%}
+  .nsrp-rec .table-col-status{width:11%}
+  .nsrp-rec .table-col-assessed{width:14%}
+  .nsrp-rec .table-col-updated{width:14%}
+  .nsrp-rec .table-col-actions{width:17%}
+  .nsrp-rec .table-col-establishment{width:40%}
+  .nsrp-rec .table-col-vacancies{width:12%}
+  @media (max-width: 991.98px){.nsrp-rec .filter-panel{grid-template-columns:1fr 1fr}.nsrp-rec .filter-actions{justify-content:flex-start}}
+  @media (max-width: 575.98px){.nsrp-rec .filter-panel{grid-template-columns:1fr}.nsrp-rec .filter-actions{display:grid;grid-template-columns:1fr 1fr}.nsrp-rec .record-footer{align-items:flex-start}.nsrp-rec .pagination{width:100%;overflow-x:auto;padding-bottom:.1rem}}
   </style>
 </head>
 <body>

@@ -126,7 +126,12 @@
             '<h3 class="jm-modal__title" id="jmModalTitle">' + esc(title) + '</h3>' +
             '<button type="button" class="jm-modal__close" data-jm-cancel aria-label="Close">&times;</button>' +
           '</div>' +
-          (text ? '<div class="jm-modal__body">' + esc(text) + '</div>' : '') +
+          '<div class="jm-modal__body">' +
+            (text ? '<div>' + esc(text) + '</div>' : '') +
+            (opts.requireText ?
+              '<div class="jm-modal__confirm"><input type="text" class="jm-confirm-input" autocomplete="off" ' +
+              'placeholder="Type ' + esc(opts.requireText) + ' to confirm"></div>' : '') +
+          '</div>' +
           '<div class="jm-modal__foot">' +
             '<button type="button" class="jm-btn jm-btn--ghost" data-jm-cancel>' + esc(opts.cancelText || 'Cancel') + '</button>' +
             '<button type="button" class="jm-btn ' + (danger ? 'jm-btn--danger' : 'jm-btn--primary') + '" data-jm-ok>' + esc(opts.confirmText || 'Confirm') + '</button>' +
@@ -146,9 +151,18 @@
       backdrop.addEventListener('mousedown', function (e) {
         if (e.target === backdrop) done(false);
       });
-      // focus the primary action; Esc handled globally below
+      // focus the primary action (or the confirm input); Esc handled globally
       var okBtn = backdrop.querySelector('[data-jm-ok]');
-      if (okBtn) okBtn.focus();
+      var reqInput = backdrop.querySelector('.jm-confirm-input');
+      if (reqInput && opts.requireText) {
+        okBtn.disabled = true;
+        reqInput.addEventListener('input', function () {
+          okBtn.disabled = reqInput.value.trim() !== opts.requireText;
+        });
+        reqInput.focus();
+      } else if (okBtn) {
+        okBtn.focus();
+      }
     });
   }
 
@@ -238,6 +252,24 @@
     btn.classList.toggle('is-busy', !!on);
     btn.disabled = !!on;
   }
+
+  /* -------------------------------------------------- auto-busy on submit */
+  /* Prevent double-submits: disable the clicked submitter while the form is
+     posting. A watchdog restores it after 12s so AJAX forms (which prevent
+     navigation) and prevented submits don't leave a frozen button.
+     Opt out per form with data-no-autobusy. */
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    if (form.hasAttribute('data-no-autobusy')) return;
+    var btn = e.submitter && e.submitter.form === form ? e.submitter
+      : form.querySelector('[type="submit"]');
+    if (!btn || btn.disabled) return;
+    busy(btn, true);
+    setTimeout(function () {
+      if (document.contains(btn)) busy(btn, false);
+    }, 12000);
+  }, true);
 
   /* ------------------------------------------------------------ exports */
   window.JM = {

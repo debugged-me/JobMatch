@@ -2,21 +2,13 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <?php $page_title = $page_title ?? 'Admin Dashboard'; ?>
-  <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.2.0') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'Admin Dashboard',
+    'css' => [
+      'assets/css/dashboard-shell.css?v=1.2.0',
+    ],
+  ]); ?>
+  <script src="<?= base_url('assets/vendors/chart.js/chart.umd.js') ?>"></script>
 </head>
 
 <body>

@@ -3,247 +3,207 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'PESO Report', ENT_QUOTES, 'UTF-8') ?> • PESO Davao Oriental</title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'PESO Report',
+  ]); ?>
   <style>
-    :root {
-      --pr-accent: #c1272d;
-      --pr-accent-dark: #9b1f24;
-      --pr-ink: #0f172a;
-      --pr-muted: #64748b;
-      --pr-line: #e8eaee;
-      --pr-bg: #f1f3f6;
-      --pr-card: #fff;
-    }
-
-    body {
-      font-family: "Karla", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      background: var(--pr-bg);
-      color: var(--pr-ink);
-    }
-
-    .pr-wrap {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 16px 24px;
-    }
-
-    .pr-topbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .pr-title {
-      margin: 0;
-      font-size: 1.4rem;
-      font-weight: 800;
-      letter-spacing: -.01em;
-    }
-
-    .pr-subtitle {
-      margin: 3px 0 0;
-      color: var(--pr-muted);
-      font-size: .88rem;
-    }
-
-    .pr-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .45rem;
-      padding: .52rem .9rem;
-      border-radius: 10px;
-      border: 1px solid var(--pr-line);
-      background: #fff;
-      color: var(--pr-ink);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: .9rem;
-      cursor: pointer;
-      transition: background .15s ease, border-color .15s ease;
-    }
-
-    .pr-btn:hover {
-      background: #f7f8fa;
-      color: var(--pr-ink);
-    }
-
-    .pr-btn-accent {
-      border-color: var(--pr-accent-dark);
-      background: linear-gradient(135deg, var(--pr-accent), var(--pr-accent-dark));
-      color: #fff;
-    }
-
-    .pr-btn-accent:hover {
-      background: var(--pr-accent-dark);
-      color: #fff;
-    }
-
-    .pr-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .pr-stat {
-      background: var(--pr-card);
-      border: 1px solid var(--pr-line);
-      border-radius: 14px;
-      padding: 16px 18px;
-      box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
-    }
-
-    .pr-stat .label {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      color: var(--pr-muted);
-      font-size: .78rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-
-    .pr-stat .label .mdi {
-      color: var(--pr-accent);
-      font-size: 1.05rem;
-    }
-
-    .pr-stat .value {
-      margin-top: 6px;
-      font-size: 1.7rem;
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .pr-stat.is-highlight {
-      background: linear-gradient(135deg, var(--pr-accent), var(--pr-accent-dark));
-      border-color: var(--pr-accent-dark);
-    }
-
-    .pr-stat.is-highlight .label,
-    .pr-stat.is-highlight .label .mdi,
-    .pr-stat.is-highlight .value {
-      color: #fff;
-    }
-
-    .pr-panel {
-      background: var(--pr-card);
-      border: 1px solid var(--pr-line);
-      border-radius: 16px;
-      box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
-      overflow: hidden;
-    }
-
-    .pr-panel-head {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 14px 18px;
-      border-bottom: 1px solid var(--pr-line);
-      font-weight: 700;
-    }
-
-    .pr-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .pr-pill {
-      display: inline-flex;
-      align-items: center;
-      padding: .22rem .6rem;
-      border-radius: 999px;
-      font-size: .74rem;
-      font-weight: 600;
-      background: rgba(193, 39, 45, .08);
-      color: var(--pr-accent);
-    }
-
-    .pr-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: .9rem;
-    }
-
-    .pr-table thead th {
-      text-align: left;
-      padding: .65rem .9rem;
-      background: #f7f8fa;
-      color: var(--pr-muted);
-      font-size: .72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      border-bottom: 1px solid var(--pr-line);
-      white-space: nowrap;
-    }
-
-    .pr-table tbody td {
-      padding: .7rem .9rem;
-      border-bottom: 1px solid #f1f3f5;
-      vertical-align: middle;
-    }
-
-    .pr-table tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    .pr-table tbody tr:hover {
-      background: #fafbfc;
-    }
-
-    .pr-muted {
-      color: var(--pr-muted);
-    }
-
-    .pr-strong {
-      font-weight: 700;
-    }
-
-    .pr-status {
-      display: inline-flex;
-      align-items: center;
-      padding: .2rem .55rem;
-      border-radius: 999px;
-      font-size: .74rem;
-      font-weight: 700;
-      background: rgba(22, 163, 74, .12);
-      color: #15803d;
-      text-transform: capitalize;
-    }
-
-    .pr-empty {
-      text-align: center;
-      color: var(--pr-muted);
-      padding: 40px 16px;
-    }
-
-    .pr-empty .mdi {
-      font-size: 42px;
-      color: #c3c7cf;
-    }
-
-    .small {
-      font-size: .78rem;
-    }
+  :root {
+  --pr-accent: var(--jm-primary);
+  --pr-accent-dark: var(--jm-crimson-900);
+  --pr-ink: var(--jm-slate-900);
+  --pr-muted: var(--jm-slate-500);
+  --pr-line: #e8eaee;
+  --pr-bg: #f1f3f6;
+  --pr-card: #fff;
+  }
+  body {
+  font-family: "Karla", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  background: var(--pr-bg);
+  color: var(--pr-ink);
+  }
+  .pr-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+  }
+  .pr-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  }
+  .pr-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  }
+  .pr-subtitle {
+  margin: 3px 0 0;
+  color: var(--pr-muted);
+  font-size: .88rem;
+  }
+  .pr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .52rem .9rem;
+  border-radius: 10px;
+  border: 1px solid var(--pr-line);
+  background: #fff;
+  color: var(--pr-ink);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+  }
+  .pr-btn:hover {
+  background: #f7f8fa;
+  color: var(--pr-ink);
+  }
+  .pr-btn-accent {
+  border-color: var(--pr-accent-dark);
+  background: linear-gradient(135deg, var(--pr-accent), var(--pr-accent-dark));
+  color: #fff;
+  }
+  .pr-btn-accent:hover {
+  background: var(--pr-accent-dark);
+  color: #fff;
+  }
+  .pr-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+  }
+  .pr-stat {
+  background: var(--pr-card);
+  border: 1px solid var(--pr-line);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+  }
+  .pr-stat .label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--pr-muted);
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  }
+  .pr-stat .label .mdi {
+  color: var(--pr-accent);
+  font-size: 1.05rem;
+  }
+  .pr-stat .value {
+  margin-top: 6px;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  }
+  .pr-stat.is-highlight {
+  background: linear-gradient(135deg, var(--pr-accent), var(--pr-accent-dark));
+  border-color: var(--pr-accent-dark);
+  }
+  .pr-stat.is-highlight .label,
+  .pr-stat.is-highlight .label .mdi,
+  .pr-stat.is-highlight .value {
+  color: #fff;
+  }
+  .pr-panel {
+  background: var(--pr-card);
+  border: 1px solid var(--pr-line);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+  overflow: hidden;
+  }
+  .pr-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--pr-line);
+  font-weight: 700;
+  }
+  .pr-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  }
+  .pr-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: .22rem .6rem;
+  border-radius: 999px;
+  font-size: .74rem;
+  font-weight: 600;
+  background: rgba(193, 39, 45, .08);
+  color: var(--pr-accent);
+  }
+  .pr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+  }
+  .pr-table thead th {
+  text-align: left;
+  padding: .65rem .9rem;
+  background: #f7f8fa;
+  color: var(--pr-muted);
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  border-bottom: 1px solid var(--pr-line);
+  white-space: nowrap;
+  }
+  .pr-table tbody td {
+  padding: .7rem .9rem;
+  border-bottom: 1px solid var(--jm-wash-6);
+  vertical-align: middle;
+  }
+  .pr-table tbody tr:last-child td {
+  border-bottom: none;
+  }
+  .pr-table tbody tr:hover {
+  background: #fafbfc;
+  }
+  .pr-muted {
+  color: var(--pr-muted);
+  }
+  .pr-strong {
+  font-weight: 700;
+  }
+  .pr-status {
+  display: inline-flex;
+  align-items: center;
+  padding: .2rem .55rem;
+  border-radius: 999px;
+  font-size: .74rem;
+  font-weight: 700;
+  background: rgba(22, 163, 74, .12);
+  color: #15803d;
+  text-transform: capitalize;
+  }
+  .pr-empty {
+  text-align: center;
+  color: var(--pr-muted);
+  padding: 40px 16px;
+  }
+  .pr-empty .mdi {
+  font-size: 42px;
+  color: #c3c7cf;
+  }
+  .small {
+  font-size: .78rem;
+  }
   </style>
 </head>
 

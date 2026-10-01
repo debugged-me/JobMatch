@@ -121,7 +121,7 @@ textarea.form-control {
 .table-r {
   width: 100%;
 }
-@media (max-width: 640px) {
+@media (max-width:768px) {
   .table-r thead {
     display: none;
   }
@@ -133,7 +133,7 @@ textarea.form-control {
     width: 100%;
   }
   .table-r tr {
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--jm-gray-200);
     border-radius: 10px;
     padding: 0.5rem 0.75rem;
     background: #fff;
@@ -149,7 +149,7 @@ textarea.form-control {
   .table-r td::before {
     content: attr(data-label);
     font-weight: 700;
-    color: #64748b;
+    color: var(--jm-slate-500);
     min-width: 40%;
   }
 }
@@ -175,7 +175,7 @@ textarea.form-control {
 .msg-row .bubble {
   max-width: 72%;
 }
-@media (max-width: 640px) {
+@media (max-width:768px) {
   .msg-row .bubble {
     max-width: 92%;
   }

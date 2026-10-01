@@ -95,7 +95,7 @@
   }
 
   ping();
-  setInterval(ping, 10000);
+  setInterval(ping, 30000);
   document.addEventListener('visibilitychange', function () {
     ping(document.hidden ? 'away' : 'online');
   });

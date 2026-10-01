@@ -29,31 +29,23 @@ $pwdList = ['Visual','Hearing','Speech','Physical','Mental'];
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= html_escape($page_title ?? 'NSRP Form 2') ?> - JobMatch</title>
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'NSRP Form 2',
+  ]); ?>
   <style>
-    .nsrp .sec{background:#fff;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:18px;overflow:hidden}
-    .nsrp .sec-head{background:#dbe7f3;color:#1e3a5f;font-weight:700;padding:.6rem 1rem;font-size:.9rem}
-    .nsrp .sec-body{padding:1rem}
-    .nsrp .form-label{font-size:.78rem;font-weight:600;color:#475569;margin-bottom:.2rem}
-    .nsrp .form-control,.nsrp .form-select{font-size:.9rem}
-    .nsrp .peso-box{background:#fffdf3}
-    .nsrp .page-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
-    .nsrp .badge-status{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}
-    /* Force native checkboxes (admin template hides them by default) */
-    .nsrp input[type=checkbox],.nsrp input[type=radio]{appearance:auto;-webkit-appearance:auto;opacity:1!important;position:static!important;float:none!important;margin:0 .4rem 0 0!important;width:16px;height:16px;vertical-align:-2px;pointer-events:auto}
-    .nsrp .form-check{padding-left:0;min-height:auto;display:inline-flex;align-items:center}
-    .nsrp .form-check .form-check-input{margin-left:0}
-    .nsrp .form-check-inline{margin-right:1rem}
+  .nsrp .sec{background:#fff;border:1px solid var(--jm-slate-200);border-radius:12px;margin-bottom:18px;overflow:hidden}
+  .nsrp .sec-head{background:#dbe7f3;color:#1e3a5f;font-weight:700;padding:.6rem 1rem;font-size:.9rem}
+  .nsrp .sec-body{padding:1rem}
+  .nsrp .form-label{font-size:.78rem;font-weight:600;color:var(--jm-slate-600);margin-bottom:.2rem}
+  .nsrp .form-control,.nsrp .form-select{font-size:.9rem}
+  .nsrp .peso-box{background:#fffdf3}
+  .nsrp .page-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+  .nsrp .badge-status{background:var(--jm-indigo-50);color:#4338ca;border:1px solid var(--jm-indigo-200)}
+  /* Force native checkboxes (admin template hides them by default) */
+  .nsrp input[type=checkbox],.nsrp input[type=radio]{appearance:auto;-webkit-appearance:auto;opacity:1!important;position:static!important;float:none!important;margin:0 .4rem 0 0!important;width:16px;height:16px;vertical-align:-2px;pointer-events:auto}
+  .nsrp .form-check{padding-left:0;min-height:auto;display:inline-flex;align-items:center}
+  .nsrp .form-check .form-check-input{margin-left:0}
+  .nsrp .form-check-inline{margin-right:1rem}
   </style>
 </head>
 <body>

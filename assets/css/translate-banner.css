@@ -4,13 +4,13 @@
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 1050; /* below JM modal (1070) and toasts (1080) — shared layers */
   background: rgba(0, 0, 0, 0.35);
 }
 
 .tr-card {
   background: #fff;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--jm-gray-200);
   border-radius: 12px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
   padding: 14px;
@@ -43,7 +43,7 @@
 
 .tr-sub {
   font-size: 12px;
-  color: #64748b;
+  color: var(--jm-slate-500);
   margin-bottom: 6px;
 }
 
@@ -55,7 +55,7 @@
 
 .tr-row button {
   flex: 1;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--jm-gray-200);
   border-radius: 10px;
   padding: 0.5rem 0.75rem;
   font-weight: 700;
@@ -63,9 +63,9 @@
 }
 
 .tr-row button.active {
-  border-color: #c1272d;
+  border-color: var(--jm-primary);
   background: #fff5f5;
-  color: #c1272d;
+  color: var(--jm-primary);
 }
 
 .tr-actions {
@@ -76,8 +76,8 @@
 }
 
 .tr-apply {
-  border: 1px solid #c1272d;
-  background: #c1272d;
+  border: 1px solid var(--jm-primary);
+  background: var(--jm-primary);
   color: #fff;
   border-radius: 10px;
   padding: 0.45rem 0.8rem;

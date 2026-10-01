@@ -3,547 +3,453 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'JobMatch DavOr', ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
-
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
-  <!-- Select2 -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.6.2/dist/select2-bootstrap4.min.css" rel="stylesheet" />
-
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'JobMatch DavOr',
+    'css' => [
+      'assets/vendors/select2-4.1/select2.min.css',
+      'assets/vendors/select2-bootstrap4-theme/select2-bootstrap4.min.css',
+    ],
+  ]); ?>
   <style>
-    html {
-      scrollbar-gutter: stable;
-    }
-
-    :root {
-      --ink: #0f172a;
-      --muted: #6b7280;
-      --line: #e5e7eb;
-      --card: #fff;
-      --indigo-200: #ffcccc;
-      --indigo-300: #ffb3b3;
-      --indigo-400: #ff9999;
-      --indigo-500: #c1272d;
-      --blue-focus: #c1272d;
-      --shadow-1: 0 6px 18px rgba(2, 6, 23, .06), 0 1px 0 rgba(2, 6, 23, .04);
-      --shadow-2: 0 16px 36px rgba(2, 6, 23, .12), 0 3px 10px rgba(2, 6, 23, .08)
-    }
-
-    body {
-      background: #f6f7fb;
-      color: var(--ink);
-      font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
-    }
-
-    .content-wrapper {
-      padding-top: 1rem
-    }
-
-    .app {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 16px
-    }
-
-    .eyebrow {
-      font-size: .85rem;
-      color: var(--muted);
-      font-weight: 600;
-      letter-spacing: .3px
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .5rem .9rem;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: .9rem;
-      transition: all .18s
-    }
-
-    .btn i {
-      font-size: 1.05rem
-    }
-
-    .btn-brand {
-      background: var(--indigo-500);
-      border: 1px solid var(--indigo-500);
-      color: #fff
-    }
-
-    .btn-brand:hover {
-      background: var(--indigo-400);
-      border-color: var(--indigo-400)
-    }
-
-    .btn-light {
-      background: #fff;
-      border: 1px solid var(--line);
-      color: var(--ink)
-    }
-
-    .btn-light:hover {
-      background: #f1f5f9
-    }
-
-    .btn-danger-soft {
-      background: #fff;
-      border: 1px solid #fecaca;
-      color: #b91c1c
-    }
-
-    .btn-danger-soft:hover {
-      background: #fee2e2
-    }
-
-    .form-control,
-    select.form-control {
-      width: 100%;
-      background: #fff;
-      border: 1px solid #111827;
-      border-radius: 10px;
-      padding: .70rem .9rem;
-      font-size: 1rem;
-      transition: border-color .18s ease, box-shadow .18s ease
-    }
-
-    .form-control:focus,
-    select.form-control:focus {
-      outline: 0;
-      border-color: var(--blue-focus);
-      box-shadow: 0 0 0 3px rgba(43, 77, 165, .15)
-    }
-
-    .form-text {
-      color: var(--muted)
-    }
-
-    .card-flat {
-      background: var(--card);
-      border: 1px solid var(--indigo-200);
-      border-radius: 14px;
-      box-shadow: var(--shadow-1);
-      transition: transform .16s, box-shadow .18s, border-color .18s
-    }
-
-    .card-flat:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-2);
-      border-color: var(--indigo-400)
-    }
-
-    .pgrid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 18px
-    }
-
-    .p-card {
-      overflow: hidden;
-      display: flex;
-      flex-direction: column
-    }
-
-    .p-cover {
-      position: relative;
-      height: 160px;
-      background: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset 0 -12px 22px rgba(2, 6, 23, .05);
-      overflow: hidden
-    }
-
-    .p-cover.hasimg {
-      background-size: cover;
-      background-position: center;
-      box-shadow: inset 0 -38px 54px rgba(2, 6, 23, .18)
-    }
-
-    .p-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 14px;
-      background: linear-gradient(to top, rgba(15, 23, 42, .55), rgba(15, 23, 42, .15) 45%, rgba(15, 23, 42, 0));
-      color: #fff;
-      text-decoration: none;
-      font-weight: 700;
-      gap: .5rem;
-      opacity: 0;
-      transform: translateY(6px);
-      transition: .18s
-    }
-
-    .p-card:hover .p-overlay {
-      opacity: 1;
-      transform: translateY(0)
-    }
-
-    .section {
-      padding: 16px
-    }
-
-    .badge-soft {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 9999px;
-      padding: .2rem .55rem;
-      font-weight: 600;
-      font-size: .8rem;
-      border: 1px solid var(--indigo-200);
-      background: #eef2ff;
-      color: #3730a3
-    }
-
-    .badge-muted {
-      border-color: #cbd5e1;
-      background: #f1f5f9;
-      color: #334155
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .4rem
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: .28rem .6rem;
-      border-radius: 9999px;
-      border: 1px solid var(--line);
-      background: #fff;
-      font-size: .8rem;
-      color: #334155;
-      text-decoration: none;
-      transition: all .18s;
-      box-shadow: 0 2px 6px rgba(2, 6, 23, .06)
-    }
-
-    .chip:hover {
-      border-color: var(--indigo-300);
-      color: #1f2937
-    }
-
-    .meta {
-      color: #94a3b8;
-      font-size: .85rem
-    }
-
-    .form-label .eyebrow-hint {
-      font-weight: 500;
-      font-size: .78rem;
-      color: var(--muted);
-      margin-left: .35rem
-    }
-
-    .input-wrap {
-      position: relative
-    }
-
-    .input-wrap .mdi {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      opacity: .55
-    }
-
-    .input-wrap .form-control,
-    .input-wrap select.form-control {
-      padding-left: 2.1rem
-    }
-
-    .helper-inline {
-      display: flex;
-      gap: .5rem;
-      align-items: center;
-      margin-top: .35rem
-    }
-
-    .helper-inline .link {
-      font-weight: 600;
-      cursor: pointer
-    }
-
-    .helper-inline .link:hover {
-      text-decoration: underline
-    }
-
-    #customCatWrap {
-      display: none
-    }
-
-    .select2-container--bootstrap4 .select2-selection {
-      border-radius: 10px;
-      border: 1px solid #111827;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      padding: .2rem .5rem;
-    }
-
-    .select2-container--bootstrap4 .select2-selection__rendered {
-      line-height: 1.2
-    }
-
-    .select2-container--bootstrap4 .select2-selection__clear {
-      margin-right: .25rem
-    }
-
-    .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow {
-      height: 44px
-    }
-
-    .select2-container--bootstrap4 .select2-selection--multiple {
-      min-height: 44px;
-      height: 44px;
-      overflow: hidden;
-      align-items: center;
-    }
-
-    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
-      display: none;
-    }
-
-    .select2-container--bootstrap4 .select2-selection--multiple .select2-search__field {
-      margin-top: 0;
-    }
-
-    .select2-container {
-      width: 100% !important;
-    }
-
-    .select2-container--open .select2-dropdown {
-      z-index: 3000;
-    }
-
-    .select2-container--bootstrap4 .select2-selection__rendered {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-    }
-
-    .select2-results__option {
-      white-space: normal;
-    }
-
-    .modal-backdrop-lite {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 6, 23, .45);
-      z-index: 1050;
-      display: none;
-      padding: 20px
-    }
-
-    .modal-card {
-      max-width: 520px;
-      margin: 5vh auto;
-      background: #fff;
-      border: 1px solid var(--indigo-200);
-      border-radius: 14px;
-      padding: 16px;
-      box-shadow: var(--shadow-2)
-    }
-
-    #catChips .chip {
-      position: relative;
-      padding-right: 26px;
-    }
-
-    #catChips .chip .chip-x {
-      position: absolute;
-      right: 6px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 0;
-      background: transparent;
-      line-height: 1;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-
-    .addr-col {
-      position: relative;
-    }
-
-    .addr-col .select2-container--bootstrap4 .select2-dropdown {
-      left: 0 !important;
-      right: 0 !important;
-      width: 100% !important;
-      min-width: 0 !important;
-      max-width: none !important;
-    }
-
-    .addr-col {
-      position: relative;
-      overflow: visible;
-    }
-
-    .addr-dd.select2-dropdown {
-      left: 0 !important;
-      right: 0 !important;
-      width: 100% !important;
-      min-width: 0 !important;
-      max-width: none !important;
-      z-index: 3000;
-    }
-
-    .addr-dd .select2-results__options {
-      max-height: 320px !important;
-      overflow-y: auto !important;
-    }
-
-    .addr-dd .select2-results__option {
-      white-space: normal;
-    }
-
-    .select2-container--bootstrap4 .select2-selection__rendered {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-    }
-
-    .cat-col {
-      position: relative;
-      overflow: visible;
-    }
-
-    .cat-dd.select2-dropdown {
-      left: 0 !important;
-      right: 0 !important;
-      width: 100% !important;
-      min-width: 0 !important;
-      max-width: none !important;
-      z-index: 3000;
-    }
-
-    .cat-dd .select2-results__options {
-      max-height: 320px !important;
-      overflow-y: auto !important;
-    }
-
-    .cat-dd .select2-results__option {
-      white-space: normal;
-    }
-
-    .select2-container--bootstrap4 .select2-selection--multiple {
-      min-height: 44px;
-      height: 44px;
-      overflow: hidden;
-      align-items: center;
-    }
-
-    .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
-      display: none;
-    }
-
-    .select2-container--bootstrap4 .select2-selection--multiple .select2-search__field {
-      margin-top: 0;
-    }
-
-    .select2-container--bootstrap4 .select2-selection__rendered {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-    }
-
-    .select2-container--bootstrap4 .select2-selection {
-      min-height: 48px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      padding: .2rem .5rem;
-    }
-
-    .select2-container--bootstrap4 .select2-selection__rendered {
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-      text-align: left;
-    }
-
-
-    .cat-col {
-      position: relative;
-      overflow: visible;
-    }
-
-    .cat-dd.select2-dropdown {
-      left: 0 !important;
-      right: 0 !important;
-      width: 100% !important;
-      min-width: 0 !important;
-      max-width: none !important;
-      z-index: 3000;
-    }
-
-    .cat-dd .select2-results__options {
-      max-height: 60vh !important;
-      overflow-y: auto !important;
-    }
-
-    .cat-dd .select2-results__option {
-      white-space: normal;
-    }
-
-    .select2-container--bootstrap4 .select2-selection {
-      display: block !important;
-      min-height: 48px;
-      border-radius: 10px;
-      padding: .6rem .9rem;
-    }
-
-    .select2-container--bootstrap4 .select2-selection__rendered {
-      text-align: left !important;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%;
-      min-width: 0;
-    }
-
-    select.form-control {
-      color: var(--muted);
-    }
-
-    .form-control.has-value {
-      color: var(--ink) !important;
-    }
-
-    .select2-container--bootstrap4 .select2-selection__rendered {
-      color: var(--muted);
-    }
-
-    .select2-container--bootstrap4.select2-has-value .select2-selection__rendered {
-      color: var(--ink) !important;
-    }
+  html {
+  scrollbar-gutter: stable;
+  }
+  :root {
+  --ink: var(--jm-slate-900);
+  --muted: var(--jm-gray-500);
+  --line: var(--jm-gray-200);
+  --card: #fff;
+  --indigo-200: #ffcccc;
+  --indigo-300: #ffb3b3;
+  --indigo-400: #ff9999;
+  --indigo-500: var(--jm-primary);
+  --blue-focus: var(--jm-primary);
+  --shadow-1: 0 6px 18px rgba(2, 6, 23, .06), 0 1px 0 rgba(2, 6, 23, .04);
+  --shadow-2: 0 16px 36px rgba(2, 6, 23, .12), 0 3px 10px rgba(2, 6, 23, .08)
+  }
+  body {
+  background: var(--jm-wash-5);
+  color: var(--ink);
+  font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
+  }
+  .content-wrapper {
+  padding-top: 1rem
+  }
+  .app {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px
+  }
+  .eyebrow {
+  font-size: .85rem;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: .3px
+  }
+  .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .9rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: .9rem;
+  transition: all .18s
+  }
+  .btn i {
+  font-size: 1.05rem
+  }
+  .btn-brand {
+  background: var(--indigo-500);
+  border: 1px solid var(--indigo-500);
+  color: #fff
+  }
+  .btn-brand:hover {
+  background: var(--indigo-400);
+  border-color: var(--indigo-400)
+  }
+  .btn-light {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink)
+  }
+  .btn-light:hover {
+  background: var(--jm-slate-100)
+  }
+  .btn-danger-soft {
+  background: #fff;
+  border: 1px solid var(--jm-red-200);
+  color: var(--jm-red-700)
+  }
+  .btn-danger-soft:hover {
+  background: var(--jm-red-100)
+  }
+  .form-control,
+  select.form-control {
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--jm-gray-900);
+  border-radius: 10px;
+  padding: .70rem .9rem;
+  font-size: 1rem;
+  transition: border-color .18s ease, box-shadow .18s ease
+  }
+  .form-control:focus,
+  select.form-control:focus {
+  outline: 0;
+  border-color: var(--blue-focus);
+  box-shadow: 0 0 0 3px rgba(43, 77, 165, .15)
+  }
+  .form-text {
+  color: var(--muted)
+  }
+  .card-flat {
+  background: var(--card);
+  border: 1px solid var(--indigo-200);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  transition: transform .16s, box-shadow .18s, border-color .18s
+  }
+  .card-flat:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--indigo-400)
+  }
+  .pgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px
+  }
+  .p-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column
+  }
+  .p-cover {
+  position: relative;
+  height: 160px;
+  background: var(--jm-slate-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 -12px 22px rgba(2, 6, 23, .05);
+  overflow: hidden
+  }
+  .p-cover.hasimg {
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 -38px 54px rgba(2, 6, 23, .18)
+  }
+  .p-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  background: linear-gradient(to top, rgba(15, 23, 42, .55), rgba(15, 23, 42, .15) 45%, rgba(15, 23, 42, 0));
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  gap: .5rem;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: .18s
+  }
+  .p-card:hover .p-overlay {
+  opacity: 1;
+  transform: translateY(0)
+  }
+  .section {
+  padding: 16px
+  }
+  .badge-soft {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: .2rem .55rem;
+  font-weight: 600;
+  font-size: .8rem;
+  border: 1px solid var(--indigo-200);
+  background: var(--jm-indigo-50);
+  color: #3730a3
+  }
+  .badge-muted {
+  border-color: var(--jm-slate-300);
+  background: var(--jm-slate-100);
+  color: var(--jm-slate-700)
+  }
+  .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem
+  }
+  .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: .28rem .6rem;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: .8rem;
+  color: var(--jm-slate-700);
+  text-decoration: none;
+  transition: all .18s;
+  box-shadow: 0 2px 6px rgba(2, 6, 23, .06)
+  }
+  .chip:hover {
+  border-color: var(--indigo-300);
+  color: var(--jm-gray-800)
+  }
+  .meta {
+  color: var(--jm-slate-400);
+  font-size: .85rem
+  }
+  .form-label .eyebrow-hint {
+  font-weight: 500;
+  font-size: .78rem;
+  color: var(--muted);
+  margin-left: .35rem
+  }
+  .input-wrap {
+  position: relative
+  }
+  .input-wrap .mdi {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: .55
+  }
+  .input-wrap .form-control,
+  .input-wrap select.form-control {
+  padding-left: 2.1rem
+  }
+  .helper-inline {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  margin-top: .35rem
+  }
+  .helper-inline .link {
+  font-weight: 600;
+  cursor: pointer
+  }
+  .helper-inline .link:hover {
+  text-decoration: underline
+  }
+  #customCatWrap {
+  display: none
+  }
+  .select2-container--bootstrap4 .select2-selection {
+  border-radius: 10px;
+  border: 1px solid var(--jm-gray-900);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: .2rem .5rem;
+  }
+  .select2-container--bootstrap4 .select2-selection__rendered {
+  line-height: 1.2
+  }
+  .select2-container--bootstrap4 .select2-selection__clear {
+  margin-right: .25rem
+  }
+  .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow {
+  height: 44px
+  }
+  .select2-container--bootstrap4 .select2-selection--multiple {
+  min-height: 44px;
+  height: 44px;
+  overflow: hidden;
+  align-items: center;
+  }
+  .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+  display: none;
+  }
+  .select2-container--bootstrap4 .select2-selection--multiple .select2-search__field {
+  margin-top: 0;
+  }
+  .select2-container {
+  width: 100% !important;
+  }
+  .select2-container--open .select2-dropdown {
+  z-index: 1060;
+  }
+  .select2-container--bootstrap4 .select2-selection__rendered {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  }
+  .select2-results__option {
+  white-space: normal;
+  }
+  .modal-backdrop-lite {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, .45);
+  z-index: 1050;
+  display: none;
+  padding: 20px
+  }
+  .modal-card {
+  max-width: 520px;
+  margin: 5vh auto;
+  background: #fff;
+  border: 1px solid var(--indigo-200);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--shadow-2)
+  }
+  #catChips .chip {
+  position: relative;
+  padding-right: 26px;
+  }
+  #catChips .chip .chip-x {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  line-height: 1;
+  font-size: 16px;
+  cursor: pointer;
+  }
+  .addr-col {
+  position: relative;
+  }
+  .addr-col .select2-container--bootstrap4 .select2-dropdown {
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  }
+  .addr-col {
+  position: relative;
+  overflow: visible;
+  }
+  .addr-dd.select2-dropdown {
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  z-index: 1060;
+  }
+  .addr-dd .select2-results__options {
+  max-height: 320px !important;
+  overflow-y: auto !important;
+  }
+  .addr-dd .select2-results__option {
+  white-space: normal;
+  }
+  .select2-container--bootstrap4 .select2-selection__rendered {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  }
+  .cat-col {
+  position: relative;
+  overflow: visible;
+  }
+  .cat-dd.select2-dropdown {
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  z-index: 1060;
+  }
+  .cat-dd .select2-results__options {
+  max-height: 320px !important;
+  overflow-y: auto !important;
+  }
+  .cat-dd .select2-results__option {
+  white-space: normal;
+  }
+  .select2-container--bootstrap4 .select2-selection--multiple {
+  min-height: 44px;
+  height: 44px;
+  overflow: hidden;
+  align-items: center;
+  }
+  .select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice {
+  display: none;
+  }
+  .select2-container--bootstrap4 .select2-selection--multiple .select2-search__field {
+  margin-top: 0;
+  }
+  .select2-container--bootstrap4 .select2-selection__rendered {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  }
+  .select2-container--bootstrap4 .select2-selection {
+  min-height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: .2rem .5rem;
+  }
+  .select2-container--bootstrap4 .select2-selection__rendered {
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: left;
+  }
+  .cat-col {
+  position: relative;
+  overflow: visible;
+  }
+  .cat-dd.select2-dropdown {
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  z-index: 1060;
+  }
+  .cat-dd .select2-results__options {
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+  }
+  .cat-dd .select2-results__option {
+  white-space: normal;
+  }
+  .select2-container--bootstrap4 .select2-selection {
+  display: block !important;
+  min-height: 48px;
+  border-radius: 10px;
+  padding: .6rem .9rem;
+  }
+  .select2-container--bootstrap4 .select2-selection__rendered {
+  text-align: left !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  min-width: 0;
+  }
+  select.form-control {
+  color: var(--muted);
+  }
+  .form-control.has-value {
+  color: var(--ink) !important;
+  }
+  .select2-container--bootstrap4 .select2-selection__rendered {
+  color: var(--muted);
+  }
+  .select2-container--bootstrap4.select2-has-value .select2-selection__rendered {
+  color: var(--ink) !important;
+  }
   </style>
 </head>
 
@@ -683,7 +589,7 @@
 
               <?php if (empty($items)): ?>
                 <div class="card-flat section text-center">
-                  <i class="mdi mdi-clipboard-list-outline" style="font-size:42px;color:#94a3b8"></i>
+                  <i class="mdi mdi-clipboard-list-outline" style="font-size:42px;color:var(--jm-slate-400)"></i>
                   <p class="mb-2"><?= $isHistory ? 'No closed projects yet' : 'No active projects yet' ?></p>
                   <?php if (!$isHistory && !empty($isClientView) && $isClientView): ?>
                     <a class="btn btn-light" href="<?= site_url('projects/create') ?>">
@@ -714,7 +620,7 @@
                   ?>
                     <div class="card-flat p-card">
                       <div class="p-cover <?= $cover ? 'hasimg' : '' ?>" style="<?= $cover ? 'background-image:url(' . htmlspecialchars(base_url($cover), ENT_QUOTES, 'UTF-8') . ')' : '' ?>">
-                        <?php if (!$cover): ?><i class="mdi mdi-image-multiple-outline" style="font-size:40px;color:#cbd5e1"></i><?php endif; ?>
+                        <?php if (!$cover): ?><i class="mdi mdi-image-multiple-outline" style="font-size:40px;color:var(--jm-slate-300)"></i><?php endif; ?>
                         <?php if (!empty($first)): ?>
                           <a class="p-overlay" href="<?= base_url($first) ?>" target="_blank" rel="noopener" aria-label="<?= html_escape($label) ?>">
                             <span class="badge-soft"><i class="mdi <?= $icon ?>"></i> <?= html_escape($label) ?><?= $more > 0 ? '<span class="meta ms-1">+' . (int)$more . ' more</span>' : '' ?></span>
@@ -852,22 +758,22 @@
 
                             if (in_array($st, ['accepted', 'active'], true)) {
                               $actionStatus =
-                                '<span class="badge-soft" style="border-color:#bbf7d0;background:#ecfdf5;color:#065f46">
+                                '<span class="badge-soft" style="border-color:#bbf7d0;background:var(--jm-emerald-50);color:var(--jm-emerald-700)">
              <i class="mdi mdi-progress-clock"></i> Ongoing
            </span>';
                             } elseif (in_array($st, ['declined', 'denied'], true)) {
                               $actionStatus =
-                                '<span class="badge-soft" style="border-color:#fecaca;background:#fff1f2;color:#b91c1c">
+                                '<span class="badge-soft" style="border-color:var(--jm-red-200);background:var(--jm-rose-50);color:var(--jm-red-700)">
              <i class="mdi mdi-close-octagon-outline"></i> Denied
            </span>';
                             } elseif ($st === 'completed') {
                               $actionStatus =
-                                '<span class="badge-soft" style="border-color:#fde68a;background:#fffbeb;color:#92400e">
+                                '<span class="badge-soft" style="border-color:#fde68a;background:var(--jm-amber-50);color:var(--jm-amber-800)">
              <i class="mdi mdi-check-decagram"></i> Completed
            </span>';
                             } elseif ($st === 'invited') {
                               $actionStatus =
-                                '<span class="badge-soft" style="border-color:#cbd5e1;background:#f1f5f9;color:#334155">
+                                '<span class="badge-soft" style="border-color:var(--jm-slate-300);background:var(--jm-slate-100);color:var(--jm-slate-700)">
              <i class="mdi mdi-email-outline"></i> Invited
            </span>';
                             }
@@ -1102,7 +1008,7 @@
   <script src="<?= base_url('assets/js/hoverable-collapse.js') ?>"></script>
   <script src="<?= base_url('assets/js/misc.js') ?>"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="<?= base_url('assets/vendors/select2-4.1/select2.min.js') ?>"></script>
   <script>
     (function() {
       if (!window.jQuery || !jQuery.fn.select2) {

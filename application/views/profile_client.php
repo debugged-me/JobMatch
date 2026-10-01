@@ -3,361 +3,308 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'Client Profile', ENT_QUOTES, 'UTF-8') ?> • JobMatch DavOr</title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/universal.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
-  <!-- CSRF for AJAX -->
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'Client Profile',
+    'css' => [
+      'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css',
+    ],
+  ]); ?>
   <meta name="csrf-token-name" content="<?= $this->security->get_csrf_token_name(); ?>">
   <meta name="csrf-token-hash" content="<?= $this->security->get_csrf_hash(); ?>">
-
   <style>
-    :root {
-      --blue-900: #1e3a8a;
-      --blue-700: #1d4ed8;
-      --blue-600: #2563eb;
-      --blue-500: #2563eb;
-      --gold-700: #c89113;
-      --gold-600: #f0b429;
-      --silver-600: #a7afba;
-      --silver-500: #c0c6d0;
-      --silver-300: #d9dee7;
-      --silver-200: #e7ebf2;
-      --silver-100: #f6f8fc;
-      --radius: 12px;
-      --pad-panel: 12px;
-      --fs-title: 20px;
-      --fs-sub: 12.5px;
-      --fs-body: 13px;
-      --fs-kpi: 18px;
-      --fs-kpi-label: 12px;
-      --shadow-1: 0 6px 16px rgba(2, 6, 23, .08);
-    }
-
-    body {
-      font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      font-size: var(--fs-body);
-      background: linear-gradient(180deg, var(--silver-100), #eef2f7 60%, #e9edf3 100%);
-      color: #0f172a;
-    }
-
-    .container-fluid.page-body-wrapper .main-panel .content-wrapper {
-      padding: 0 12px;
-      padding-top: .6rem;
-    }
-
-    .app {
-      width: 100%;
-      padding: 0 12px;
-    }
-
-    .eyebrow {
-      font-size: 12px;
-      color: #64748b;
-      font-weight: 600;
-      letter-spacing: .2px;
-      margin: 4px 0 8px
-    }
-
-    .profile-card {
-      position: relative;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: var(--shadow-1);
-      border: 1px solid var(--silver-300)
-    }
-
-    .profile-cover {
-      height: 120px;
-      background: #fff url('<?= base_url("assets/images/banner.png") ?>') center top/contain no-repeat
-    }
-
-    .profile-brandbar {
-      position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--blue-900), var(--blue-700), var(--blue-500))
-    }
-
-    .profile-gold {
-      height: 3px;
-      background: linear-gradient(90deg, var(--gold-700), var(--gold-600))
-    }
-
-    .profile-main {
-      display: grid;
-      grid-template-columns: 84px 1fr auto;
-      gap: 14px;
-      align-items: center;
-      padding: 12px
-    }
-
-    .avatar {
-      width: 84px;
-      height: 84px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid #fff;
-      margin-top: -60px;
-      box-shadow: 0 8px 18px rgba(2, 6, 23, .14)
-    }
-
-    .profile-name {
-      font-size: var(--fs-title);
-      font-weight: 800;
-      margin: 0;
-      color: var(--blue-900)
-    }
-
-    .profile-sub {
-      color: #6b7280;
-      font-size: var(--fs-sub)
-    }
-
-    .meta {
-      color: #64748b;
-      font-size: 12.5px
-    }
-
-    .badge-soft {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: .25rem .5rem;
-      border-radius: 9999px;
-      border: 1px solid var(--silver-300);
-      background: #fff;
-      font-weight: 700;
-      font-size: 12px
-    }
-
-    .panel {
-      background: #fff;
-      border: 1px solid var(--silver-300);
-      border-radius: 12px;
-      box-shadow: var(--shadow-1);
-      padding: var(--pad-panel)
-    }
-
-    .panel--wide {
-      grid-column: 1/-1
-    }
-
-    .panel-head {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px
-    }
-
-    .empty {
-      color: #6b7280;
-      border: 1px dashed var(--silver-300);
-      border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-      background: linear-gradient(180deg, #fff, #fbfcff)
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px
-    }
-
-    @media (max-width:992px) {
-      .kpi-grid {
-        grid-template-columns: 1fr 1fr
-      }
-    }
-
-    @media (max-width:600px) {
-      .kpi-grid {
-        grid-template-columns: 1fr
-      }
-    }
-
-    .kpi .label {
-      font-size: var(--fs-kpi-label);
-      color: #6b7280
-    }
-
-    .kpi .value {
-      font-size: var(--fs-kpi);
-      font-weight: 800
-    }
-
-    .layout {
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: 6fr 5fr;
-      gap: 12px
-    }
-
-    @media (max-width:992px) {
-      .layout {
-        grid-template-columns: 1fr
-      }
-    }
-
-    .btn-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #475569;
-      cursor: pointer;
-      transition: .16s border-color, .16s transform, .16s color;
-      margin-left: 6px;
-    }
-
-    .btn-icon:hover {
-      border-color: #cfd8e3;
-      color: #0f172a;
-      transform: translateY(-1px)
-    }
-
-    .btn-icon.ok:hover {
-      border-color: rgba(22, 163, 74, .35);
-      color: #166534
-    }
-
-    .btn-icon.info:hover {
-      border-color: #bfdbfe;
-      color: #2563eb
-    }
-
-    .btn-icon.bad:hover {
-      border-color: rgba(239, 68, 68, .35);
-      color: #991b1b
-    }
-
-    .c-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 10px
-    }
-
-    .c-card {
-      position: relative;
-      height: 130px;
-      border: 1px solid var(--silver-300);
-      border-radius: 10px;
-      overflow: hidden;
-      background: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px
-    }
-
-    .c-card.hasimg {
-      background-size: cover;
-      background-position: center
-    }
-
-    .c-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 8px;
-      background: linear-gradient(to top, rgba(15, 23, 42, .55), rgba(15, 23, 42, .05) 55%, rgba(15, 23, 42, 0))
-    }
-
-    .c-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: .4rem;
-      padding: .35rem .6rem;
-      border-radius: 9999px;
-      background: linear-gradient(180deg, var(--blue-700), var(--blue-500));
-      color: #fff;
-      font-weight: 800;
-      font-size: 12px;
-      text-decoration: none
-    }
-
-    .file-pill {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: #fff;
-      border: 1px solid var(--silver-300);
-      border-radius: 9999px;
-      padding: .15rem .45rem;
-      font-size: 11px;
-      font-weight: 700;
-      color: #334155
-    }
-
-    /* responsive table labels for Recent Jobs */
-    @media (max-width: 768px) {
-      .panel .table thead {
-        display: none;
-      }
-
-      .panel .table {
-        border-collapse: separate;
-        border-spacing: 0 12px;
-      }
-
-      .panel .table tbody,
-      .panel .table tr,
-      .panel .table td {
-        display: block;
-        width: 100%;
-      }
-
-      .panel .table tbody tr {
-        background: #fff;
-        border: 1px solid var(--silver-300);
-        border-radius: 14px;
-        box-shadow: var(--shadow-1);
-        padding: 12px;
-      }
-
-      .panel .table tbody tr td {
-        display: grid;
-        grid-template-columns: 120px 1fr;
-        gap: 8px;
-        align-items: baseline;
-        padding: 8px 0;
-        border-bottom: 1px dashed #e5e7eb;
-      }
-
-      .panel .table tbody tr td:last-child {
-        border-bottom: 0;
-        padding-bottom: 2px;
-      }
-
-      .panel .table td::before {
-        content: attr(data-th);
-        text-transform: uppercase;
-        font: 700 10px/1 Inter, system-ui;
-        color: #64748b;
-        letter-spacing: .35px;
-        align-self: start;
-      }
-    }
+  :root {
+  --blue-900: var(--jm-blue-900);
+  --blue-700: var(--jm-blue-700);
+  --blue-600: var(--jm-blue-600);
+  --blue-500: var(--jm-blue-600);
+  --gold-700: #c89113;
+  --gold-600: #f0b429;
+  --silver-600: var(--jm-gray-flat-2);
+  --silver-500: #c0c6d0;
+  --silver-300: var(--jm-line-2);
+  --silver-200: #e7ebf2;
+  --silver-100: var(--jm-wash-1);
+  --radius: 12px;
+  --pad-panel: 12px;
+  --fs-title: 20px;
+  --fs-sub: 12.5px;
+  --fs-body: 13px;
+  --fs-kpi: 18px;
+  --fs-kpi-label: 12px;
+  --shadow-1: 0 6px 16px rgba(2, 6, 23, .08);
+  }
+  body {
+  font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  font-size: var(--fs-body);
+  background: linear-gradient(180deg, var(--silver-100), var(--jm-wash-2) 60%, var(--jm-wash-3) 100%);
+  color: var(--jm-slate-900);
+  }
+  .container-fluid.page-body-wrapper .main-panel .content-wrapper {
+  padding: 0 12px;
+  padding-top: .6rem;
+  }
+  .app {
+  width: 100%;
+  padding: 0 12px;
+  }
+  .eyebrow {
+  font-size: 12px;
+  color: var(--jm-slate-500);
+  font-weight: 600;
+  letter-spacing: .2px;
+  margin: 4px 0 8px
+  }
+  .profile-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--shadow-1);
+  border: 1px solid var(--silver-300)
+  }
+  .profile-cover {
+  height: 120px;
+  background: #fff url('<?= base_url("assets/images/banner.png") ?>') center top/contain no-repeat
+  }
+  .profile-brandbar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--blue-900), var(--blue-700), var(--blue-500))
+  }
+  .profile-gold {
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold-700), var(--gold-600))
+  }
+  .profile-main {
+  display: grid;
+  grid-template-columns: 84px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px
+  }
+  .avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  margin-top: -60px;
+  box-shadow: 0 8px 18px rgba(2, 6, 23, .14)
+  }
+  .profile-name {
+  font-size: var(--fs-title);
+  font-weight: 800;
+  margin: 0;
+  color: var(--blue-900)
+  }
+  .profile-sub {
+  color: var(--jm-gray-500);
+  font-size: var(--fs-sub)
+  }
+  .meta {
+  color: var(--jm-slate-500);
+  font-size: 12.5px
+  }
+  .badge-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: .25rem .5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--silver-300);
+  background: #fff;
+  font-weight: 700;
+  font-size: 12px
+  }
+  .panel {
+  background: #fff;
+  border: 1px solid var(--silver-300);
+  border-radius: 12px;
+  box-shadow: var(--shadow-1);
+  padding: var(--pad-panel)
+  }
+  .panel--wide {
+  grid-column: 1/-1
+  }
+  .panel-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px
+  }
+  .empty {
+  color: var(--jm-gray-500);
+  border: 1px dashed var(--silver-300);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  background: linear-gradient(180deg, #fff, var(--jm-wash-4))
+  }
+  .kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px
+  }
+  @media (max-width:992px) {
+  .kpi-grid {
+  grid-template-columns: 1fr 1fr
+  }
+  }
+  @media (max-width:768px) {
+  .kpi-grid {
+  grid-template-columns: 1fr
+  }
+  }
+  .kpi .label {
+  font-size: var(--fs-kpi-label);
+  color: var(--jm-gray-500)
+  }
+  .kpi .value {
+  font-size: var(--fs-kpi);
+  font-weight: 800
+  }
+  .layout {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 6fr 5fr;
+  gap: 12px
+  }
+  @media (max-width:992px) {
+  .layout {
+  grid-template-columns: 1fr
+  }
+  }
+  .btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--jm-gray-200);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--jm-slate-600);
+  cursor: pointer;
+  transition: .16s border-color, .16s transform, .16s color;
+  margin-left: 6px;
+  }
+  .btn-icon:hover {
+  border-color: #cfd8e3;
+  color: var(--jm-slate-900);
+  transform: translateY(-1px)
+  }
+  .btn-icon.ok:hover {
+  border-color: rgba(22, 163, 74, .35);
+  color: var(--jm-emerald-800)
+  }
+  .btn-icon.info:hover {
+  border-color: #bfdbfe;
+  color: var(--jm-blue-600)
+  }
+  .btn-icon.bad:hover {
+  border-color: rgba(239, 68, 68, .35);
+  color: var(--jm-red-800)
+  }
+  .c-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px
+  }
+  .c-card {
+  position: relative;
+  height: 130px;
+  border: 1px solid var(--silver-300);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--jm-slate-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px
+  }
+  .c-card.hasimg {
+  background-size: cover;
+  background-position: center
+  }
+  .c-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 8px;
+  background: linear-gradient(to top, rgba(15, 23, 42, .55), rgba(15, 23, 42, .05) 55%, rgba(15, 23, 42, 0))
+  }
+  .c-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .35rem .6rem;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, var(--blue-700), var(--blue-500));
+  color: #fff;
+  font-weight: 800;
+  font-size: 12px;
+  text-decoration: none
+  }
+  .file-pill {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #fff;
+  border: 1px solid var(--silver-300);
+  border-radius: 9999px;
+  padding: .15rem .45rem;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--jm-slate-700)
+  }
+  /* responsive table labels for Recent Jobs */
+  @media (max-width: 768px) {
+  .panel .table thead {
+  display: none;
+  }
+  .panel .table {
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  }
+  .panel .table tbody,
+  .panel .table tr,
+  .panel .table td {
+  display: block;
+  width: 100%;
+  }
+  .panel .table tbody tr {
+  background: #fff;
+  border: 1px solid var(--silver-300);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
+  padding: 12px;
+  }
+  .panel .table tbody tr td {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 8px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--jm-gray-200);
+  }
+  .panel .table tbody tr td:last-child {
+  border-bottom: 0;
+  padding-bottom: 2px;
+  }
+  .panel .table td::before {
+  content: attr(data-th);
+  text-transform: uppercase;
+  font: 700 10px/1 Inter, system-ui;
+  color: var(--jm-slate-500);
+  letter-spacing: .35px;
+  align-self: start;
+  }
+  }
   </style>
 </head>
 
@@ -500,7 +447,7 @@
                     <div class="profile-sub"><?= htmlspecialchars($org_label, ENT_QUOTES, 'UTF-8') ?></div>
                   <?php endif; ?>
                   <?php if ($has_company_position_field && $company_position !== ''): ?>
-                    <div class="profile-sub" style="font-size:11px;color:#94a3b8">
+                    <div class="profile-sub" style="font-size:11px;color:var(--jm-slate-400)">
                       <?= htmlspecialchars($company_position, ENT_QUOTES, 'UTF-8') ?>
                     </div>
                   <?php endif; ?>
@@ -531,44 +478,44 @@
             <!-- KPIs -->
             <div class="kpi-grid" style="margin:10px 0 6px">
               <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(37,99,235,.10)"><i class="mdi mdi-briefcase-outline" style="font-size:18px;color:#2563eb"></i></div>
+                <div class="u-flexrow">
+                  <div class="icon" style="background:rgba(37,99,235,.10)"><i class="mdi mdi-briefcase-outline" style="font-size:18px;color:var(--jm-blue-600)"></i></div>
                   <div>
                     <div class="label">Jobs Posted</div>
                     <div class="value"><?= $jobs_posted ?></div>
                   </div>
                 </div>
-                <div class="text-muted" style="font-size:12px;margin-top:4px">All-time</div>
+                <div class="text-muted u-note">All-time</div>
               </div>
               <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(251,191,36,.18)"><i class="mdi mdi-briefcase-check" style="font-size:18px;color:#b45309"></i></div>
+                <div class="u-flexrow">
+                  <div class="icon" style="background:rgba(251,191,36,.18)"><i class="mdi mdi-briefcase-check" style="font-size:18px;color:var(--jm-amber-700)"></i></div>
                   <div>
                     <div class="label">Active Jobs</div>
                     <div class="value"><?= $jobs_active ?></div>
                   </div>
                 </div>
-                <div class="text-muted" style="font-size:12px;margin-top:4px">Open right now</div>
+                <div class="text-muted u-note">Open right now</div>
               </div>
               <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(245,158,11,.12)"><i class="mdi mdi-account-multiple-check" style="font-size:18px;color:#f59e0b"></i></div>
+                <div class="u-flexrow">
+                  <div class="icon" style="background:rgba(245,158,11,.12)"><i class="mdi mdi-account-multiple-check" style="font-size:18px;color:var(--jm-amber-500)"></i></div>
                   <div>
                     <div class="label">Total Hires</div>
                     <div class="value"><?= $hires_total ?></div>
                   </div>
                 </div>
-                <div class="text-muted" style="font-size:12px;margin-top:4px">All-time</div>
+                <div class="text-muted u-note">All-time</div>
               </div>
               <div class="panel kpi">
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="icon" style="background:rgba(99,102,241,.12)"><i class="mdi mdi-cash-multiple" style="font-size:18px;color:#6366f1"></i></div>
+                <div class="u-flexrow">
+                  <div class="icon" style="background:rgba(99,102,241,.12)"><i class="mdi mdi-cash-multiple" style="font-size:18px;color:var(--jm-indigo-500)"></i></div>
                   <div>
                     <div class="label">Total Spend</div>
                     <div class="value">â‚±<?= number_format($spend_total, 2) ?></div>
                   </div>
                 </div>
-                <div class="text-muted" style="font-size:12px;margin-top:4px">All-time</div>
+                <div class="text-muted u-note">All-time</div>
               </div>
             </div>
 
@@ -621,8 +568,8 @@
                           <div class="c-card <?= $img ? 'hasimg' : '' ?>" <?= $img ? 'style="background-image:url(\'' . htmlspecialchars($it['abs'], ENT_QUOTES) . '\')"' : '' ?>>
                             <?php if (!$img): ?>
                               <div class="text-center">
-                                <i class="mdi <?= $pdf ? 'mdi-file-pdf-box' : 'mdi-file' ?>" style="font-size:40px;<?= $pdf ? 'color:#b91c1c' : 'color:#334155' ?>"></i>
-                                <div style="font-size:11px;margin-top:4px;color:#334155;max-width:92%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <i class="mdi <?= $pdf ? 'mdi-file-pdf-box' : 'mdi-file' ?>" style="font-size:40px;<?= $pdf ? 'color:var(--jm-red-700)' : 'color:var(--jm-slate-700)' ?>"></i>
+                                <div style="font-size:11px;margin-top:4px;color:var(--jm-slate-700);max-width:92%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                   <?= htmlspecialchars($it['title'], ENT_QUOTES, 'UTF-8') ?>
                                 </div>
                               </div>

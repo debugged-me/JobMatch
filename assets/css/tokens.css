@@ -62,6 +62,71 @@
 
   /* ---- THE per-page --brand variable (was #c1272d/#2563eb/#6366f1 at random) ---- */
   --brand: var(--jm-primary);
+
+  /* =====================================================================
+     FIXED RAMPS — literal parity tokens (do NOT adapt in dark mode).
+     Use these to replace existing hardcoded hexes 1:1 without changing
+     rendered colors. Prefer the semantic tokens above for NEW code.
+     ===================================================================== */
+  --jm-white: #ffffff;
+  --jm-black: #000000;
+
+  --jm-slate-50:#f8fafc; --jm-slate-100:#f1f5f9; --jm-slate-200:#e2e8f0;
+  --jm-slate-300:#cbd5e1; --jm-slate-400:#94a3b8; --jm-slate-500:#64748b;
+  --jm-slate-600:#475569; --jm-slate-700:#334155; --jm-slate-800:#1e293b;
+  --jm-slate-900:#0f172a;
+
+  --jm-gray-50:#f9fafb; --jm-gray-100:#f3f4f6; --jm-gray-200:#e5e7eb;
+  --jm-gray-300:#d1d5db; --jm-gray-400:#9ca3af; --jm-gray-500:#6b7280;
+  --jm-gray-600:#4b5563; --jm-gray-700:#374151; --jm-gray-800:#1f2937;
+  --jm-gray-900:#111827;
+
+  --jm-blue-50:#eff6ff; --jm-blue-600:#2563eb; --jm-blue-700:#1d4ed8;
+  --jm-blue-900:#1e3a8a;
+
+  --jm-indigo-50:#eef2ff; --jm-indigo-200:#c7d2fe; --jm-indigo-500:#6366f1;
+
+  --jm-red-50:#fef2f2; --jm-red-100:#fee2e2; --jm-red-200:#fecaca;
+  --jm-red-500:#ef4444; --jm-red-700:#b91c1c; --jm-red-800:#991b1b;
+  --jm-red-900:#7f1d1d;
+  --jm-rose-50:#fff1f2;
+
+  --jm-amber-50:#fffbeb; --jm-amber-500:#f59e0b; --jm-amber-700:#b45309;
+  --jm-amber-800:#92400e;
+
+  --jm-emerald-50:#ecfdf5; --jm-emerald-700:#065f46; --jm-emerald-800:#166534;
+
+  /* app-specific legacy literals */
+  --jm-crimson-900:#9b1f24;  /* dark brand red */
+  --jm-red-flat:#e74c3c;     /* flat-ui alizarin */
+  --jm-ink:#0b1220;          /* near-black surface */
+
+  --jm-line-2:#d9dee7;       /* secondary table/card hairline */
+  --jm-wash-1:#f6f8fc; --jm-wash-2:#eef2f7; --jm-wash-3:#e9edf3;
+  --jm-wash-4:#fbfcff; --jm-wash-5:#f6f7fb; --jm-wash-6:#f1f3f5;
+  --jm-gray-flat-1:#c0c4cc; --jm-gray-flat-2:#a7afba;
+}
+
+/* =========================================================================
+   Z-INDEX SCALE — the canonical stacking tiers.
+     10   sticky elements          500  fixed nav/topbar
+     100  dropdowns                1000 page overlays / veils
+     1040-1050 page modals         1060 dropdowns that float over modals
+     1070 JM modal (jm-ui.js)      1080 JM toasts — always topmost
+   Nothing should exceed 1080 except deliberate full-screen takeovers.
+   ========================================================================= */
+
+/* =========================================================================
+   ACCESSIBILITY — universal keyboard focus ring.
+   Pages may still suppress :focus outlines for mouse users; :focus-visible
+   always restores a branded ring for keyboard navigation.
+   ========================================================================= */
+:focus-visible {
+  outline: 2px solid var(--jm-navy) !important;
+  outline-offset: 2px;
+}
+@media (prefers-color-scheme: dark) {
+  :focus-visible { outline-color: var(--jm-gold) !important; }
 }
 
 @media (prefers-color-scheme: dark) {

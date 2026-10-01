@@ -7,18 +7,19 @@
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><?= html_escape($page_title ?? 'Edit Worker Profile') ?> - JobMatch</title>
-    <meta name="theme-color" content="#c1272d" />
+    <meta name="theme-color" content="var(--jm-primary)" />
     <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/images/logo.png') ?>">
 
     <link rel="stylesheet" href="<?= base_url('assets/css/tw-build.css?v=1') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/v/bs5/dt-2.0.8/r-3.0.2/datatables.min.css" />
-    <script src="https://cdn.datatables.net/v/bs5/dt-2.0.8/r-3.0.2/datatables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
+    <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css') ?>">
+
+    <script src="<?= base_url('assets/vendors/jquery/jquery.min.js') ?>"></script>
+    <link href="<?= base_url('assets/vendors/select2-4.1/select2.min.css') ?>" rel="stylesheet" />
+    <script src="<?= base_url('assets/vendors/select2-4.1/select2.min.js') ?>"></script>
+    <link rel="stylesheet" href="<?= base_url('assets/vendors/datatables-2.0.8/datatables-bs5-r.min.css') ?>" />
+    <script src="<?= base_url('assets/vendors/datatables-2.0.8/datatables-bs5-r.min.js') ?>"></script>
+    <script src="<?= base_url('assets/vendors/moment-2.30.1/moment.min.js') ?>"></script>
 
     <style>
       .select2-container .select2-selection--single {
@@ -38,17 +39,17 @@
       }
 
       .select2-container .select2-dropdown {
-        z-index: 99999;
+        z-index: 1060;
       }
 
       .form-input:focus {
         outline: none;
-        border-color: #c1272d !important;
+        border-color: var(--jm-primary) !important;
         box-shadow: 0 0 0 3px rgba(193, 39, 45, 0.1) !important;
       }
 
       body {
-        font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        font-family: 'Karla', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       }
 
       .status-badge {
@@ -77,7 +78,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 9999;
+        z-index: 1050;
         pointer-events: none;
         padding: 16px;
       }
@@ -86,7 +87,7 @@
         pointer-events: auto;
         max-width: min(92vw, 520px);
         text-align: center;
-        background: #111827;
+        background: var(--jm-gray-900);
         color: #fff;
         border-radius: 12px;
         padding: .75rem 1rem;
@@ -97,11 +98,11 @@
       }
 
       .toast--ok {
-        background: #065f46;
+        background: var(--jm-emerald-700);
       }
 
       .toast--err {
-        background: #7f1d1d;
+        background: var(--jm-red-900);
       }
 
       @keyframes toast-in {
@@ -117,7 +118,7 @@
       }
 
       .wk-guide-highlight {
-        outline: 3px solid #c1272d !important;
+        outline: 3px solid var(--jm-primary) !important;
         box-shadow: 0 0 0 6px rgba(193, 39, 45, .12), 0 8px 30px rgba(193, 39, 45, .22) !important;
         border-radius: .6rem !important;
         transition: box-shadow .18s ease;
@@ -153,7 +154,7 @@
     </style>
     <style>
       .doc-card {
-        border: 1px solid #e5e7eb;
+        border: 1px solid var(--jm-gray-200);
         border-radius: 14px;
         background: #fff;
       }
@@ -172,7 +173,7 @@
       .doc-empty {
         padding: 40px 16px;
         text-align: center;
-        color: #6b7280;
+        color: var(--jm-gray-500);
         background: linear-gradient(180deg, #fafafa, #fff);
         border-radius: 12px;
       }
@@ -191,10 +192,10 @@
       }
 
       #documentsTable thead th {
-        background: #f8fafc !important;
-        color: #334155;
+        background: var(--jm-slate-50) !important;
+        color: var(--jm-slate-700);
         font-weight: 600;
-        border-bottom: 1px solid #e5e7eb !important;
+        border-bottom: 1px solid var(--jm-gray-200) !important;
       }
 
       #documentsTable tbody tr {
@@ -202,7 +203,7 @@
       }
 
       #documentsTable tbody tr:hover {
-        background: #f9fafb;
+        background: var(--jm-gray-50);
       }
 
       #documentsTable td,
@@ -222,14 +223,14 @@
       }
 
       .chip--type {
-        color: #c1272d;
+        color: var(--jm-primary);
         background: #ffe5e5;
         border-color: #ffc9c9;
       }
 
       .chip--skill {
-        color: #065f46;
-        background: #ecfdf5;
+        color: var(--jm-emerald-700);
+        background: var(--jm-emerald-50);
         border-color: #a7f3d0;
       }
 
@@ -244,18 +245,18 @@
       }
 
       .badge--ok {
-        color: #065f46;
-        background: #ecfdf5;
+        color: var(--jm-emerald-700);
+        background: var(--jm-emerald-50);
       }
 
       .badge--warn {
-        color: #b45309;
-        background: #fffbeb;
+        color: var(--jm-amber-700);
+        background: var(--jm-amber-50);
       }
 
       .badge--danger {
-        color: #7f1d1d;
-        background: #fee2e2;
+        color: var(--jm-red-900);
+        background: var(--jm-red-100);
       }
 
       .file-pill {
@@ -264,8 +265,8 @@
         gap: .5rem;
         padding: .3rem .6rem;
         border-radius: 10px;
-        background: #f1f5f9;
-        color: #0f172a;
+        background: var(--jm-slate-100);
+        color: var(--jm-slate-900);
       }
 
       .file-pill svg {
@@ -275,18 +276,18 @@
 
       .btn-ghost {
         background: #f3f4f6;
-        color: #374151;
+        color: var(--jm-gray-700);
         border-radius: 10px;
         padding: .45rem .65rem;
         font-size: .78rem;
       }
 
       .btn-ghost:hover {
-        background: #e5e7eb;
+        background: var(--jm-gray-200);
       }
 
       .btn-danger {
-        background: #dc2626;
+        background: var(--jm-danger);
         color: #fff;
         border-radius: 10px;
         padding: .45rem .65rem;
@@ -294,18 +295,18 @@
       }
 
       .btn-danger:hover {
-        background: #b91c1c;
+        background: var(--jm-red-700);
       }
 
       #docModalRoot .form-label {
-        color: #374151;
+        color: var(--jm-gray-700);
       }
 
       #docModalRoot input[type="file"] {
-        border: 1px dashed #cbd5e1;
+        border: 1px dashed var(--jm-slate-300);
         border-radius: 12px;
         padding: 10px;
-        background: #f8fafc;
+        background: var(--jm-slate-50);
       }
     </style>
     <style>
@@ -331,7 +332,7 @@
 
         .section-card {
           background: #fff;
-          border: 1px solid #e5e7eb;
+          border: 1px solid var(--jm-gray-200);
           border-radius: 14px;
           padding: 16px;
           box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
@@ -360,7 +361,7 @@
           bottom: 0;
           z-index: 25;
           background: #fff;
-          border-top: 1px solid #e5e7eb;
+          border-top: 1px solid var(--jm-gray-200);
           padding: 10px 12px !important;
           box-shadow: 0 -8px 20px rgba(0, 0, 0, .06);
         }
@@ -379,10 +380,10 @@
       }
 
       #experiencesTable thead th {
-        background: #f8fafc !important;
-        color: #334155;
+        background: var(--jm-slate-50) !important;
+        color: var(--jm-slate-700);
         font-weight: 600;
-        border-bottom: 1px solid #e5e7eb !important;
+        border-bottom: 1px solid var(--jm-gray-200) !important;
       }
 
       #experiencesTable td,
@@ -395,13 +396,13 @@
       }
 
       #experiencesTable tbody tr:hover {
-        background: #f9fafb;
+        background: var(--jm-gray-50);
       }
 
       .chip--employer {
-        color: #1f2937;
+        color: var(--jm-gray-800);
         background: #f3f4f6;
-        border-color: #e5e7eb;
+        border-color: var(--jm-gray-200);
       }
 
       /* grey pill like â€œTypeâ€ */
@@ -413,7 +414,7 @@
         border-radius: 8px;
         font-size: .72rem;
         font-weight: 600;
-        color: #c1272d;
+        color: var(--jm-primary);
         background: #ffe5e5;
       }
 
@@ -423,14 +424,14 @@
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        color: #334155;
+        color: var(--jm-slate-700);
       }
 
       .desc-more {
         display: inline-block;
         margin-left: .5rem;
         font-size: .75rem;
-        color: #2980b9;
+        color: var(--jm-info);
       }
     </style>
 

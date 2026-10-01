@@ -1,15 +1,15 @@
     :root {
-      --blue-900: #c1272d;
-      --blue-700: #d63031;
-      --blue-600: #e74c3c;
-      --blue-500: #e74c3c;
-      --gold-700: #1b5e9f;
-      --gold-600: #2980b9;
-      --silver-600: #a7afba;
+      --blue-900: var(--jm-primary);
+      --blue-700: var(--jm-primary-600);
+      --blue-600: var(--jm-red-flat);
+      --blue-500: var(--jm-red-flat);
+      --gold-700: var(--jm-blue-steel-dark);
+      --gold-600: var(--jm-info);
+      --silver-600: var(--jm-gray-flat-2);
       --silver-500: #c0c6d0;
-      --silver-300: #d9dee7;
+      --silver-300: var(--jm-line-2);
       --silver-200: #e7ebf2;
-      --silver-100: #f6f8fc;
+      --silver-100: var(--jm-wash-1);
       --radius: 12px;
       --shadow-1: 0 6px 16px rgba(2, 6, 23, .08);
     }
@@ -21,8 +21,8 @@
 
     body {
       font-family: "Karla", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, var(--silver-100), #eef2f7 60%, #e9edf3 100%);
-      color: #0f172a;
+      background: linear-gradient(180deg, var(--silver-100), var(--jm-wash-2) 60%, var(--jm-wash-3) 100%);
+      color: var(--jm-slate-900);
       font-size: 13px;
     }
 
@@ -148,7 +148,7 @@
 
     .post .meta {
       font-size: 12px;
-      color: #64748b
+      color: var(--jm-slate-500)
     }
 
     .post .body {
@@ -173,21 +173,6 @@
       gap: 6px
     }
 
-    .btn-pill {
-      border-radius: 9999px
-    }
-
-    .btn-brand {
-      border: 1px solid var(--blue-600);
-      background: #fff5f5;
-      color: var(--blue-900)
-    }
-
-    .btn-brand:hover {
-      background: var(--gold-600);
-      border-color: var(--gold-700);
-      color: #111
-    }
 
     .toast-container {
       position: fixed;
@@ -227,7 +212,7 @@
 
     .tw-modal .modal-content {
       border-radius: 18px;
-      border: 1px solid #c7d2fe;
+      border: 1px solid var(--jm-indigo-200);
       /* indigo-200 */
       box-shadow: 0 18px 44px rgba(2, 6, 23, .12), 0 6px 18px rgba(2, 6, 23, .08);
       overflow: hidden;
@@ -236,8 +221,8 @@
 
     .tw-modal .modal-header {
       padding: 18px 22px;
-      border-bottom: 1px solid #c7d2fe;
-      background: linear-gradient(180deg, #f8faff, #ffffff);
+      border-bottom: 1px solid var(--jm-indigo-200);
+      background: linear-gradient(180deg, #f8faff, var(--jm-white));
     }
 
     .tw-modal .modal-title {
@@ -255,7 +240,7 @@
       padding: 18px;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width:992px) {
       .tw-modal .tw-wrap {
         grid-template-columns: 1fr
       }
@@ -263,7 +248,7 @@
 
     .tw-modal .tw-card {
       background: #fff;
-      border: 1px solid #c7d2fe;
+      border: 1px solid var(--jm-indigo-200);
       border-radius: 14px;
       box-shadow: 0 6px 18px rgba(2, 6, 23, .06), 0 1px 0 rgba(2, 6, 23, .04);
       padding: 16px 16px;
@@ -283,18 +268,18 @@
     }
 
     .tw-modal .tw-muted {
-      color: #6b7280
+      color: var(--jm-gray-500)
     }
 
     .tw-modal .tw-help {
       font-size: .85rem;
-      color: #6b7280
+      color: var(--jm-gray-500)
     }
 
     .tw-modal .tw-seg {
       display: flex;
       background: #f4f6ff;
-      border: 1px solid #c7d2fe;
+      border: 1px solid var(--jm-indigo-200);
       border-radius: 12px;
       overflow: hidden
     }
@@ -335,7 +320,7 @@
       width: 76px;
       height: 76px;
       border-radius: 10px;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--jm-gray-200);
       object-fit: cover
     }
 
@@ -345,7 +330,7 @@
       gap: 6px;
       padding: .28rem .6rem;
       border-radius: 9999px;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--jm-gray-200);
       background: #fff;
       font-size: .82rem;
       text-decoration: none;
@@ -369,15 +354,15 @@
       margin-right: .6rem;
       width: 3.1rem;
       height: 1.6rem;
-      background-color: #e5e7eb;
-      border: 1px solid #cbd5e1;
+      background-color: var(--jm-gray-200);
+      border: 1px solid var(--jm-slate-300);
       background-image: none;
       border-radius: 9999px
     }
 
     .form-switch.tw-switch .form-check-input:checked {
-      background-color: #6366f1;
-      border-color: #6366f1
+      background-color: var(--jm-indigo-500);
+      border-color: var(--jm-indigo-500)
     }
 
     .form-switch.tw-switch .form-check-label {
@@ -406,7 +391,7 @@
       border-radius: 8px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, #a5b4fc, #6366f1);
+      background: linear-gradient(135deg, #a5b4fc, var(--jm-indigo-500));
       color: #fff
     }
 
@@ -423,29 +408,7 @@
     }
 
     /* Scope pills */
-    .btn-scope {
-      border-radius: 9999px;
-      padding: .35rem .9rem;
-      font-weight: 700;
-      border: 2px solid var(--silver-200);
-      /* indigo-200 outline */
-      background: #fff;
-      color: #1f2937;
-      /* slate-800 */
-      transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
-    }
-
-    .btn-scope:hover {
-      background: #fff5f5;
-      border-color: rgba(193, 39, 45, 0.25);
-    }
-
-    .btn-scope.active {
-      background: var(--blue-600);
-      border-color: var(--blue-600);
-      color: #fff;
-      box-shadow: 0 6px 16px rgba(193, 39, 45, .25);
-    }.page-body-wrapper .main-panel .content-wrapper .app{
+.page-body-wrapper .main-panel .content-wrapper .app{
   max-width: 100% !important;
   width: 100% !important;
   margin: 0 !important;

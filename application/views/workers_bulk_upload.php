@@ -2,343 +2,289 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'Bulk Upload: Skilled Workers',
+  ]); ?>
   <?php
   $page_title    = $page_title ?? 'Bulk Upload: Skilled Workers';
   $route_base    = $route_base ?? 'admin';
   $dashboardPath = 'dashboard/' . ($route_base === 'tesda' ? 'tesda' : 'admin');
   $workersBase   = $route_base . '/workers';
   ?>
-  <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
   <style>
-    :root {
-      --blue: #c1272d;
-      --blue-2: #d63031;
-      --blue-3: #1b5e9f;
-      --gold: #2980b9;
-      --silver: #c0c4cc;
-      --ink: #0f172a;
-      --muted: #6b7280;
-      --bg: #f6f7fb;
-      --card: #fff;
-      --shadow: 0 10px 30px rgba(2, 6, 23, .10), 0 2px 8px rgba(2, 6, 23, .06);
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: "Karla", system-ui, -apple-system, "Segoe UI", Roboto, Arial
-    }
-
-    .app {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 16px
-    }
-
-    .hero {
-      position: relative;
-      border-radius: 16px;
-      color: #fff;
-      padding: 16px;
-      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-2) 60%);
-      box-shadow: var(--shadow);
-      display: flex;
-      align-items: center;
-      gap: 12px
-    }
-
-    .hero .ico {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      background: rgba(255, 255, 255, .14);
-      border: 1px solid rgba(255, 255, 255, .2)
-    }
-
-    .hero h4 {
-      margin: 0;
-      font-weight: 700
-    }
-
-    .hero .sub {
-      opacity: .95;
-      font-size: .9rem
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      padding: 16px;
-      border: 1px solid rgba(192, 196, 204, .55)
-    }
-
-    .accent:before {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: -1px;
-      height: 4px;
-      background: linear-gradient(90deg, #f59e0b, var(--blue-3));
-      border-top-left-radius: 14px;
-      border-top-right-radius: 14px
-    }
-
-    .drop {
-      border: 2px dashed var(--silver);
-      border-radius: 12px;
-      padding: 14px;
-      background: #fbfcfe
-    }
-
-    /* COMPACT MODAL */
-    .modal-content {
-      border-radius: 14px;
-      border: 1px solid rgba(2, 6, 23, .08);
-      box-shadow: var(--shadow)
-    }
-
-    .modal-sm-custom {
-      max-width: 720px
-    }
-
-    .modal-header {
-      border: 0;
-      padding: 12px 14px
-    }
-
-    .modal-body {
-      padding: 10px 14px 6px
-    }
-
-    .modal-footer {
-      border: 0;
-      padding: 10px 14px 14px
-    }
-
-    .mcard {
-      background: #fff;
-      border: 1px solid rgba(15, 23, 42, .08);
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(2, 6, 23, .05);
-      padding: 12px
-    }
-
-    .mcard h6 {
-      margin: 0 0 8px 0;
-      font-weight: 700;
-      font-size: .95rem
-    }
-
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, rgba(2, 6, 23, .08), rgba(2, 6, 23, 0));
-      margin: 8px 0 10px
-    }
-
-    .row-compact {
-      row-gap: 10px
-    }
-
-    label.form-label {
-      font-weight: 600;
-      margin-bottom: 6px
-    }
-
-    .form-control {
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: .6rem .8rem;
-      font-weight: 500
-    }
-
-    .form-control:disabled {
-      background: #f1f5f9;
-      color: #94a3b8
-    }
-
-    .form-text {
-      margin-top: 4px
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: .85rem
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      padding: .55rem .9rem;
-      border-radius: 10px;
-      font-weight: 700
-    }
-
-    .btn-blue {
-      background: var(--blue);
-      border: 1px solid var(--blue);
-      color: #fff
-    }
-
-    .btn-silver {
-      background: #fff;
-      border: 1px solid #c0c4cc;
-      color: #111827
-    }
-
-    .btn-gold {
-      background: #f59e0b;
-      border: 1px solid #f59e0b;
-      color: #111827
-    }
-
-    .btn-sm {
-      padding: .45rem .75rem;
-      border-radius: 9px
-    }
-
-    .breadcrumb-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: .82rem;
-      color: #64748b;
-      margin-bottom: 8px
-    }
-
-    .breadcrumb-bar a {
-      color: #64748b;
-      text-decoration: none;
-      font-weight: 600
-    }
-
-    .breadcrumb-bar a:hover {
-      color: var(--blue)
-    }
-
-    .breadcrumb-bar .sep {
-      color: #cbd5e1
-    }
-
-    .breadcrumb-bar .current {
-      color: #334155;
-      font-weight: 700
-    }
-
-    .drop-zone {
-      border: 2px dashed var(--silver);
-      border-radius: 12px;
-      padding: 28px 20px;
-      background: #fbfcfe;
-      text-align: center;
-      cursor: pointer;
-      transition: border-color .2s, background .2s;
-      position: relative;
-    }
-
-    .drop-zone:hover,
-    .drop-zone.dragover {
-      border-color: var(--blue);
-      background: #fef2f2;
-    }
-
-    .drop-zone .drop-icon {
-      font-size: 36px;
-      color: var(--silver);
-      margin-bottom: 8px;
-    }
-
-    .drop-zone .drop-text {
-      font-weight: 600;
-      color: #334155;
-      font-size: .95rem;
-    }
-
-    .drop-zone .drop-sub {
-      font-size: .82rem;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .drop-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
-    }
-
-    .file-info {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      background: #f8fafc;
-      margin-top: 10px;
-      font-size: .88rem;
-      font-weight: 600;
-      color: #334155;
-    }
-
-    .file-info.show {
-      display: flex;
-    }
-
-    .file-info .file-clear {
-      margin-left: auto;
-      background: transparent;
-      border: 0;
-      color: #dc2626;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .csv-help {
-      background: #f8fafc;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 12px 14px;
-      margin-top: 12px;
-      font-size: .82rem;
-      color: #475569;
-    }
-
-    .csv-help code {
-      background: #e2e8f0;
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: .8rem;
-    }
-
-    .pw-toggle-btn {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: 0;
-      color: #475569;
-      cursor: pointer;
-      padding: 4px;
-    }
+  :root {
+  --blue: var(--jm-primary);
+  --blue-2: var(--jm-primary-600);
+  --blue-3: var(--jm-blue-steel-dark);
+  --gold: var(--jm-info);
+  --silver: var(--jm-gray-flat-1);
+  --ink: var(--jm-slate-900);
+  --muted: var(--jm-gray-500);
+  --bg: var(--jm-wash-5);
+  --card: #fff;
+  --shadow: 0 10px 30px rgba(2, 6, 23, .10), 0 2px 8px rgba(2, 6, 23, .06);
+  }
+  body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Karla", system-ui, -apple-system, "Segoe UI", Roboto, Arial
+  }
+  .app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px
+  }
+  .hero {
+  position: relative;
+  border-radius: 16px;
+  color: #fff;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-2) 60%);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px
+  }
+  .hero .ico {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, .14);
+  border: 1px solid rgba(255, 255, 255, .2)
+  }
+  .hero h4 {
+  margin: 0;
+  font-weight: 700
+  }
+  .hero .sub {
+  opacity: .95;
+  font-size: .9rem
+  }
+  .card {
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+  border: 1px solid rgba(192, 196, 204, .55)
+  }
+  .accent:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--jm-amber-500), var(--blue-3));
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px
+  }
+  .drop {
+  border: 2px dashed var(--silver);
+  border-radius: 12px;
+  padding: 14px;
+  background: #fbfcfe
+  }
+  /* COMPACT MODAL */
+  .modal-content {
+  border-radius: 14px;
+  border: 1px solid rgba(2, 6, 23, .08);
+  box-shadow: var(--shadow)
+  }
+  .modal-sm-custom {
+  max-width: 720px
+  }
+  .modal-header {
+  border: 0;
+  padding: 12px 14px
+  }
+  .modal-body {
+  padding: 10px 14px 6px
+  }
+  .modal-footer {
+  border: 0;
+  padding: 10px 14px 14px
+  }
+  .mcard {
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, .08);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, .05);
+  padding: 12px
+  }
+  .mcard h6 {
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  font-size: .95rem
+  }
+  .divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(2, 6, 23, .08), rgba(2, 6, 23, 0));
+  margin: 8px 0 10px
+  }
+  .row-compact {
+  row-gap: 10px
+  }
+  label.form-label {
+  font-weight: 600;
+  margin-bottom: 6px
+  }
+  .form-control {
+  border: 1px solid var(--jm-gray-200);
+  border-radius: 10px;
+  padding: .6rem .8rem;
+  font-weight: 500
+  }
+  .form-control:disabled {
+  background: var(--jm-slate-100);
+  color: var(--jm-slate-400)
+  }
+  .form-text {
+  margin-top: 4px
+  }
+  .muted {
+  color: var(--muted);
+  font-size: .85rem
+  }
+  .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .55rem .9rem;
+  border-radius: 10px;
+  font-weight: 700
+  }
+  .btn-blue {
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  color: #fff
+  }
+  .btn-silver {
+  background: #fff;
+  border: 1px solid var(--jm-gray-flat-1);
+  color: var(--jm-gray-900)
+  }
+  .btn-gold {
+  background: var(--jm-amber-500);
+  border: 1px solid var(--jm-amber-500);
+  color: var(--jm-gray-900)
+  }
+  .btn-sm {
+  padding: .45rem .75rem;
+  border-radius: 9px
+  }
+  .breadcrumb-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .82rem;
+  color: var(--jm-slate-500);
+  margin-bottom: 8px
+  }
+  .breadcrumb-bar a {
+  color: var(--jm-slate-500);
+  text-decoration: none;
+  font-weight: 600
+  }
+  .breadcrumb-bar a:hover {
+  color: var(--blue)
+  }
+  .breadcrumb-bar .sep {
+  color: var(--jm-slate-300)
+  }
+  .breadcrumb-bar .current {
+  color: var(--jm-slate-700);
+  font-weight: 700
+  }
+  .drop-zone {
+  border: 2px dashed var(--silver);
+  border-radius: 12px;
+  padding: 28px 20px;
+  background: #fbfcfe;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  position: relative;
+  }
+  .drop-zone:hover,
+  .drop-zone.dragover {
+  border-color: var(--blue);
+  background: #fef2f2;
+  }
+  .drop-zone .drop-icon {
+  font-size: 36px;
+  color: var(--silver);
+  margin-bottom: 8px;
+  }
+  .drop-zone .drop-text {
+  font-weight: 600;
+  color: var(--jm-slate-700);
+  font-size: .95rem;
+  }
+  .drop-zone .drop-sub {
+  font-size: .82rem;
+  color: var(--muted);
+  margin-top: 4px;
+  }
+  .drop-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  }
+  .file-info {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--jm-gray-200);
+  border-radius: 10px;
+  background: var(--jm-slate-50);
+  margin-top: 10px;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--jm-slate-700);
+  }
+  .file-info.show {
+  display: flex;
+  }
+  .file-info .file-clear {
+  margin-left: auto;
+  background: transparent;
+  border: 0;
+  color: var(--jm-danger);
+  cursor: pointer;
+  font-weight: 700;
+  }
+  .csv-help {
+  background: var(--jm-slate-50);
+  border: 1px solid var(--jm-gray-200);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-top: 12px;
+  font-size: .82rem;
+  color: var(--jm-slate-600);
+  }
+  .csv-help code {
+  background: var(--jm-slate-200);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: .8rem;
+  }
+  .pw-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  color: var(--jm-slate-600);
+  cursor: pointer;
+  padding: 4px;
+  }
   </style>
 </head>
 
@@ -391,9 +337,9 @@
                 <input id="file" type="file" name="file" required accept=".csv,.xls,.xlsx">
               </div>
               <div class="file-info" id="fileInfo">
-                <i class="mdi mdi-file-document-outline" style="font-size:20px;color:#2563eb"></i>
+                <i class="mdi mdi-file-document-outline" style="font-size:20px;color:var(--jm-blue-600)"></i>
                 <span id="fileName"></span>
-                <span id="fileSize" style="color:#64748b;font-weight:400"></span>
+                <span id="fileSize" style="color:var(--jm-slate-500);font-weight:400"></span>
                 <button type="button" class="file-clear" id="fileClear"><i class="mdi mdi-close-circle"></i></button>
               </div>
               <div class="muted mt-2">Last name is sanitized (lowercase, A-Z/0–9). If blank, a random password is used.</div>
@@ -520,7 +466,6 @@
   <script src="<?= base_url('assets/js/off-canvas.js') ?>"></script>
   <script src="<?= base_url('assets/js/hoverable-collapse.js') ?>"></script>
   <script src="<?= base_url('assets/js/misc.js') ?>"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
     // Drag-and-drop file zone
@@ -707,38 +652,14 @@
 
           if (data.ok) {
             const tempPw = data.temp_password ?? '(custom set / unchanged)';
-            if (window.Swal) {
-              Swal.fire({
-                icon: 'success',
-                title: 'Worker saved',
-                html: 'Temporary password: <strong>' + tempPw + '</strong>'
-              }).then(() => location.reload());
-            } else {
-              alert('Worker saved.\nTemporary password: ' + tempPw);
-              location.reload();
-            }
+            JM.alert('Temporary password: ' + tempPw, 'success', 'Worker saved')
+              .then(() => location.reload());
           } else {
             const errMsg = data.message || 'Unable to save';
-            if (window.Swal) {
-              Swal.fire({
-                icon: 'error',
-                title: 'Save failed',
-                text: errMsg
-              });
-            } else {
-              alert('Error: ' + errMsg);
-            }
+            JM.alert(errMsg, 'error', 'Save failed');
           }
         } catch (err) {
-          if (window.Swal) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Request failed',
-              text: 'Please try again.'
-            });
-          } else {
-            alert('Request failed. Please try again.');
-          }
+          JM.alert('Please try again.', 'error', 'Request failed');
         } finally {
           btn.disabled = false;
           btn.innerHTML = '<i class="mdi mdi-content-save-outline"></i> Save Worker';

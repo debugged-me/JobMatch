@@ -8,16 +8,16 @@ $users = is_array($users ?? null) ? $users : [];
 <head>
   <?php $this->load->view('partials/head', ['page_title' => $page_title]); ?>
   <style>
-    body { font-family: "Karla", ui-sans-serif; background: #f9fafb; }
+    body { font-family: "Karla", ui-sans-serif; background: var(--jm-gray-50); }
     .app { max-width: 960px; margin: 0 auto; padding: 0 12px; }
-    .panel { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:20px; }
+    .panel { background:#fff; border:1px solid var(--jm-gray-200); border-radius:12px; padding:20px; }
     table { width:100%; border-collapse:collapse; }
-    th, td { text-align:left; padding:10px 8px; border-bottom:1px solid #eef2f7; font-size:14px; }
-    th { font-weight:700; color:#374151; }
-    .btn-approve { display:inline-flex; align-items:center; gap:6px; background:#c1272d; color:#fff;
+    th, td { text-align:left; padding:10px 8px; border-bottom:1px solid var(--jm-wash-2); font-size:14px; }
+    th { font-weight:700; color:var(--jm-gray-700); }
+    .btn-approve { display:inline-flex; align-items:center; gap:6px; background:var(--jm-primary); color:#fff;
       border:0; border-radius:8px; padding:7px 14px; font-size:13px; font-weight:600; cursor:pointer; }
     .btn-approve:hover { background:#a51f24; }
-    .empty { padding:24px; text-align:center; color:#6b7280; }
+    .empty { padding:24px; text-align:center; color:var(--jm-gray-500); }
   </style>
 </head>
 <body>

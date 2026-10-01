@@ -4,174 +4,127 @@ $page_title = 'Edit Report'; ?>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'JobMatch DavOr', ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'JobMatch DavOr',
+    'css' => [
+      'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css',
+    ],
+  ]); ?>
   <style>
-    :root {
-      --ink: #1e3a8a;
-      --brand: var(--jm-primary);
-      --muted: #64748b;
-      --line: #d9dee7;
-      --bg: #f6f8fc;
-      --bg2: #eef2f7;
-      --chip: #eef2ff;
-      --radius: 14px;
-      --r-sm: 10px;
-      --shadow: 0 8px 22px rgba(2, 6, 23, .10);
-    }
-
-    body {
-      background: linear-gradient(180deg, var(--bg), var(--bg2) 70%, #e9edf3)
-    }
-
-    .app {
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 0 14px
-    }
-
-    .page-head {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 6px 0 16px
-    }
-
-    .page-head .icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: var(--chip)
-    }
-
-    .page-head .icon i {
-      font-size: 20px;
-      color: var(--brand)
-    }
-
-    .page-head .title {
-      margin: 0;
-      font: 700 24px/1.2 Inter, system-ui;
-      color: var(--ink)
-    }
-
-    .page-sub {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 2px
-    }
-
-    .card {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .card-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line)
-    }
-
-    .card-head h6 {
-      margin: 0;
-      font: 800 13px/1 Inter;
-      color: var(--ink);
-      letter-spacing: .3px
-    }
-
-    .card-body {
-      padding: 18px 16px
-    }
-
-    .help {
-      font-size: 12px;
-      color: var(--muted)
-    }
-
-    label {
-      font-weight: 600
-    }
-
-    .btn-brand {
-      background: #f5f8ff;
-      border: 1px solid var(--brand);
-      color: #1e3a8a;
-      border-radius: 12px;
-      font-weight: 700;
-      padding: .5rem .95rem
-    }
-
-    .btn-brand:hover {
-      background: #e9f0ff
-    }
-
-    .btn-ghost {
-      border: 1px solid var(--line);
-      border-radius: 12px
-    }
-
-    .chip-tag {
-      display: inline-flex;
-      gap: 6px;
-      align-items: center;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: var(--chip);
-      border: 1px solid #dbe3ff;
-      color: #19328a;
-      font-size: 12px
-    }
-
-    .uploader {
-      border: 1px dashed #c9d3ea;
-      border-radius: 12px;
-      padding: 14px;
-      background: #fbfcff
-    }
-
-    .uploader input[type=file] {
-      display: block
-    }
-
-    .file-list {
-      margin: 8px 0 0;
-      padding-left: 18px
-    }
-
-    .file-list li {
-      font-size: 12.5px;
-      color: #374151
-    }
-
-    .page-spacer {
-      height: 28px
-    }
-
-    .existing-files {
-      margin-top: 8px
-    }
-
-    .existing-files li {
-      font-size: 12.5px
-    }
+  :root {
+  --ink: var(--jm-blue-900);
+  --brand: var(--jm-primary);
+  --muted: var(--jm-slate-500);
+  --line: var(--jm-line-2);
+  --bg: var(--jm-wash-1);
+  --bg2: var(--jm-wash-2);
+  --chip: var(--jm-indigo-50);
+  --radius: 14px;
+  --r-sm: 10px;
+  --shadow: 0 8px 22px rgba(2, 6, 23, .10);
+  }
+  body {
+  background: linear-gradient(180deg, var(--bg), var(--bg2) 70%, var(--jm-wash-3))
+  }
+  .app {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 14px
+  }
+  .page-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 16px
+  }
+  .page-head .icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--chip)
+  }
+  .page-head .icon i {
+  font-size: 20px;
+  color: var(--brand)
+  }
+  .page-head .title {
+  margin: 0;
+  font: 700 24px/1.2 Inter, system-ui;
+  color: var(--ink)
+  }
+  .page-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px
+  }
+  .card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  }
+  .card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line)
+  }
+  .card-head h6 {
+  margin: 0;
+  font: 800 13px/1 Inter;
+  color: var(--ink);
+  letter-spacing: .3px
+  }
+  .card-body {
+  padding: 18px 16px
+  }
+  .help {
+  font-size: 12px;
+  color: var(--muted)
+  }
+  label {
+  font-weight: 600
+  }
+  .chip-tag {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--chip);
+  border: 1px solid #dbe3ff;
+  color: #19328a;
+  font-size: 12px
+  }
+  .uploader {
+  border: 1px dashed #c9d3ea;
+  border-radius: 12px;
+  padding: 14px;
+  background: var(--jm-wash-4)
+  }
+  .uploader input[type=file] {
+  display: block
+  }
+  .file-list {
+  margin: 8px 0 0;
+  padding-left: 18px
+  }
+  .file-list li {
+  font-size: 12.5px;
+  color: var(--jm-gray-700)
+  }
+  .page-spacer {
+  height: 28px
+  }
+  .existing-files {
+  margin-top: 8px
+  }
+  .existing-files li {
+  font-size: 12.5px
+  }
   </style>
 </head>
 

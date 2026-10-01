@@ -89,7 +89,7 @@ html {
 }
 
 .tw-searchbar:focus-within {
-  border-color: #c1272d !important;
+  border-color: var(--jm-primary) !important;
   box-shadow: 0 0 0 3px rgba(193, 39, 45, 0.2) !important;
 }
 
@@ -144,7 +144,7 @@ html {
 
 /* ===== Sidebar — pageant-style (dark gradient, red accent) ===== */
 :root {
-  --jm-sb-accent: #c1272d;
+  --jm-sb-accent: var(--jm-primary);
   --jm-sb-accent-light: #e23b41;
   --jm-sb-line: rgba(226, 59, 65, 0.16);
 }
@@ -258,11 +258,11 @@ html {
 }
 
 #sidebar .nav-profile .nav-link .nav-profile-text span {
-  color: #f8fafc !important;
+  color: var(--jm-slate-50) !important;
 }
 
 #sidebar .nav-profile .nav-link .nav-profile-text .text-dark {
-  color: #cbd5e1 !important;
+  color: var(--jm-slate-300) !important;
 }
 
 #sidebar .nav-profile .login-status.online {

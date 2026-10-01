@@ -1,20 +1,17 @@
-/* Phosphor icon shim — remaps mdi-* glyphs to Phosphor Icons app-wide */
-@import url("icons-phosphor.css");
-
 :root {
-  --brand-blue: #c1272d;
-  --brand-blue-dark: #d63031;
-  --brand-blue-darker: #a61f2b;
+  --brand-blue: var(--jm-primary);
+  --brand-blue-dark: var(--jm-primary-600);
+  --brand-blue-darker: var(--jm-primary-700);
   --brand-blue-soft: rgba(193, 39, 45, 0.12);
   --brand-blue-soft-strong: rgba(193, 39, 45, 0.18);
-  --brand-gold: #2980b9;
-  --brand-gold-dark: #1b5e9f;
+  --brand-gold: var(--jm-info);
+  --brand-gold-dark: var(--jm-blue-steel-dark);
   --brand-gold-soft: rgba(41, 128, 185, 0.18);
   --brand-silver: #c5ccd6;
   --brand-silver-light: #e5e9f1;
-  --brand-ink: #0f172a;
-  --brand-muted: #6b7280;
-  --brand-line: #e5e7eb;
+  --brand-ink: var(--jm-slate-900);
+  --brand-muted: var(--jm-gray-500);
+  --brand-line: var(--jm-gray-200);
 
   --blue: var(--brand-blue);
   --blue2: var(--brand-blue-dark);
@@ -28,9 +25,9 @@
   --muted: var(--brand-muted);
   --line: var(--brand-line);
 
-  --sidebar-text: #111827;
-  --sidebar-muted: #64748b;
-  --sidebar-icon: #475569;
+  --sidebar-text: var(--jm-gray-900);
+  --sidebar-muted: var(--jm-slate-500);
+  --sidebar-icon: var(--jm-slate-600);
   --sidebar-hover: var(--brand-blue);
   --sidebar-active: var(--brand-blue-dark);
   --sidebar-bg-hover: var(--brand-blue-soft);
@@ -99,7 +96,7 @@ button, input, select, textarea, optgroup,
   display: block;
 }
 .nav-profile-text .fw-medium {
-  color: #0f172a;
+  color: var(--jm-slate-900);
   font-weight: 600;
 }
 .nav-profile-text .fw-normal {
@@ -182,7 +179,7 @@ button, input, select, textarea, optgroup,
 }
 
 .sidebar .nav .nav-item .menu-arrow {
-  color: #94a3b8;
+  color: var(--jm-slate-400);
 }
 .sidebar .nav .nav-item > .nav-link:hover .menu-arrow {
   color: var(--sidebar-hover);
@@ -281,7 +278,7 @@ button, input, select, textarea, optgroup,
   color: var(--sidebar-text);
 }
 .sidebar .sub-menu .nav-link {
-  color: #1f2937 !important; /* slate-800 */
+  color: var(--jm-gray-800) !important; /* slate-800 */
   display: flex;
   align-items: center;
   padding-left: 1.25rem;
@@ -291,8 +288,8 @@ button, input, select, textarea, optgroup,
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: #94a3b8;
-  border: 1px solid #94a3b8;
+  background: var(--jm-slate-400);
+  border: 1px solid var(--jm-slate-400);
   position: absolute;
   left: 0.4rem;
   top: 50%;
@@ -355,17 +352,62 @@ button, input, select, textarea, optgroup,
   background-color: var(--brand-blue) !important;
 }
 
-/* === Centralized button styles === */
+/* === Centralized button styles ===
+   Canonical variants — page CSS must NOT redefine these.
+   jm-components.css (.jm-btn*) is the new-code target; these keep legacy
+   markup rendering consistently app-wide. */
+.btn-brand {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(193, 39, 45, .08);
+  border: 1px solid var(--brand-blue);
+  color: var(--brand-blue);
+  border-radius: 10px;
+  font-weight: 700;
+  padding: .45rem .9rem;
+}
+.btn-brand:hover,
+.btn-brand:focus {
+  background: var(--brand-blue);
+  color: #fff;
+  text-decoration: none;
+}
+.btn-pill { border-radius: 9999px; }
+.btn-scope {
+  border-radius: 9999px;
+  padding: .35rem .9rem;
+  font-weight: 700;
+  border: 2px solid var(--silver-200, #e5e9f1);
+  background: #fff;
+  color: var(--jm-gray-800);
+  transition: background .15s, color .15s, border-color .15s, box-shadow .15s;
+}
+.btn-scope:hover { background: #fff5f5; border-color: rgba(193, 39, 45, .25); }
+.btn-scope.active {
+  background: var(--brand-blue);
+  border-color: var(--brand-blue);
+  color: #fff;
+}
+.btn-ghost {
+  background: #fff;
+  border: 1px solid var(--brand-line, var(--jm-gray-200));
+  color: var(--jm-gray-900);
+}
+.btn-ghost:hover,
+.btn-ghost:focus {
+  background: var(--jm-slate-50);
+  color: var(--brand-blue);
+  text-decoration: none;
+}
 .btn-gold {
-  background: #f59e0b;
-  border: 1px solid #f59e0b;
-  color: #111827;
+  background: var(--jm-amber-500);
+  border: 1px solid var(--jm-amber-500);
+  color: var(--jm-gray-900);
   font-weight: 700;
 }
 .btn-gold:hover,
 .btn-gold:focus {
-  background: #d97706;
-  border-color: #d97706;
+  background: var(--jm-warning);
+  border-color: var(--jm-warning);
   color: #fff;
 }
 .btn-blue {
@@ -381,28 +423,28 @@ button, input, select, textarea, optgroup,
 }
 .btn-silver {
   background: #fff;
-  border: 1px solid #c0c4cc;
-  color: #111827;
+  border: 1px solid var(--jm-gray-flat-1);
+  color: var(--jm-gray-900);
   font-weight: 700;
 }
 .btn-silver:hover,
 .btn-silver:focus {
-  background: #f8fafc;
+  background: var(--jm-slate-50);
 }
 .btn-danger-soft {
   background: #fff5f5;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  color: var(--jm-danger);
+  border: 1px solid var(--jm-red-200);
   border-radius: 8px;
   font-size: .85rem;
   padding: .25rem .6rem;
 }
 .btn-danger-soft:hover {
-  background: #fee2e2;
+  background: var(--jm-red-100);
 }
 .btn-edit-soft {
-  background: #eff6ff;
-  color: #2563eb;
+  background: var(--jm-blue-50);
+  color: var(--jm-blue-600);
   border: 1px solid #bfdbfe;
   border-radius: 8px;
   font-size: .85rem;
@@ -414,7 +456,7 @@ button, input, select, textarea, optgroup,
 
 /* === Centralized input border === */
 .form-control {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--jm-gray-200);
   border-radius: 10px;
 }
 .form-control:focus {
@@ -429,11 +471,11 @@ button, input, select, textarea, optgroup,
   align-items: center;
   gap: 6px;
   font-size: .82rem;
-  color: #64748b;
+  color: var(--jm-slate-500);
   margin-bottom: 8px;
 }
 .breadcrumb-bar a {
-  color: #64748b;
+  color: var(--jm-slate-500);
   text-decoration: none;
   font-weight: 600;
 }
@@ -441,10 +483,10 @@ button, input, select, textarea, optgroup,
   color: var(--brand-blue);
 }
 .breadcrumb-bar .sep {
-  color: #cbd5e1;
+  color: var(--jm-slate-300);
 }
 .breadcrumb-bar .current {
-  color: #334155;
+  color: var(--jm-slate-700);
   font-weight: 700;
 }
 
@@ -452,16 +494,16 @@ button, input, select, textarea, optgroup,
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #64748b;
+  color: var(--jm-slate-500);
 }
 .empty-state .empty-icon {
   font-size: 48px;
-  color: #cbd5e1;
+  color: var(--jm-slate-300);
   margin-bottom: 12px;
 }
 .empty-state h5 {
   font-weight: 700;
-  color: #475569;
+  color: var(--jm-slate-600);
   margin-bottom: 4px;
 }
 .empty-state p {
@@ -473,7 +515,7 @@ button, input, select, textarea, optgroup,
 .pw-strength-bar {
   height: 6px;
   border-radius: 9999px;
-  background: #e5e7eb;
+  background: var(--jm-gray-200);
   overflow: hidden;
 }
 .pw-strength-fill {
@@ -486,7 +528,7 @@ button, input, select, textarea, optgroup,
   font-size: .78rem;
   font-weight: 700;
   margin-top: 4px;
-  color: #64748b;
+  color: var(--jm-slate-500);
 }
 .pw-match {
   font-size: .82rem;
@@ -495,5 +537,11 @@ button, input, select, textarea, optgroup,
   display: none;
 }
 .pw-match.show { display: block; }
-.pw-match.ok { color: #16a34a; }
-.pw-match.bad { color: #ef4444; }
+.pw-match.ok { color: var(--jm-success); }
+.pw-match.bad { color: var(--jm-red-500); }
+
+/* -----------------------------------------------------------------------
+   Micro-utilities — replace the most repeated inline styles.
+   ----------------------------------------------------------------------- */
+.u-note    { font-size: 12px; margin-top: 4px; }
+.u-flexrow { display: flex; align-items: center; gap: 10px; }

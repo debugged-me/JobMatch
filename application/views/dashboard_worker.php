@@ -2,24 +2,14 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'JobMatch DavOr', ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/font-awesome/css/font-awesome.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/universal.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-worker.css?v=4.0.0') ?>">
-
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'JobMatch DavOr',
+    'css' => [
+      'assets/vendors/font-awesome/css/font-awesome.min.css',
+      'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css',
+      'assets/css/dashboard-worker.css?v=4.0.0',
+    ],
+  ]); ?>
 </head>
 
 <body>
@@ -95,9 +85,9 @@
                   $today = new DateTime(date('Y-m-d'));
                   $exp   = new DateTime(substr($date, 0, 10));
                   $diff  = (int)$today->diff($exp)->format('%r%a');
-                  if ($diff < 0)   return '<span class="badge-soft" style="border-color:#fecaca;color:#b91c1c;background:#fff1f2">Expired</span>';
-                  if ($diff <= 30) return '<span class="badge-soft" style="border-color:#fde68a;color:#b45309;background:#fffbeb">Expiring soon</span>';
-                  return '<span class="badge-soft" style="border-color:#bbf7d0;color:#065f46;background:#ecfdf5">Active</span>';
+                  if ($diff < 0)   return '<span class="badge-soft" style="border-color:var(--jm-red-200);color:var(--jm-red-700);background:var(--jm-rose-50)">Expired</span>';
+                  if ($diff <= 30) return '<span class="badge-soft" style="border-color:#fde68a;color:var(--jm-amber-700);background:var(--jm-amber-50)">Expiring soon</span>';
+                  return '<span class="badge-soft" style="border-color:#bbf7d0;color:var(--jm-emerald-700);background:var(--jm-emerald-50)">Active</span>';
                 } catch (\Throwable $e) {
                   return '';
                 }
@@ -293,7 +283,7 @@
               <section class="wd-feed-sec">
                   <div class="wd-card-head"><h2><i class="mdi mdi-shield-check-outline"></i> Profile Strength</h2></div>
                   <div class="wd-completion">
-                    <div class="progress-ring" style="--val: <?= $pc ?>; --accent: <?= $pc >= 100 ? '#16a34a' : '#e23b41' ?>;">
+                    <div class="progress-ring" style="--val: <?= $pc ?>; --accent: <?= $pc >= 100 ? 'var(--jm-success)' : '#e23b41' ?>;">
                       <span><?= $pc ?>%</span>
                     </div>
                     <div>
@@ -630,7 +620,7 @@
           </div>
         </div>
       </div>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="<?= base_url('assets/vendors/chart.js/chart.umd.js') ?>"></script>
       <script src="<?= base_url('assets/js/dashboard-worker.js?v=1.0.0') ?>"></script>
 
 

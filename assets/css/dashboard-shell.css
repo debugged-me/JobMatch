@@ -9,9 +9,9 @@ html {
 }
 
 :root {
-  --wd-accent: #c1272d;
+  --wd-accent: var(--jm-primary);
   --wd-accent-light: #e23b41;
-  --wd-accent-dark: #9b1f24;
+  --wd-accent-dark: var(--jm-crimson-900);
   --wd-accent-soft: rgba(193, 39, 45, .08);
 
   /* theraph-aligned neutrals (paper / ink / sage-line) */
@@ -21,11 +21,11 @@ html {
   --wd-line: #e2e8e3;
   --wd-soft: #f7f9f6;
   --wd-paper: #f7f9f6;
-  --wd-card: #ffffff;
+  --wd-card: var(--jm-white);
 
-  --wd-blue: #1d4ed8;
-  --wd-green: #16a34a;
-  --wd-amber: #b45309;
+  --wd-blue: var(--jm-blue-700);
+  --wd-green: var(--jm-success);
+  --wd-amber: var(--jm-amber-700);
   --wd-indigo: #4f46e5;
 
   --wd-radius: 16px;
@@ -73,7 +73,7 @@ body {
   border-top: 1px solid var(--wd-line);
 }
 
-@media (max-width: 760px) {
+@media (max-width:768px) {
   .wd-feed-sec {
     padding: 16px 16px;
   }
@@ -339,7 +339,7 @@ body {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-@media (max-width: 900px) {
+@media (max-width:992px) {
   .wd-row-2 {
     grid-template-columns: 1fr;
   }
@@ -581,7 +581,7 @@ body {
 
 .wd-table tbody td {
   padding: .8rem .9rem;
-  border-bottom: 1px solid #f1f3f5;
+  border-bottom: 1px solid var(--jm-wash-6);
   vertical-align: middle;
   color: var(--wd-ink-2);
 }
@@ -625,12 +625,12 @@ body {
 }
 
 .wd-badge-gray {
-  background: #f1f3f5;
-  color: #6b7280;
+  background: var(--jm-wash-6);
+  color: var(--jm-gray-500);
 }
 
 /* ===================== RESPONSIVE ===================== */
-@media (max-width: 760px) {
+@media (max-width:768px) {
   .wd {
     padding: 0 12px 28px;
   }
@@ -703,7 +703,7 @@ body {
   .wd-table tbody td::before {
     content: attr(data-label);
     font-weight: 700;
-    color: #334155;
+    color: var(--jm-slate-700);
     font-size: 12px;
   }
 }

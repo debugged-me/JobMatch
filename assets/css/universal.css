@@ -11,19 +11,19 @@
 ---------------------------------*/
 :root{
   /* Brand palette (adjust as needed) */
-  --tw-brand: #c1272d;
-  --tw-brand-600:#d63031;
-  --tw-brand-700:#a61f2b;
-  --tw-text:#111827;       /* gray-900 */
-  --tw-text-2:#374151;     /* gray-700 */
-  --tw-muted:#6b7280;      /* gray-500 */
-  --tw-bg:#ffffff;         /* white */
-  --tw-bg-soft:#f8fafc;    /* slate-50 */
-  --tw-card:#ffffff;
-  --tw-border:#e5e7eb;     /* gray-200 */
-  --tw-success:#16a34a;
-  --tw-danger:#dc2626;
-  --tw-warning:#d97706;
+  --tw-brand: var(--jm-primary);
+  --tw-brand-600:var(--jm-primary-600);
+  --tw-brand-700:var(--jm-primary-700);
+  --tw-text:var(--jm-gray-900);       /* gray-900 */
+  --tw-text-2:var(--jm-gray-700);     /* gray-700 */
+  --tw-muted:var(--jm-gray-500);      /* gray-500 */
+  --tw-bg:var(--jm-white);         /* white */
+  --tw-bg-soft:var(--jm-slate-50);    /* slate-50 */
+  --tw-card:var(--jm-white);
+  --tw-border:var(--jm-gray-200);     /* gray-200 */
+  --tw-success:var(--jm-success);
+  --tw-danger:var(--jm-danger);
+  --tw-warning:var(--jm-warning);
   --tw-info:#0ea5e9;
   --tw-radius: 1rem;       /* 16px */
   --tw-shadow: 0 10px 25px rgba(0,0,0,.06);
@@ -40,13 +40,13 @@
 /* Respect dark mode if your app toggles body.dark */
 @media (prefers-color-scheme: dark){
   :root{
-    --tw-text:#e5e7eb;
-    --tw-text-2:#cbd5e1;
-    --tw-muted:#94a3b8;
-    --tw-bg:#0b1220;
-    --tw-bg-soft:#0f172a;
-    --tw-card:#0b1220;
-    --tw-border:#1f2937;
+    --tw-text:var(--jm-gray-200);
+    --tw-text-2:var(--jm-slate-300);
+    --tw-muted:var(--jm-slate-400);
+    --tw-bg:var(--jm-ink);
+    --tw-bg-soft:var(--jm-slate-900);
+    --tw-card:var(--jm-ink);
+    --tw-border:var(--jm-gray-800);
     --tw-shadow: 0 10px 25px rgba(0,0,0,.35);
     --tw-shadow-soft: 0 4px 14px rgba(0,0,0,.25);
   }

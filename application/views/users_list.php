@@ -2,645 +2,556 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <?php $page_title = $page_title ?? 'Manage Users'; ?>
-  <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-  <link rel="stylesheet" href="<?= base_url('assets/css/tw-utils.css?v=1') ?>">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'Manage Users',
+    'css' => [
+      'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css',
+      'assets/css/tw-utils.css?v=1',
+    ],
+  ]); ?>
   <meta name="csrf-token-name" content="<?= $this->security->get_csrf_token_name(); ?>">
   <meta name="csrf-token-hash" content="<?= $this->security->get_csrf_hash(); ?>">
-
   <style>
-    :root {
-      --ink: #0f172a;
-      --muted: #64748b;
-      --line: #e5e7eb;
-      --soft: #f8fafc;
-      --brand: var(--jm-primary);
-      --brand-600: #c1272d;
-      --warn: #2980b9;
-      --ok: #16a34a;
-      --bad: #ef4444;
-      --role: #1b5e9f;
-      --icon: #475569;
-      --icon-h: #0f172a;
-    }
-
-    body {
-      font-family: "Karla", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      color: var(--ink)
-    }
-
-    .card {
-      background: #fff;
-      border: 1px solid #e6e6e6;
-      border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(2, 6, 23, .06)
-    }
-
-    .btn-silver {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      color: #111827;
-      border-radius: 12px;
-      padding: .6rem 1rem;
-      font-weight: 700
-    }
-
-    .divider {
-      height: 1px;
-      background: var(--line)
-    }
-
-    .input,
-    .select {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: .6rem .8rem;
-      background: #fff;
-      outline: none
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: .38rem;
-      font-weight: 700;
-      line-height: 1;
-      border-radius: 9999px;
-      padding: .26rem .52rem;
-      font-size: .75rem;
-      border: 1px solid transparent;
-      white-space: nowrap
-    }
-
-    .pill-ok {
-      background: rgba(22, 163, 74, .10);
-      color: #166534;
-      border-color: rgba(22, 163, 74, .22)
-    }
-
-    .pill-bad {
-      background: rgba(239, 68, 68, .10);
-      color: #991b1b;
-      border-color: rgba(239, 68, 68, .22)
-    }
-
-    .pill-warn {
-      background: rgba(245, 158, 11, .12);
-      color: #92400e;
-      border-color: rgba(245, 158, 11, .28)
-    }
-
-    .pill-role {
-      background: #eef2ff;
-      color: var(--role);
-      border-color: #c7d2fe
-    }
-
-    table.users {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0
-    }
-
-    table.users thead th {
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      font-size: .72rem;
-      color: var(--muted);
-      padding: 12px;
-      border-bottom: 1px solid var(--line);
-      background: #fbfdff;
-      position: sticky;
-      top: 0;
-      z-index: 1
-    }
-
-    table.users tbody td {
-      padding: 14px 12px;
-      border-bottom: 1px solid #f1f5f9;
-      vertical-align: middle
-    }
-
-    table.users tbody tr:nth-child(odd) {
-      background: #fff
-    }
-
-    table.users tbody tr:nth-child(even) {
-      background: #fcfdff
-    }
-
-    table.users tbody tr:hover {
-      background: #f8fafc
-    }
-
-    .u-main {
-      display: flex;
-      align-items: center;
-      gap: 12px
-    }
-
-    .u-ava {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1px solid #e5e7eb;
-      background: #f3f4f6
-    }
-
-    .actbar {
-      display: flex;
-      align-items: center;
-      gap: .45rem;
-      flex-wrap: wrap;
-      justify-content: center
-    }
-
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--icon);
-      cursor: pointer;
-      transition: .16s border-color, .16s transform, .16s color;
-      position: relative;
-    }
-
-    .icon-btn:hover {
-      border-color: #d1d5db;
-      color: var(--icon-h);
-      transform: translateY(-1px)
-    }
-
-    .icon-btn.ok:hover {
-      border-color: rgba(22, 163, 74, .35);
-      color: #166534
-    }
-
-    .icon-btn.bad:hover {
-      border-color: rgba(239, 68, 68, .35);
-      color: #991b1b
-    }
-
-    .icon-btn.info:hover,
-    .icon-btn.brand:hover {
-      border-color: #bfdbfe;
-      color: var(--brand)
-    }
-
-    .icon-btn[data-tip]:after {
-      content: attr(data-tip);
-      position: absolute;
-      bottom: 110%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #111827;
-      color: #fff;
-      font-size: .72rem;
-      line-height: 1;
-      padding: .32rem .46rem;
-      border-radius: 8px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: .15s;
-      box-shadow: 0 8px 20px rgba(2, 6, 23, .25)
-    }
-
-    .icon-btn[data-tip]:before {
-      content: "";
-      position: absolute;
-      bottom: 102%;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 6px solid transparent;
-      border-top-color: #111827;
-      opacity: 0;
-      transition: .15s
-    }
-
-    .icon-btn:hover:after,
-    .icon-btn:hover:before {
-      opacity: 1
-    }
-
-    @media (max-width: 900px) {
-      .card .overflow-x-auto {
-        overflow: visible
-      }
-
-      table.users thead {
-        display: none
-      }
-
-      table.users,
-      table.users tbody,
-      table.users tr,
-      table.users td {
-        display: block;
-        width: 100%
-      }
-
-      table.users tbody tr {
-        border: 1px solid #e5e7eb;
-        border-radius: 14px;
-        box-shadow: 0 4px 10px rgba(2, 6, 23, .05);
-        padding: 12px;
-        margin-bottom: 12px;
-        background: #fff
-      }
-
-      table.users tbody td {
-        border: 0;
-        padding: 6px 0
-      }
-
-      table.users tbody td[data-th]::before {
-        content: attr(data-th);
-        display: block;
-        font: 700 11px/1 Inter, system-ui;
-        color: #64748b;
-        text-transform: uppercase;
-        margin-bottom: 4px
-      }
-
-      .actbar {
-        gap: .35rem;
-        justify-content: flex-start
-      }
-    }
-
-    table.users tbody td.email a {
-      font-size: .92rem;
-      font-weight: 500;
-      line-height: 1.3;
-      color: var(--brand-600);
-      text-decoration: none;
-    }
-
-    table.users tbody td.email a .mdi {
-      font-size: 16px;
-      margin-right: 6px;
-      vertical-align: -2px
-    }
-
-    table.users thead th:nth-child(1),
-    table.users thead th:nth-child(2) {
-      background: linear-gradient(0deg, #fff, #fffbeb)
-    }
-
-    table.users thead th:nth-child(3),
-    table.users thead th:nth-child(4),
-    table.users thead th:nth-child(5) {
-      background: linear-gradient(0deg, #fff, #eff6ff)
-    }
-
-    #create-admin-modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      background: rgba(2, 6, 23, .55);
-      backdrop-filter: saturate(140%) blur(3px);
-    }
-
-    .cam-card {
-      width: 100%;
-      max-width: 560px;
-      background: #fff;
-      border: 1px solid #e6e6e6;
-      border-radius: 16px;
-      box-shadow: 0 22px 60px rgba(2, 6, 23, .18);
-      padding: 20px;
-    }
-
-    .cam-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px
-    }
-
-    .cam-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 0;
-      font: 700 1.1rem/1.2 Inter, system-ui
-    }
-
-    .cam-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      background: #eef2ff;
-      color: #3730a3;
-      border: 1px solid #c7d2fe
-    }
-
-    .cam-line {
-      height: 1px;
-      background: var(--line);
-      margin: 12px 0
-    }
-
-    .cam-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px
-    }
-
-    .cam-field {
-      margin-top: 12px
-    }
-
-    .cam-label {
-      display: block;
-      font-size: .86rem;
-      color: #475569;
-      margin-bottom: 6px;
-      font-weight: 600
-    }
-
-    .cam-ctl {
-      position: relative
-    }
-
-    .cam-input {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      width: 100%;
-      padding: .68rem .9rem .68rem 2.25rem;
-      background: #fff;
-      outline: 0
-    }
-
-    .cam-input:focus {
-      border-color: #93c5fd;
-      box-shadow: 0 0 0 4px rgba(43, 77, 165, .12)
-    }
-
-    .cam-ico {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 18px;
-      color: #64748b
-    }
-
-    .cam-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      margin-top: 16px
-    }
-
-    .btn-primary {
-      background: var(--brand);
-      border: 1px solid var(--brand);
-      color: #fff;
-      border-radius: 12px;
-      padding: .65rem 1rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
-      box-shadow: 0 6px 18px rgba(37, 99, 235, .18);
-      transition: .15s transform;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px)
-    }
-
-    .btn-silver {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      color: #111827;
-      border-radius: 12px;
-      padding: .65rem 1rem;
-      font-weight: 700
-    }
-
-    .btn-silver:hover {
-      border-color: #d1d5db
-    }
-
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #475569;
-      cursor: pointer
-    }
-
-    .icon-btn:hover {
-      border-color: #cbd5e1;
-      color: #0f172a
-    }
-
-    .cam-help {
-      margin-top: 6px;
-      font-size: .78rem;
-      color: #64748b
-    }
-
-    .cam-eye {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #475569;
-      cursor: pointer;
-    }
-
-    .cam-eye:hover {
-      border-color: #cbd5e1;
-      color: #0f172a;
-    }
-
-    .searchbar {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: .35rem .5rem;
-      box-shadow: 0 4px 12px rgba(2, 6, 23, .04);
-    }
-
-    .searchbar .icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #64748b;
-    }
-
-    .searchbar input {
-      border: 0;
-      outline: 0;
-      width: 100%;
-      padding: .5rem .2rem;
-      border-radius: 10px;
-      font: 500 .95rem/1.2 Inter, system-ui;
-    }
-
-    .searchbar input::placeholder {
-      color: #94a3b8;
-    }
-
-    .select.compact,
-    .btn-compact {
-      height: 38px;
-      padding: 0 .9rem;
-      border-radius: 12px;
-    }
-
-    .btn-compact {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: .45rem;
-      background: #2563eb;
-      border: 1px solid #2563eb;
-      color: #fff;
-      font-weight: 700;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, .20);
-    }
-
-    @media (max-width: 768px) {
-      .searchbar {
-        padding: .3rem .45rem;
-      }
-
-      .select.compact,
-      .btn-compact {
-        height: 36px;
-      }
-    }
-
-    /* Global loading overlay */
-    .busy {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      background: rgba(2, 6, 23, .55);
-      backdrop-filter: saturate(140%) blur(3px);
-    }
-
-    .busy-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      border-radius: 14px;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 22px 60px rgba(2, 6, 23, .18);
-      font-weight: 600;
-      color: #0f172a;
-    }
-
-    .busy-spinner {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 3px solid #e5e7eb;
-      border-top-color: #2563eb;
-      animation: spin .8s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    .busy-text {
-      font-size: .95rem
-    }
-
-    /* keep no horizontal scrollbar but allow tooltips to overflow vertically */
-    .card .overflow-x-auto {
-      overflow-x: hidden;
-      overflow-y: visible;
-    }
-
-    /* we earlier used ellipsis globally; let Action column breathe */
-    table.users {
-      table-layout: fixed;
-      width: 100%;
-    }
-
-    table.users th,
-    table.users td {
-      white-space: nowrap;
-      overflow: hidden;
-      /* keeps other columns neat */
-      text-overflow: ellipsis;
-    }
-
-    /* allow tooltips to overflow in the Action column */
-    table.users th.col-actions,
-    table.users td.td-actions {
-      overflow: visible !important;
-    }
-
-    /* make sure the tooltip sits on top and isn't clipped by the button */
-    .icon-btn {
-      position: relative;
-      z-index: 1;
-      overflow: visible;
-    }
-
-    .icon-btn:hover:after,
-    .icon-btn:hover:before {
-      z-index: 20;
-    }
+  :root {
+  --ink: var(--jm-slate-900);
+  --muted: var(--jm-slate-500);
+  --line: var(--jm-gray-200);
+  --soft: var(--jm-slate-50);
+  --brand: var(--jm-primary);
+  --brand-600: var(--jm-primary);
+  --warn: var(--jm-info);
+  --ok: var(--jm-success);
+  --bad: var(--jm-red-500);
+  --role: var(--jm-blue-steel-dark);
+  --icon: var(--jm-slate-600);
+  --icon-h: var(--jm-slate-900);
+  }
+  body {
+  font-family: "Karla", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  color: var(--ink)
+  }
+  .card {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, .06)
+  }
+  .btn-silver {
+  background: #fff;
+  border: 1px solid var(--jm-gray-200);
+  color: var(--jm-gray-900);
+  border-radius: 12px;
+  padding: .6rem 1rem;
+  font-weight: 700
+  }
+  .divider {
+  height: 1px;
+  background: var(--line)
+  }
+  .input,
+  .select {
+  border: 1px solid var(--jm-gray-200);
+  border-radius: 12px;
+  padding: .6rem .8rem;
+  background: #fff;
+  outline: none
+  }
+  .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .38rem;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 9999px;
+  padding: .26rem .52rem;
+  font-size: .75rem;
+  border: 1px solid transparent;
+  white-space: nowrap
+  }
+  .pill-ok {
+  background: rgba(22, 163, 74, .10);
+  color: var(--jm-emerald-800);
+  border-color: rgba(22, 163, 74, .22)
+  }
+  .pill-bad {
+  background: rgba(239, 68, 68, .10);
+  color: var(--jm-red-800);
+  border-color: rgba(239, 68, 68, .22)
+  }
+  .pill-warn {
+  background: rgba(245, 158, 11, .12);
+  color: var(--jm-amber-800);
+  border-color: rgba(245, 158, 11, .28)
+  }
+  .pill-role {
+  background: var(--jm-indigo-50);
+  color: var(--role);
+  border-color: var(--jm-indigo-200)
+  }
+  table.users {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0
+  }
+  table.users thead th {
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: .72rem;
+  color: var(--muted);
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  background: #fbfdff;
+  position: sticky;
+  top: 0;
+  z-index: 1
+  }
+  table.users tbody td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--jm-slate-100);
+  vertical-align: middle
+  }
+  table.users tbody tr:nth-child(odd) {
+  background: #fff
+  }
+  table.users tbody tr:nth-child(even) {
+  background: #fcfdff
+  }
+  table.users tbody tr:hover {
+  background: var(--jm-slate-50)
+  }
+  .u-main {
+  display: flex;
+  align-items: center;
+  gap: 12px
+  }
+  .u-ava {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--jm-gray-200);
+  background: #f3f4f6
+  }
+  .actbar {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  flex-wrap: wrap;
+  justify-content: center
+  }
+  .icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--jm-gray-200);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon);
+  cursor: pointer;
+  transition: .16s border-color, .16s transform, .16s color;
+  position: relative;
+  }
+  .icon-btn:hover {
+  border-color: #d1d5db;
+  color: var(--icon-h);
+  transform: translateY(-1px)
+  }
+  .icon-btn.ok:hover {
+  border-color: rgba(22, 163, 74, .35);
+  color: var(--jm-emerald-800)
+  }
+  .icon-btn.bad:hover {
+  border-color: rgba(239, 68, 68, .35);
+  color: var(--jm-red-800)
+  }
+  .icon-btn.info:hover,
+  .icon-btn.brand:hover {
+  border-color: #bfdbfe;
+  color: var(--brand)
+  }
+  .icon-btn[data-tip]:after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--jm-gray-900);
+  color: #fff;
+  font-size: .72rem;
+  line-height: 1;
+  padding: .32rem .46rem;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: .15s;
+  box-shadow: 0 8px 20px rgba(2, 6, 23, .25)
+  }
+  .icon-btn[data-tip]:before {
+  content: "";
+  position: absolute;
+  bottom: 102%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--jm-gray-900);
+  opacity: 0;
+  transition: .15s
+  }
+  .icon-btn:hover:after,
+  .icon-btn:hover:before {
+  opacity: 1
+  }
+  @media (max-width:992px) {
+  .card .overflow-x-auto {
+  overflow: visible
+  }
+  table.users thead {
+  display: none
+  }
+  table.users,
+  table.users tbody,
+  table.users tr,
+  table.users td {
+  display: block;
+  width: 100%
+  }
+  table.users tbody tr {
+  border: 1px solid var(--jm-gray-200);
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(2, 6, 23, .05);
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #fff
+  }
+  table.users tbody td {
+  border: 0;
+  padding: 6px 0
+  }
+  table.users tbody td[data-th]::before {
+  content: attr(data-th);
+  display: block;
+  font: 700 11px/1 Inter, system-ui;
+  color: var(--jm-slate-500);
+  text-transform: uppercase;
+  margin-bottom: 4px
+  }
+  .actbar {
+  gap: .35rem;
+  justify-content: flex-start
+  }
+  }
+  table.users tbody td.email a {
+  font-size: .92rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--brand-600);
+  text-decoration: none;
+  }
+  table.users tbody td.email a .mdi {
+  font-size: 16px;
+  margin-right: 6px;
+  vertical-align: -2px
+  }
+  table.users thead th:nth-child(1),
+  table.users thead th:nth-child(2) {
+  background: linear-gradient(0deg, #fff, var(--jm-amber-50))
+  }
+  table.users thead th:nth-child(3),
+  table.users thead th:nth-child(4),
+  table.users thead th:nth-child(5) {
+  background: linear-gradient(0deg, #fff, var(--jm-blue-50))
+  }
+  #create-admin-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  background: rgba(2, 6, 23, .55);
+  backdrop-filter: saturate(140%) blur(3px);
+  }
+  .cam-card {
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  box-shadow: 0 22px 60px rgba(2, 6, 23, .18);
+  padding: 20px;
+  }
+  .cam-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px
+  }
+  .cam-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font: 700 1.1rem/1.2 Inter, system-ui
+  }
+  .cam-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: var(--jm-indigo-50);
+  color: #3730a3;
+  border: 1px solid var(--jm-indigo-200)
+  }
+  .cam-line {
+  height: 1px;
+  background: var(--line);
+  margin: 12px 0
+  }
+  .cam-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px
+  }
+  .cam-field {
+  margin-top: 12px
+  }
+  .cam-label {
+  display: block;
+  font-size: .86rem;
+  color: var(--jm-slate-600);
+  margin-bottom: 6px;
+  font-weight: 600
+  }
+  .cam-ctl {
+  position: relative
+  }
+  .cam-input {
+  border: 1px solid var(--jm-gray-200);
+  border-radius: 12px;
+  width: 100%;
+  padding: .68rem .9rem .68rem 2.25rem;
+  background: #fff;
+  outline: 0
+  }
+  .cam-input:focus {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 4px rgba(43, 77, 165, .12)
+  }
+  .cam-ico {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--jm-slate-500)
+  }
+  .cam-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px
+  }
+  .btn-primary {
+  background: var(--brand);
+  border: 1px solid var(--brand);
+  color: #fff;
+  border-radius: 12px;
+  padding: .65rem 1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, .18);
+  transition: .15s transform;
+  }
+  .btn-primary:hover {
+  transform: translateY(-1px)
+  }
+  .btn-silver {
+  background: #fff;
+  border: 1px solid var(--jm-gray-200);
+  color: var(--jm-gray-900);
+  border-radius: 12px;
+  padding: .65rem 1rem;
+  font-weight: 700
+  }
+  .btn-silver:hover {
+  border-color: #d1d5db
+  }
+  .icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--jm-gray-200);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--jm-slate-600);
+  cursor: pointer
+  }
+  .icon-btn:hover {
+  border-color: var(--jm-slate-300);
+  color: var(--jm-slate-900)
+  }
+  .cam-help {
+  margin-top: 6px;
+  font-size: .78rem;
+  color: var(--jm-slate-500)
+  }
+  .cam-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--jm-gray-200);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--jm-slate-600);
+  cursor: pointer;
+  }
+  .cam-eye:hover {
+  border-color: var(--jm-slate-300);
+  color: var(--jm-slate-900);
+  }
+  .searchbar {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  background: #fff;
+  border: 1px solid var(--jm-gray-200);
+  border-radius: 12px;
+  padding: .35rem .5rem;
+  box-shadow: 0 4px 12px rgba(2, 6, 23, .04);
+  }
+  .searchbar .icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--jm-slate-500);
+  }
+  .searchbar input {
+  border: 0;
+  outline: 0;
+  width: 100%;
+  padding: .5rem .2rem;
+  border-radius: 10px;
+  font: 500 .95rem/1.2 Inter, system-ui;
+  }
+  .searchbar input::placeholder {
+  color: var(--jm-slate-400);
+  }
+  .select.compact,
+  .btn-compact {
+  height: 38px;
+  padding: 0 .9rem;
+  border-radius: 12px;
+  }
+  .btn-compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  background: var(--jm-blue-600);
+  border: 1px solid var(--jm-blue-600);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, .20);
+  }
+  @media (max-width: 768px) {
+  .searchbar {
+  padding: .3rem .45rem;
+  }
+  .select.compact,
+  .btn-compact {
+  height: 36px;
+  }
+  }
+  /* Global loading overlay */
+  .busy {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  background: rgba(2, 6, 23, .55);
+  backdrop-filter: saturate(140%) blur(3px);
+  }
+  .busy-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--jm-gray-200);
+  box-shadow: 0 22px 60px rgba(2, 6, 23, .18);
+  font-weight: 600;
+  color: var(--jm-slate-900);
+  }
+  .busy-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid var(--jm-gray-200);
+  border-top-color: var(--jm-blue-600);
+  animation: spin .8s linear infinite;
+  }
+  @keyframes spin {
+  to {
+  transform: rotate(360deg);
+  }
+  }
+  .busy-text {
+  font-size: .95rem
+  }
+  /* keep no horizontal scrollbar but allow tooltips to overflow vertically */
+  .card .overflow-x-auto {
+  overflow-x: hidden;
+  overflow-y: visible;
+  }
+  /* we earlier used ellipsis globally; let Action column breathe */
+  table.users {
+  table-layout: fixed;
+  width: 100%;
+  }
+  table.users th,
+  table.users td {
+  white-space: nowrap;
+  overflow: hidden;
+  /* keeps other columns neat */
+  text-overflow: ellipsis;
+  }
+  /* allow tooltips to overflow in the Action column */
+  table.users th.col-actions,
+  table.users td.td-actions {
+  overflow: visible !important;
+  }
+  /* make sure the tooltip sits on top and isn't clipped by the button */
+  .icon-btn {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+  }
+  .icon-btn:hover:after,
+  .icon-btn:hover:before {
+  z-index: 20;
+  }
   </style>
 </head>
 
@@ -715,7 +626,7 @@
                     <i class="mdi mdi-magnify"></i> Search
                   </button>
                   <?php if (!empty($q) || !empty($role) || !empty($status)): ?>
-                    <a class="btn-compact" href="<?= site_url('users') ?>" style="background:#fff;border:1px solid #e5e7eb;color:#64748b">
+                    <a class="btn-compact" href="<?= site_url('users') ?>" style="background:#fff;border:1px solid var(--jm-gray-200);color:var(--jm-slate-500)">
                       <i class="mdi mdi-filter-remove-outline"></i> Clear
                     </a>
                   <?php endif; ?>
@@ -865,9 +776,9 @@
                     <?php if (empty($users)): ?>
                       <tr>
                         <td colspan="5" class="text-center py-10">
-                          <div style="font-size:48px;color:#cbd5e1;margin-bottom:8px"><i class="mdi mdi-account-search-outline"></i></div>
-                          <h5 style="font-weight:700;color:#475569;margin-bottom:4px">No users found</h5>
-                          <p style="color:#64748b;font-size:.9rem;margin-bottom:12px">Try adjusting your search or filters.</p>
+                          <div style="font-size:48px;color:var(--jm-slate-300);margin-bottom:8px"><i class="mdi mdi-account-search-outline"></i></div>
+                          <h5 style="font-weight:700;color:var(--jm-slate-600);margin-bottom:4px">No users found</h5>
+                          <p style="color:var(--jm-slate-500);font-size:.9rem;margin-bottom:12px">Try adjusting your search or filters.</p>
                           <a href="<?= site_url('users') ?>" class="btn-silver" style="display:inline-flex;align-items:center;gap:6px">
                             <i class="mdi mdi-filter-remove-outline"></i> Clear filters
                           </a>
@@ -879,8 +790,8 @@
               </div>
 
               <?php if (isset($pagination) && $pagination['total_pages'] > 1): ?>
-                <div class="flex items-center justify-between flex-wrap gap-3 mt-4 pt-3" style="border-top:1px solid #e5e7eb">
-                  <div style="font-size:.85rem;color:#64748b;font-weight:600">
+                <div class="flex items-center justify-between flex-wrap gap-3 mt-4 pt-3" style="border-top:1px solid var(--jm-gray-200)">
+                  <div style="font-size:.85rem;color:var(--jm-slate-500);font-weight:600">
                     Showing <?= $pagination['from'] ?>–<?= $pagination['to'] ?> of <?= number_format($pagination['total']) ?> users
                   </div>
                   <div class="flex gap-1">
@@ -907,9 +818,9 @@
                       }
 
                       $btnBase = 'display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;border-radius:8px;font-weight:700;font-size:.85rem;padding:0 8px';
-                      $linkSt  = $btnBase . ';border:1px solid #e5e7eb;background:#fff;color:#334155;text-decoration:none';
-                      $curSt   = $btnBase . ';background:#c1272d;color:#fff';
-                      $gapSt   = $btnBase . ';color:#94a3b8';
+                      $linkSt  = $btnBase . ';border:1px solid var(--jm-gray-200);background:#fff;color:var(--jm-slate-700);text-decoration:none';
+                      $curSt   = $btnBase . ';background:var(--jm-primary);color:#fff';
+                      $gapSt   = $btnBase . ';color:var(--jm-slate-400)';
                       $disSt   = $linkSt . ';opacity:.45;pointer-events:none';
                     ?>
 
@@ -1193,15 +1104,15 @@
         const pw2 = form.confirm.value;
 
         if (!fn || !ln || !em || !pw || !pw2 || !role) {
-          Swal.fire({ title: 'Incomplete form', text: 'Please complete the form.', icon: 'warning', confirmButtonColor: '#c1272d' });
+          JM.alert('Please complete the form.', 'warning', 'Incomplete form');
           return;
         }
         if (pw !== pw2) {
-          Swal.fire({ title: 'Mismatch', text: 'Passwords do not match.', icon: 'error', confirmButtonColor: '#c1272d' });
+          JM.alert('Passwords do not match.', 'error', 'Mismatch');
           return;
         }
-        if (pw.length < 6) {
-          Swal.fire({ title: 'Too short', text: 'Password must be at least 6 characters.', icon: 'warning', confirmButtonColor: '#c1272d' });
+        if (pw.length < 8) {
+          JM.alert('Password must be at least 8 characters.', 'warning', 'Too short');
           return;
         }
 
@@ -1217,10 +1128,10 @@
             password: pw,
             confirm: pw2
           });
-          Swal.fire({ icon: 'success', title: 'Created', text: res.msg || 'Admin account created.', confirmButtonColor: '#c1272d', timer: 2000 });
+          JM.toast(res.msg || 'Admin account created.', 'success');
           setTimeout(function() { location.reload(); }, 1500);
         } catch (err) {
-          Swal.fire({ icon: 'error', title: 'Failed', text: err.message || 'Failed to create admin.', confirmButtonColor: '#c1272d' });
+          JM.alert(err.message || 'Failed to create admin.', 'error', 'Failed');
         } finally {
           hideBusy();
           submit && (submit.disabled = false);
@@ -1240,22 +1151,19 @@
         if (deBtn) {
           const tr = deBtn.closest('tr');
           const id = parseInt(tr.getAttribute('data-id'), 10);
-          Swal.fire({
+          JM.confirm({
             title: 'Deactivate user?',
             text: 'This user will lose access immediately.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Yes, deactivate'
+            danger: true,
+            confirmText: 'Yes, deactivate'
           }).then(function(result) {
-            if (!result.isConfirmed) return;
+            if (!result) return;
             deBtn.disabled = true;
             post(URL_TOGGLE, { id, active: '0' }).then(function() {
               setStatusPillTo(tr, 'inactive');
               toActivateButton(deBtn);
             }).catch(function(e) {
-              Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Failed to deactivate', confirmButtonColor: '#c1272d' });
+              JM.alert(e.message || 'Failed to deactivate', 'error', 'Failed');
             }).finally(function() { deBtn.disabled = false; });
           });
           return;
@@ -1265,22 +1173,19 @@
         if (actBtn) {
           const tr = actBtn.closest('tr');
           const id = parseInt(tr.getAttribute('data-id'), 10);
-          Swal.fire({
+          JM.confirm({
             title: 'Activate user?',
             text: 'This user will regain access.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#16a34a',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Yes, activate'
+            icon: 'success',
+            confirmText: 'Yes, activate'
           }).then(function(result) {
-            if (!result.isConfirmed) return;
+            if (!result) return;
             actBtn.disabled = true;
             post(URL_TOGGLE, { id, active: '1' }).then(function() {
               setStatusPillTo(tr, 'active');
               toDeactivateButton(actBtn);
             }).catch(function(e) {
-              Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Failed to activate', confirmButtonColor: '#c1272d' });
+              JM.alert(e.message || 'Failed to activate', 'error', 'Failed');
             }).finally(function() { actBtn.disabled = false; });
           });
           return;
@@ -1290,16 +1195,13 @@
         if (approveBtn) {
           const tr = approveBtn.closest('tr');
           const id = parseInt(tr.getAttribute('data-id'), 10);
-          Swal.fire({
+          JM.confirm({
             title: 'Approve user?',
             text: 'This will manually approve the user account.',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#16a34a',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Yes, approve'
+            icon: 'success',
+            confirmText: 'Yes, approve'
           }).then(function(result) {
-            if (!result.isConfirmed) return;
+            if (!result) return;
             approveBtn.disabled = true;
             post(URL_APPROVE, { id }).then(function() {
               setStatusPillTo(tr, 'active');
@@ -1313,7 +1215,7 @@
               btn.innerHTML = '<i class="mdi mdi-account-cancel-outline"></i>';
               bar.appendChild(btn);
             }).catch(function(e) {
-              Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Approve failed', confirmButtonColor: '#c1272d' });
+              JM.alert(e.message || 'Approve failed', 'error', 'Failed');
             }).finally(function() { approveBtn.disabled = false; });
           });
           return;
@@ -1325,29 +1227,10 @@
           const id = parseInt(tr.getAttribute('data-id'), 10);
           resendBtn.disabled = true;
           post(URL_RESEND, { id }).then(function(res) {
-            if (res.items && res.items.link) {
-              Swal.fire({
-                icon: 'success',
-                title: 'Activation Link',
-                text: res.msg || 'Done',
-                showCancelButton: true,
-                confirmButtonText: 'Open link',
-                cancelButtonText: 'Copy link',
-                confirmButtonColor: '#c1272d'
-              }).then(function(r) {
-                if (r.isConfirmed) {
-                  window.open(res.items.link, '_blank');
-                } else if (r.dismiss === Swal.DismissReason.cancel) {
-                  navigator.clipboard.writeText(res.items.link).then(function() {
-                    Swal.fire({ icon: 'success', title: 'Copied', text: 'Link copied to clipboard', timer: 1500, showConfirmButton: false });
-                  });
-                }
-              });
-            } else {
-              Swal.fire({ icon: 'success', title: 'Sent', text: res.msg || 'Activation email sent', timer: 2000, showConfirmButton: false });
-            }
+            // The endpoint no longer returns activation links (bearer-token leak fix).
+            JM.toast(res.msg || 'Activation email sent', 'success');
           }).catch(function(e) {
-            Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Send failed', confirmButtonColor: '#c1272d' });
+            JM.alert(e.message || 'Send failed', 'error', 'Failed');
           }).finally(function() { resendBtn.disabled = false; });
           return;
         }
@@ -1359,28 +1242,21 @@
           const id = parseInt(tr.getAttribute('data-id'), 10);
           const name = delBtn.getAttribute('data-name') || ('User #' + id);
 
-          Swal.fire({
+          JM.confirm({
             title: 'Permanently delete ' + name + '?',
             text: 'This cannot be undone. All related records will be removed.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Yes, delete',
-            input: 'text',
-            inputPlaceholder: 'Type DELETE to confirm',
-            inputValidator: function(value) {
-              if (value !== 'DELETE') return 'You must type DELETE to confirm';
-            }
+            danger: true,
+            confirmText: 'Yes, delete',
+            requireText: 'DELETE'
           }).then(function(result) {
-            if (!result.isConfirmed) return;
+            if (!result) return;
             delBtn.disabled = true;
             post(URL_DELETE, { id }).then(function(res) {
-              Swal.fire({ icon: 'success', title: 'Deleted', text: res.msg || 'User deleted permanently.', timer: 1800, showConfirmButton: false });
+              JM.toast(res.msg || 'User deleted permanently.', 'success');
               tr.style.opacity = 0.25;
               setTimeout(function() { tr.remove(); }, 180);
             }).catch(function(e) {
-              Swal.fire({ icon: 'error', title: 'Failed', text: e.message || 'Delete failed', confirmButtonColor: '#c1272d' });
+              JM.alert(e.message || 'Delete failed', 'error', 'Failed');
             }).finally(function() { delBtn.disabled = false; });
           });
           return;

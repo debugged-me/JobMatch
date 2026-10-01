@@ -4,145 +4,119 @@ $page_title = 'Complaint #' . (int)($item->id ?? 0); ?>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title><?= htmlspecialchars($page_title ?? 'JobMatch DavOr', ENT_QUOTES, 'UTF-8') ?></title>
-
-  <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
-  <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
-  <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
+  <?php $this->load->view('partials/head', [
+    'page_title' => 'JobMatch DavOr',
+    'css' => [
+      'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css',
+    ],
+  ]); ?>
   <style>
-    :root {
-      --ink: #1e3a8a;
-      --brand: var(--jm-primary);
-      --muted: #64748b;
-      --line: #d9dee7;
-      --chip: #eef2ff;
-      --radius: 14px;
-      --shadow: 0 8px 22px rgba(2, 6, 23, .10)
-    }
-
-    body {
-      background: linear-gradient(180deg, #f6f8fc, #eef2f7 70%, #e9edf3)
-    }
-
-    .app {
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 0 14px
-    }
-
-    .page-head {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 6px 0 16px
-    }
-
-    .page-head .icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: var(--chip)
-    }
-
-    .page-head .icon i {
-      font-size: 20px;
-      color: var(--brand)
-    }
-
-    .page-head .title {
-      margin: 0;
-      font: 700 24px/1.2 Inter;
-      color: var(--ink)
-    }
-
-    .eyebrow {
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 10px
-    }
-
-    .panel {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px
-    }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 13px;
-      color: #334155
-    }
-
-    .meta .item {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      background: #fbfcff;
-      border: 1px solid #e5e7eb;
-      border-radius: 999px;
-      padding: 6px 10px
-    }
-
-    .badge-chip {
-      border-radius: 999px;
-      padding: .35rem .6rem;
-      font-weight: 600;
-      font-size: 11.5px;
-      letter-spacing: .25px
-    }
-
-    .badge-type {
-      background: #ffe5e8;
-      color: #9a0820;
-      border: 1px solid #ffc4cb
-    }
-
-    .status-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-right: 6px
-    }
-
-    .st-open {
-      background: #f59e0b
-    }
-
-    .st-under {
-      background: #1e3a8a
-    }
-
-    .st-resolved {
-      background: #fbbf24
-    }
-
-    .st-dismissed {
-      background: #94a3b8
-    }
-
-    .divider {
-      border-top: 1px solid var(--line);
-      margin: 14px 0
-    }
-
-    .evidence-list li {
-      margin-bottom: 4px
-    }
+  :root {
+  --ink: var(--jm-blue-900);
+  --brand: var(--jm-primary);
+  --muted: var(--jm-slate-500);
+  --line: var(--jm-line-2);
+  --chip: var(--jm-indigo-50);
+  --radius: 14px;
+  --shadow: 0 8px 22px rgba(2, 6, 23, .10)
+  }
+  body {
+  background: linear-gradient(180deg, var(--jm-wash-1), var(--jm-wash-2) 70%, var(--jm-wash-3))
+  }
+  .app {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 14px
+  }
+  .page-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 16px
+  }
+  .page-head .icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--chip)
+  }
+  .page-head .icon i {
+  font-size: 20px;
+  color: var(--brand)
+  }
+  .page-head .title {
+  margin: 0;
+  font: 700 24px/1.2 Inter;
+  color: var(--ink)
+  }
+  .eyebrow {
+  font-weight: 700;
+  color: var(--jm-gray-800);
+  margin-bottom: 10px
+  }
+  .panel {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px
+  }
+  .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--jm-slate-700)
+  }
+  .meta .item {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  background: var(--jm-wash-4);
+  border: 1px solid var(--jm-gray-200);
+  border-radius: 999px;
+  padding: 6px 10px
+  }
+  .badge-chip {
+  border-radius: 999px;
+  padding: .35rem .6rem;
+  font-weight: 600;
+  font-size: 11.5px;
+  letter-spacing: .25px
+  }
+  .badge-type {
+  background: #ffe5e8;
+  color: #9a0820;
+  border: 1px solid #ffc4cb
+  }
+  .status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px
+  }
+  .st-open {
+  background: var(--jm-amber-500)
+  }
+  .st-under {
+  background: var(--jm-blue-900)
+  }
+  .st-resolved {
+  background: #fbbf24
+  }
+  .st-dismissed {
+  background: var(--jm-slate-400)
+  }
+  .divider {
+  border-top: 1px solid var(--line);
+  margin: 14px 0
+  }
+  .evidence-list li {
+  margin-bottom: 4px
+  }
   </style>
 </head>
 

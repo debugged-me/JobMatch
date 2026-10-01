@@ -15,6 +15,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?> • JobMatch DavOr</title>
   <link rel="icon" href="<?= base_url('assets/images/logo.png') ?>" />
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css') ?>" />
   <?php
 
   $OPEN_URL = ($type === 'image' && !empty($img_url)) ? $img_url : $url;
@@ -48,13 +49,13 @@
   ?>
   <style>
     :root {
-      --bg: #0b1220;
-      --panel: #0f172a;
-      --ink: #e5e7eb;
-      --muted: #94a3b8;
-      --line: #1f2937;
-      --btn: #1f2937;
-      --btn-hover: #111827;
+      --bg: var(--jm-ink);
+      --panel: var(--jm-slate-900);
+      --ink: var(--jm-gray-200);
+      --muted: var(--jm-slate-400);
+      --line: var(--jm-gray-800);
+      --btn: var(--jm-gray-800);
+      --btn-hover: var(--jm-gray-900);
     }
 
     * {
@@ -142,7 +143,7 @@
       position: absolute;
       inset: 0;
       overflow: hidden;
-      background: radial-gradient(ellipse at center, #0d1326 0%, #0b1220 60%)
+      background: radial-gradient(ellipse at center, #0d1326 0%, var(--jm-ink) 60%)
     }
 
     .canvas {
@@ -162,14 +163,14 @@
     .pdf-wrap {
       position: absolute;
       inset: 0;
-      background: #111827
+      background: var(--jm-gray-900)
     }
 
     .pdf-wrap iframe {
       width: 100%;
       height: 100%;
       border: 0;
-      background: #111827
+      background: var(--jm-gray-900)
     }
 
     .pdf-fallback {
@@ -182,7 +183,7 @@
       flex-direction: column;
       text-align: center;
       padding: 20px;
-      background: #111827;
+      background: var(--jm-gray-900);
     }
 
     footer {

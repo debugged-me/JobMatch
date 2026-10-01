@@ -7,11 +7,12 @@
   <meta http-equiv="x-ua-compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title><?= html_escape($page_title ?? 'Edit Client Profile') ?> - JobMatch DavOr</title>
-  <meta name="theme-color" content="#1d4ed8" />
+  <meta name="theme-color" content="var(--jm-blue-700)" />
   <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/images/logo.png') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/tw-build.css?v=1') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css') ?>">
+
 
   <?php
   $editCssPath = FCPATH . 'assets/css/edit.css';
@@ -21,7 +22,7 @@
 
   <style>
     body {
-      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
+      font-family: 'Karla', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial
     }
 
     .status-badge {
@@ -44,13 +45,13 @@
       gap: 1rem
     }
 
-    @media (min-width:640px) {
+    @media (min-width:576px) {
       .upload-previews {
         grid-template-columns: repeat(2, minmax(0, 1fr))
       }
     }
 
-    @media (min-width:1280px) {
+    @media (min-width:1200px) {
       .upload-previews {
         grid-template-columns: repeat(3, minmax(0, 1fr))
       }
@@ -61,7 +62,7 @@
     }
 
     .doc-pdf-pane {
-      background: linear-gradient(180deg, #f8fafc 0%, #eef1f5 38%, #d2d6dc 60%, #9aa0a6 100%)
+      background: linear-gradient(180deg, var(--jm-slate-50) 0%, #eef1f5 38%, #d2d6dc 60%, #9aa0a6 100%)
     }
 
     .doc-pdf-badge {
@@ -69,7 +70,7 @@
       line-height: 1;
       padding: .35rem .55rem;
       border-radius: .5rem;
-      background: #b91c1c;
+      background: var(--jm-red-700);
       color: #fff;
       font-weight: 700;
       box-shadow: 0 1px 0 rgba(0, 0, 0, .12) inset, 0 6px 16px rgba(0, 0, 0, .15)
@@ -85,7 +86,7 @@
       gap: .4rem;
       padding: .5rem .9rem;
       border-radius: 9999px;
-      background: #2563eb;
+      background: var(--jm-blue-600);
       color: #fff;
       font-weight: 700;
       font-size: .85rem;
