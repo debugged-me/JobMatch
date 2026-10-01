@@ -462,6 +462,13 @@ class Messages extends CI_Controller
         $pr = $this->db->get_where('client_projects', ['id'=>$pid, 'clientID'=>$clientId])->row();
         if (!$pr) return $json(false,'Project not found for this client');
 
+        // An actual hire/invite from this client must exist — otherwise the
+        // "action" is forged against an arbitrary project.
+        $hasInvite = $this->db->order_by('id','DESC')->limit(1)
+            ->get_where('tw_notifications', ['user_id'=>$me, 'actor_id'=>$clientId, 'type'=>'hire'])
+            ->row();
+        if (!$hasInvite) return $json(false,'No invitation exists for this project.');
+
         $amount = $this->input->post('rate');
         if ($amount === null || $amount === '') $amount = $this->input->post('amount');
         if ($amount === null || $amount === '') $amount = $this->input->get('amount');

@@ -1,7 +1,88 @@
+# ============================================================
+# JobMatch DavOr — webroot hardening + front-controller routing
+# ============================================================
 
+Options -Indexes -ExecCGI
+ServerSignature Off
+
+# ---------- Security headers ----------
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    # Pragmatic CSP: this app still relies on inline <script>/<style> blocks;
+    # tighten by removing 'unsafe-inline' once views are fully externalized.
+    Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: blob: https:; media-src 'self'; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://code.jquery.com; frame-src https://www.google.com; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+</IfModule>
+
+# ---------- Block access to sensitive dirs & files ----------
+# Never serve VCS, env, config or lock files
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # .git, .env, .DS_Store, .ht* internals (except .well-known for ACME)
+    RewriteRule (^|/)\.(?!well-known\b)[^/]+ - [F,L,NC]
+
+    # Source-control metadata dirs
+    RewriteRule (^|/)(\.git|\.svn|\.hg|\.bzr)(/|$) - [F,L,NC]
+
+    # Internal app dirs that must never be web-served
+    RewriteRule ^(application|system|vendor|writable|database|database_backups|build|node_modules|tests)(/|$) - [F,L,NC]
+
+    # Backup / dump / archive / log / doc files
+    RewriteRule \.(sql|bak|backup|old|orig|save|swp|swo|zip|tar|tgz|tar\.gz|gz|bz2|7z|rar|log|md|rst|dist|ini|conf|cfg|yml|yaml|lock|sqlite|db|sh|phar)$ - [F,L,NC]
+
+    # Composer / tooling manifests
+    RewriteRule ^(composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|readme|license)(\..*)?$ - [F,L,NC]
+
+    # Common exploit / scanner targets
+    RewriteRule (^|/)(wp-admin|wp-login|wp-content|wp-includes|wordpress|phpmyadmin|pma|adminer|xmlrpc\.php)(/|$) - [F,L,NC]
+</IfModule>
+
+# Apache 2.4 auth syntax fallback (covers dirs even if mod_rewrite is off)
+<IfModule !mod_rewrite.c>
+    <FilesMatch "\.(sql|bak|zip|tar|gz|log|phar|ini|conf|yml|yaml|lock|sh)$">
+        Require all denied
+    </FilesMatch>
+    <FilesMatch "^\.">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+# ---------- Bad bots / scrapers ----------
+<IfModule mod_rewrite.c>
+    # Empty or scanner user-agents
+    RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+    RewriteCond %{HTTP_USER_AGENT} "(?i)(sqlmap|nikto|nmap|masscan|nessus|openvas|acunetix|netsparker|w3af|havij|dirbuster|gobuster|nuclei|wpscan|zgrab|hydra|metasploit|burp|python-requests|libwww-perl|curl/|wget/|scrapy|HTTrack|paros|vega|skipfish)" [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ---------- Front controller ----------
+<IfModule mod_rewrite.c>
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>
+
+# ---------- MIME / misc ----------
+<IfModule mod_mime.c>
+    AddCharset UTF-8 .html .css .js .json .svg
+</IfModule>
+
+# Deflate compression for text assets
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# Sane default caching for static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png  "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/gif  "access plus 30 days"
+    ExpiresByType text/css   "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType font/woff2 "access plus 30 days"
 </IfModule>

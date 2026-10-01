@@ -94,6 +94,33 @@ if (!class_exists('PdfWithRotation')) {
 
 class Media extends CI_Controller
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->library('session');
+        if (!$this->session->userdata('logged_in')) {
+            show_error('Authentication required', 401);
+        }
+    }
+
+    /**
+     * Normalize a user-supplied relative path and verify it resolves to a
+     * real file strictly inside FCPATH/uploads. Returns absolute path or null.
+     */
+    private function _uploads_file($rel)
+    {
+        $rel = ltrim(str_replace('\\', '/', (string)$rel), '/');
+        if ($rel === '' || strpos($rel, '..') !== false || strpos($rel, 'uploads/') !== 0) {
+            return null;
+        }
+        $root = realpath(FCPATH . 'uploads');
+        $abs  = $root ? realpath($root . DIRECTORY_SEPARATOR . substr($rel, 8)) : false;
+        if (!$root || $abs === false || strpos($abs, $root . DIRECTORY_SEPARATOR) !== 0 || !is_file($abs)) {
+            return null;
+        }
+        return $abs;
+    }
+
     public function preview()
     {
         $f = (string) $this->input->get('f', true);
@@ -135,14 +162,8 @@ class Media extends CI_Controller
     public function wm_image()
     {
         $rel = (string) $this->input->get('f', true);
-        if ($rel === '') show_404();
-
-        // normalize + keep inside /uploads
-        $rel = ltrim(str_replace('\\', '/', $rel), '/');
-        if (strpos($rel, 'uploads/') !== 0) show_error('Invalid path', 400);
-
-        $abs = FCPATH . $rel;
-        if (!is_file($abs)) show_404();
+        $abs = $this->_uploads_file($rel);
+        if ($abs === null) show_error('Invalid path', 400);
 
         $ext = strtolower(pathinfo($abs, PATHINFO_EXTENSION));
         $imgExts = ['jpg','jpeg','png','webp','gif'];
@@ -296,13 +317,8 @@ class Media extends CI_Controller
     public function wm_pdf()
     {
         $rel = (string) $this->input->get('f', true);
-        if ($rel === '') show_404();
-
-        $rel = ltrim(str_replace('\\', '/', $rel), '/');
-        if (strpos($rel, 'uploads/') !== 0) show_error('Invalid path', 400);
-
-        $abs = FCPATH . $rel;
-        if (!is_file($abs)) show_404();
+        $abs = $this->_uploads_file($rel);
+        if ($abs === null) show_error('Invalid path', 400);
 
         $ext = strtolower(pathinfo($abs, PATHINFO_EXTENSION));
         if ($ext !== 'pdf') show_error('Unsupported file type', 415);

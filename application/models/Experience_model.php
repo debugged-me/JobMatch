@@ -31,13 +31,9 @@ class Experience_model extends CI_Model
               KEY `idx_user` (`user_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
             $this->db->query($sql);
-        } else {
-            // lightweight safety: add missing columns if needed
-            $fields = $this->db->list_fields($this->table);
-            $need = function($name) use ($fields){ return !in_array($name, $fields, true); };
-            if ($need('to_present')) $this->db->query("ALTER TABLE `{$this->table}` ADD `to_present` TINYINT(1) NOT NULL DEFAULT 0 AFTER `to`");
-            if ($need('updated_at')) $this->db->query("ALTER TABLE `{$this->table}` ADD `updated_at` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP AFTER `created_at`");
         }
+        // Column upgrades for legacy installs live in
+        // database/migrations/001_schema_consolidation.sql — never ALTER here.
     }
 
     public function get_by_user(int $user_id): array

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 
   <style>
@@ -49,7 +50,6 @@
   </style>
 </head>
 <body>
-<?php $this->load->view('partials_translate_banner'); ?>
 <div class="container-scroller">
   <?php $this->load->view('includes_nav'); ?>
   <div class="container-fluid page-body-wrapper">

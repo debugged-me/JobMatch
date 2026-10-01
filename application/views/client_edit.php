@@ -9,7 +9,7 @@
   <title><?= html_escape($page_title ?? 'Edit Client Profile') ?> - JobMatch DavOr</title>
   <meta name="theme-color" content="#1d4ed8" />
   <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/images/logo.png') ?>">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="<?= base_url('assets/css/tw-build.css?v=1') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -1036,9 +1036,7 @@
   </script>
   <script>
     (function() {
-      function toast(msg, ok = true) {
-        (ok ? console.log : console.error)(msg);
-      }
+      // toasts render via the shared JM kit (window.toast is set by jm-ui.js)
 
       function showFlash(flash) {
         if (!flash) return;
@@ -1152,6 +1150,8 @@
       });
     })();
   </script>
+  <script src="<?= base_url('assets/js/jm-ui.js') ?>"></script>
+  <script src="<?= base_url('assets/js/csrf.js') ?>"></script>
 
 </body>
 

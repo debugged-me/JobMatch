@@ -56,6 +56,7 @@ $qs = function ($overrides = []) use ($type, $q, $status, $page, $perPage) {
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
   <style>
@@ -97,7 +98,6 @@ $qs = function ($overrides = []) use ($type, $q, $status, $page, $perPage) {
   </style>
 </head>
 <body>
-  <?php $this->load->view('partials_translate_banner'); ?>
   <div class="container-scroller">
     <?php $this->load->view('includes_nav'); ?>
     <div class="container-fluid page-body-wrapper">
@@ -294,6 +294,7 @@ $qs = function ($overrides = []) use ($type, $q, $status, $page, $perPage) {
     </div>
   </div>
   <script src="<?= base_url('assets/vendors/js/vendor.bundle.base.js') ?>"></script>
-  <script src="<?= base_url('assets/js/nav.js') ?>"></script>
+  <script src="<?= base_url('assets/js/jm-ui.js') ?>"></script>
+  <script src="<?= base_url('assets/js/csrf.js') ?>"></script>
 </body>
 </html>

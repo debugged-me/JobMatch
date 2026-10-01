@@ -36,65 +36,95 @@ class User_model extends CI_Model
     {
         $user = $this->get_by_identifier($identifier);
         if (!$user) {
-            return [false, "Account not found."];
+            // Uniform error — do not reveal whether the account exists.
+            // Run a dummy verify to keep timing comparable.
+            password_verify($password, '$2y$10$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG');
+            return [false, "Invalid email/username or password."];
+        }
+
+        // --- Lockout check (before any password work) ---
+        if (!empty($user->locked_until)) {
+            $until = strtotime((string)$user->locked_until);
+            if ($until !== false && $until > time()) {
+                $mins = max(1, (int)ceil(($until - time()) / 60));
+                return [false, "Account temporarily locked. Try again in {$mins} minute(s)."];
+            }
         }
 
         if (!password_verify($password, (string)$user->password_hash)) {
-            return [false, "Invalid password."];
+            $this->_register_failed_attempt((int)$user->id, (int)($user->failed_attempts ?? 0));
+            return [false, "Invalid email/username or password."];
         }
+
+        // Successful auth: clear counters.
+        $this->_clear_failed_attempts((int)$user->id);
 
         $role = $this->normalize_role($user->role ?? 'user');
 
-        // --- Admin-like roles (admin, tesda_admin, school_admin, peso, other) ---
-        if ($this->is_staff_role($role)) {
-            $needsVerify = $this->db->field_exists('email_verified', $this->table)
-                && (int)($user->email_verified ?? 0) !== 1;
-
-            $needsActivate = ((int)($user->is_active ?? 0) !== 1)
-                || ($this->db->field_exists('status', $this->table)
-                    && strtolower((string)($user->status ?? '')) !== 'active');
-
-            if ($needsVerify || $needsActivate) {
-                $this->approve_user((int)$user->id, null);
-                $user = $this->get_by_id((int)$user->id);
-            }
-
-            return [true, $user];
-        }
-
-        // --- Everyone else (workers/clients/employers) -> original flow ---
+        // --- Everyone: verified + active checks. No role bypasses these. ---
         $hasEmailVerifiedCol = $this->db->field_exists('email_verified', $this->table);
         $emailVerified = $hasEmailVerifiedCol ? (int)($user->email_verified ?? 0) : 1;
-        if ($emailVerified !== 1) {
-            return [false, "Please verify your email first. We’ve sent you an activation link."];
-        }
 
-        $hasStatusCol   = $this->db->field_exists('status', $this->table);
-        $hasIsActiveCol = $this->db->field_exists('is_active', $this->table);
+        $hasStatusCol    = $this->db->field_exists('status', $this->table);
+        $hasIsActiveCol  = $this->db->field_exists('is_active', $this->table);
         $status     = $hasStatusCol ? strtolower((string)($user->status ?? '')) : 'active';
         $isActive   = $hasIsActiveCol ? (int)($user->is_active ?? 0) : 1;
         $approvedAt = (string)($user->approved_at ?? '');
 
+        $isStaff = $this->is_staff_role($role);
         $requiresApproval  = in_array($role, ['client', 'employer'], true);
         $hasApprovedAtCol  = $this->db->field_exists('approved_at', $this->table);
 
-        if (
-            $requiresApproval
-            && $hasApprovedAtCol
-            && $approvedAt === ''
-            && $status === 'active'
-            && $isActive === 1
-        ) {
-            $this->approve_user((int)$user->id, null);
-            $user = $this->get_by_id((int)$user->id);
-            return [true, $user];
+        if ($emailVerified !== 1) {
+            return [false, "Please verify your email first. We’ve sent you an activation link."];
         }
 
-        if ($status !== 'active' || $isActive !== 1 || ($requiresApproval && $hasApprovedAtCol && $approvedAt === '')) {
+        if ($status === 'suspended') {
+            return [false, "This account has been suspended. Contact the administrator."];
+        }
+
+        if ($status !== 'active' || $isActive !== 1) {
             return [false, $requiresApproval ? "Your account is pending admin approval." : "Your account isn’t active yet."];
         }
 
+        if ($requiresApproval && $hasApprovedAtCol && $approvedAt === '' && !$isStaff) {
+            return [false, "Your account is pending admin approval."];
+        }
+
         return [true, $user];
+    }
+
+    /**
+     * Increment failed_attempts; lock the account for 15 minutes after
+     * 5 consecutive failures. Columns exist in the users table.
+     */
+    private function _register_failed_attempt(int $userId, int $current): void
+    {
+        if (!$this->db->field_exists('failed_attempts', $this->table)) {
+            return;
+        }
+        $attempts = $current + 1;
+        $data = [
+            'failed_attempts' => $attempts,
+            'updated_at'      => date('Y-m-d H:i:s'),
+        ];
+        if ($attempts >= 5 && $this->db->field_exists('locked_until', $this->table)) {
+            $data['locked_until']    = date('Y-m-d H:i:s', time() + 900);
+            $data['failed_attempts'] = 0;
+        }
+        $this->db->update($this->table, $data, ['id' => $userId]);
+    }
+
+    private function _clear_failed_attempts(int $userId): void
+    {
+        if (!$this->db->field_exists('failed_attempts', $this->table)) {
+            return;
+        }
+        $data = ['failed_attempts' => 0];
+        if ($this->db->field_exists('locked_until', $this->table)) {
+            $data['locked_until'] = null;
+        }
+        $this->db->update($this->table, $data, ['id' => $userId]);
     }
 
     public function update_last_login($id)

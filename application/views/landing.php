@@ -577,7 +577,7 @@
 
       <div class="lp-foot-bottom">
         <span>&copy; <?= date('Y'); ?> Public Employment Service Office &mdash; Davao Oriental</span>
-        <span><a href="#" data-twx-open="about" role="button">Terms of use</a> &nbsp;|&nbsp; <a href="<?= site_url('hotlines'); ?>">Contact us</a></span>
+        <span><a href="#" data-twx-open="about" role="button">About</a> &nbsp;|&nbsp; <a href="<?= site_url('visibility'); ?>">Terms &amp; privacy</a> &nbsp;|&nbsp; <a href="<?= site_url('hotlines'); ?>">Contact us</a></span>
       </div>
     </div>
   </footer>

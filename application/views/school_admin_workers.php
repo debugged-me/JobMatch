@@ -12,8 +12,9 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="<?= base_url('assets/css/tw-utils.css?v=1') ?>">
   <style>
     :root{
       --ink:#0f172a;--muted:#6b7280;--line:#e5e7eb;--primary:#2563eb;--danger:#dc2626;--hover:rgba(2,6,23,.03);
@@ -126,7 +127,7 @@
                       <div class="actions">
                         <a href="<?= site_url('school-admin/edit/'.$uid) ?>" class="i -p" data-tip="Edit" aria-label="Edit" title="Edit"><i class="mdi mdi-pencil"></i></a>
                         <a href="mailto:<?= htmlspecialchars($email) ?>" class="i" data-tip="Email" aria-label="Email" title="Email"><i class="mdi mdi-email-outline"></i></a>
-                        <a href="<?= site_url('school-admin/delete/'.$uid) ?>" onclick="return confirm('Delete this user?');" class="i -d" data-tip="Delete" aria-label="Delete" title="Delete"><i class="mdi mdi-delete-outline"></i></a>
+                        <form method="post" action="<?= site_url('school-admin/delete/'.$uid) ?>" style="display:inline" onsubmit="return confirm('Delete this user?');"><button type="submit" class="i -d" data-tip="Delete" aria-label="Delete" title="Delete" style="background:none;border:0;padding:0;cursor:pointer"><i class="mdi mdi-delete-outline"></i></button></form>
                       </div>
                     </td>
                   </tr>

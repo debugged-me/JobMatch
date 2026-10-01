@@ -81,4 +81,6 @@
   <div id="jmFooterConfig" data-logged-in="0"></div>
 <?php endif; ?>
 
+<script src="<?= base_url('assets/js/jm-ui.js') ?>"></script>
+<script src="<?= base_url('assets/js/csrf.js') ?>"></script>
 <script src="<?= base_url('assets/js/footer.js') ?>"></script>

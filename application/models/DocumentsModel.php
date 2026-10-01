@@ -37,6 +37,36 @@ class DocumentsModel extends CI_Model
         return $this->db->affected_rows() > 0;
     }
 
+    /** Owner-scoped variants — prevent cross-user document writes (IDOR). */
+    public function belongs_to_user(int $id, int $user_id): bool
+    {
+        return (bool) $this->db
+            ->where(['id' => $id, 'user_id' => $user_id])
+            ->limit(1)
+            ->get($this->table)
+            ->row();
+    }
+
+    public function update_for_user(int $id, int $user_id, array $data): bool
+    {
+        if (!$this->belongs_to_user($id, $user_id)) {
+            return false;
+        }
+        unset($data['user_id'], $data['id']);
+        $this->db->where(['id' => $id, 'user_id' => $user_id])->update($this->table, $data);
+        return true;
+    }
+
+    public function delete_for_user(int $id, int $user_id): bool
+    {
+        $this->db->where(['id' => $id, 'user_id' => $user_id])->delete($this->table);
+        if (method_exists($this->db, 'error')) {
+            $err = $this->db->error();
+            if (!empty($err['code'])) log_message('error', 'documents.delete_for_user: '.$err['message']);
+        }
+        return $this->db->affected_rows() > 0;
+    }
+
 public function list_by_user(int $user_id): array
 {
     return $this->db

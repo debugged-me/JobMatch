@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="<?= base_url(
       "assets/css/custom.css?v=20260625b",
   ) ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="shortcut icon" href="<?= base_url("assets/images/logo.png") ?>" />
 
   <style>
@@ -532,13 +533,7 @@
     var successAlert = document.querySelector('.alert-success');
     if (successAlert && successAlert.textContent.indexOf('password') !== -1) {
       setTimeout(function() {
-        Swal.fire({
-          icon: 'success',
-          title: 'Password Changed',
-          text: 'You will be logged out shortly. Please log in with your new password.',
-          timer: 3000,
-          showConfirmButton: false
-        });
+        JM.toast('Password changed. You will be logged out shortly — please log in with your new password.', 'success');
       }, 500);
     }
   </script>

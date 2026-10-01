@@ -15,13 +15,13 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
   <link rel="stylesheet" href="<?= base_url('assets/css/worker_feed.css?v=1.0.9') ?>">
 </head>
 
 <body>
-  <?php $this->load->view('partials_translate_banner'); ?>
 
   <div class="container-scroller">
     <?php $this->load->view('includes_nav'); ?>
@@ -157,7 +157,7 @@
                       <div class="<?= count($mediaArr) > 1 ? 'grid-2' : '' ?>">
                         <?php foreach ($mediaArr as $m):
                           $abs = preg_match('#^https?://#i', $m) ? $m : base_url($m); ?>
-                          <div class="img mb-2"><img src="<?= htmlspecialchars($abs, ENT_QUOTES) ?>" alt=""></div>
+                          <div class="img mb-2"><img src="<?= htmlspecialchars($abs, ENT_QUOTES) ?>" alt="post image"></div>
                         <?php endforeach; ?>
                       </div>
                     <?php endif; ?>

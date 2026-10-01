@@ -116,16 +116,26 @@ class Transactions extends CI_Controller
     $offered_unit = $this->input->post('rate_unit', true) ?: null;
 
     $t = $this->db->get_where('tw_threads', ['id'=>$thread_id])->row();
-    if (!$t) return $this->_json(false, 'Thread not found');
+    // The caller must actually be a participant in the thread.
+    if (!$t || ((int)$t->a_id !== $wid && (int)$t->b_id !== $wid)) {
+        return $this->_json(false, 'Thread not found');
+    }
     $cid = ($t->a_id == $wid) ? (int)$t->b_id : (int)$t->a_id;
 
     $p = $this->db->get_where('client_projects', ['id'=>$project_id,'clientID'=>$cid])->row();
     if (!$p) $p = $this->db->get_where('client_projects', ['id'=>$project_id,'client_id'=>$cid])->row();
     if (!$p) return $this->_json(false, 'Project not found for this client');
 
+    // A hire/invite notification from this client must exist — otherwise the
+    // "acceptance" is forged. Reuse the same lookup that infers the rate.
+    $inviteRows = $this->db->order_by('id','DESC')->limit(5)
+             ->get_where('tw_notifications', ['user_id'=>$wid, 'actor_id'=>$cid, 'type'=>'hire'])->result();
+    if (empty($inviteRows)) {
+        return $this->_json(false, 'No hire request exists for this client.');
+    }
+
     if ($offered_rate === null) {
-        $rows = $this->db->order_by('id','DESC')->limit(5)
-                 ->get_where('tw_notifications', ['user_id'=>$wid, 'actor_id'=>$cid, 'type'=>'hire'])->result();
+        $rows = $inviteRows;
         foreach ($rows as $n) {
             if (!empty($n->link)) {
                 $query = parse_url($n->link, PHP_URL_QUERY);
@@ -214,10 +224,8 @@ class Transactions extends CI_Controller
     $ok = $this->db->insert('transactions', $payload);
     if (!$ok) {
         $err = $this->db->error();
-        return $this->_json(false, 'DB insert failed', [
-            'db_error' => $err,
-            'payload'  => $payload
-        ]);
+        log_message('error', 'Transactions::api_accept insert failed: ' . ($err['message'] ?? 'unknown') . ' payload=' . json_encode($payload));
+        return $this->_json(false, 'Could not accept. Please try again.');
     }
 
     $this->personnelm->ensure_hired($cid, $wid, $project_id, $offered_rate, $final_unit);

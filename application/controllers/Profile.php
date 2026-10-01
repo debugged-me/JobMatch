@@ -155,35 +155,8 @@ if (!$this->session->userdata('logged_in')) {
         $madeChange = false;
         $next = (string) $this->input->post('next', true) ?: 'dashboard';
 
-        // ---- balanced try/catch for schema tweaks
-        try {
-            if (!$this->db->field_exists('tesda_qualification', 'worker_profile')) {
-                $this->db->query("
-                    ALTER TABLE `worker_profile`
-                    ADD COLUMN `tesda_qualification` VARCHAR(150) NULL
-                    COMMENT 'TESDA Qualification / NC'
-                    AFTER `year_graduated`
-                ");
-            }
-            if (!$this->db->field_exists('course', 'worker_profile')) {
-                $this->db->query("
-                    ALTER TABLE `worker_profile`
-                    ADD COLUMN `course` VARCHAR(120) NULL
-                    COMMENT 'Course / Program (optional)'
-                    AFTER `education_level`
-                ");
-            }
-            if (!$this->db->field_exists('tesda_certs', 'worker_profile')) {
-                $this->db->query("
-                    ALTER TABLE `worker_profile`
-                    ADD COLUMN `tesda_certs` TEXT NULL
-                    COMMENT 'JSON array of TESDA certs: [{qualification, number, expiry}]'
-                    AFTER `tesda_expiry`
-                ");
-            }
-        } catch (\Throwable $e) {
-            log_message('error', 'Schema check failed in profile/update: '.$e->getMessage());
-        }
+        // Schema lives in database/migrations/001_schema_consolidation.sql —
+        // never ALTER at request time.
 
         // ---- avatar-only path
         if ($this->input->post('__partial') === 'avatar') {
@@ -1098,12 +1071,16 @@ $certs = array_values($byPath);
                             : $urlPath, '/');
             }
             $rel = ltrim(str_replace('\\','/',$raw), '/');
-            if (!preg_match('#^uploads/#', $rel)) {
+            if (!preg_match('#^uploads/#', $rel) || strpos($rel, '..') !== false) {
                 return $this->_json(['ok' => false, 'msg' => 'Invalid file path'], 400);
             }
 
-            $abs = FCPATH . $rel;
-            if (is_file($abs)) @unlink($abs);
+            // Canonicalize: resolved path must stay inside the real uploads dir.
+            $uploadsRoot = realpath(FCPATH . 'uploads');
+            $abs         = realpath(FCPATH . $rel);
+            if (!$uploadsRoot || $abs === false || strpos($abs, $uploadsRoot . DIRECTORY_SEPARATOR) !== 0) {
+                return $this->_json(['ok' => false, 'msg' => 'Invalid file path'], 400);
+            }
 
             $uid = (int) $this->session->userdata('user_id');
 
@@ -1112,6 +1089,23 @@ $certs = array_values($byPath);
                             ->from('worker_profile')
                             ->where('workerID', $uid)
                             ->get()->row();
+
+            // Ownership check: only unlink files referenced by this worker's profile.
+            $owns = false;
+            if ($row && isset($row->cert_files)) {
+                $ownList = json_decode((string)$row->cert_files, true);
+                if (is_array($ownList)) {
+                    foreach ($ownList as $it) {
+                        $p = is_array($it) ? (string)($it['path'] ?? '') : (string)$it;
+                        if (ltrim($p, '/') === $rel) { $owns = true; break; }
+                    }
+                }
+            }
+            if (!$owns) {
+                return $this->_json(['ok' => false, 'msg' => 'File does not belong to your profile'], 403);
+            }
+
+            if (is_file($abs)) @unlink($abs);
 
             if ($row && isset($row->cert_files)) {
                 $list = json_decode((string)$row->cert_files, true);
@@ -1425,9 +1419,14 @@ if ($docTypeCode === 'others') {
         $payload['file_path'] = $file_path;
     }
 
-    // Create / Update
+    // Create / Update (update is owner-scoped)
     if ($id > 0) {
-        $this->docs->update($id, $payload);
+        $ok = $this->docs->update_for_user($id, $user_id, $payload);
+        if (!$ok) {
+            return $this->output->set_status_header(403)->set_output(json_encode([
+                'ok' => false, 'error' => 'Document not found.'
+            ]));
+        }
         return $this->output->set_output(json_encode(['ok' => true, 'mode' => 'updated']));
     } else {
         $new_id = $this->docs->create($payload);
@@ -1438,9 +1437,16 @@ if ($docTypeCode === 'others') {
 
 public function delete_document($id)
 {
+    if ($this->input->method() !== 'post') {
+        $this->output->set_status_header(405);
+        echo json_encode(['ok' => false, 'error' => 'Method Not Allowed']);
+        return;
+    }
     $this->load->model('DocumentsModel', 'docs');
-    $this->docs->delete((int)$id);
-    echo json_encode(['ok'=>true]);
+    $user_id = (int)$this->session->userdata('user_id');
+    $ok = $this->docs->delete_for_user((int)$id, $user_id);
+    $this->output->set_content_type('application/json');
+    echo json_encode(['ok' => (bool)$ok]);
 }
 
 }

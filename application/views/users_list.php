@@ -13,8 +13,9 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="<?= base_url('assets/css/tw-utils.css?v=1') ?>">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <meta name="csrf-token-name" content="<?= $this->security->get_csrf_token_name(); ?>">
   <meta name="csrf-token-hash" content="<?= $this->security->get_csrf_hash(); ?>">
@@ -25,7 +26,7 @@
       --muted: #64748b;
       --line: #e5e7eb;
       --soft: #f8fafc;
-      --brand: #c1272d;
+      --brand: var(--jm-primary);
       --brand-600: #c1272d;
       --warn: #2980b9;
       --ok: #16a34a;

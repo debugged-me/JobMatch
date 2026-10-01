@@ -13,6 +13,10 @@ class Reviews extends CI_Controller
 
     public function store()
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Method Not Allowed', 405);
+        }
+
         $clientID = (int) $this->session->userdata('user_id'); 
         if (!$clientID) return redirect('auth/login');
 
@@ -23,7 +27,7 @@ class Reviews extends CI_Controller
 
         if (!$this->form_validation->run()) {
             $this->session->set_flashdata('error', strip_tags(validation_errors()));
-            return redirect($this->input->post('back') ?: 'dashboard/user');
+            return redirect($this->_safe_back());
         }
 
         list($ok, $msg) = $this->reviews->add(
@@ -35,6 +39,27 @@ class Reviews extends CI_Controller
         );
 
         $this->session->set_flashdata($ok ? 'success' : 'error', $ok ? 'Thanks for your review!' : $msg);
-        return redirect($this->input->post('back') ?: 'dashboard/user');
+        return redirect($this->_safe_back());
+    }
+
+    /**
+     * Only allow same-site relative URLs in the `back` param —
+     * prevents open-redirect abuse (phishing via redirect chains).
+     */
+    private function _safe_back(): string
+    {
+        $back = (string) $this->input->post('back');
+        if ($back === '') {
+            return 'dashboard/user';
+        }
+        // Same-site absolute path (/x — but not //host) or a URL under our base_url.
+        if (preg_match('#^/(?!/)#', $back)) {
+            return $back;
+        }
+        $base = rtrim((string) base_url(), '/');
+        if ($base !== '' && stripos($back, $base . '/') === 0) {
+            return $back;
+        }
+        return 'dashboard/user';
     }
 }

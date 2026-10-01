@@ -6,8 +6,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $autoload['helper'] = array('url', 'form');
 
 // Auto-detect base URL (works for localhost and production).
-$base_url = '';
-if (isset($_SERVER['HTTP_HOST'])) {
+// Pinned base URL in production (set JM_BASE_URL env var) to prevent
+// Host-header poisoning of emailed links/redirects. Auto-detect stays for local dev.
+$base_url = getenv('JM_BASE_URL') ?: '';
+if ($base_url === '' && isset($_SERVER['HTTP_HOST'])) {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
     $path = str_replace(basename($script_name), '', $script_name);
@@ -207,7 +209,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = 2;
 
 /*
 |--------------------------------------------------------------------------
@@ -308,7 +310,20 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/userguide3/libraries/encryption.html
 |
 */
-$config['encryption_key'] = 'put-a-32-char-random-string-here';
+// Override with the JM_ENC_KEY env var in production. Fallback: a per-install
+// random key persisted outside the repo in the system temp dir.
+$jmEncKey = getenv('JM_ENC_KEY') ?: '';
+if ($jmEncKey === '') {
+    $jmKeyFile = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'jobmatch_enc_key';
+    if (is_file($jmKeyFile)) {
+        $jmEncKey = trim((string) @file_get_contents($jmKeyFile));
+    } else {
+        $jmEncKey = bin2hex(random_bytes(16)); // 32-char hex
+        @file_put_contents($jmKeyFile, $jmEncKey, LOCK_EX);
+        @chmod($jmKeyFile, 0600);
+    }
+}
+$config['encryption_key'] = $jmEncKey;
 
 /*
 |--------------------------------------------------------------------------
@@ -369,10 +384,10 @@ $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_samesite'] = 'Lax';
 $config['sess_expiration'] = 7200;
-$config['sess_save_path'] = NULL;
+$config['sess_save_path'] = FCPATH . 'writable/sessions';
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = FALSE;
+$config['sess_regenerate_destroy'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -393,8 +408,8 @@ $config['sess_regenerate_destroy'] = FALSE;
 $config['cookie_prefix']    = '';
 $config['cookie_domain']    = '';
 $config['cookie_path']        = '/';
-$config['cookie_secure']    = FALSE;
-$config['cookie_httponly']     = FALSE;
+$config['cookie_secure']    = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+$config['cookie_httponly']     = TRUE;
 $config['cookie_samesite']     = 'Lax';
 
 /*
@@ -439,11 +454,14 @@ $config['global_xss_filtering'] = FALSE;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection'] = FALSE;
+$config['csrf_protection'] = TRUE;
 $config['csrf_token_name'] = 'csrf_test_name';
 $config['csrf_cookie_name'] = 'csrf_cookie_name';
 $config['csrf_expire'] = 7200;
-$config['csrf_regenerate'] = TRUE;
+// Regeneration is OFF: this app fires parallel AJAX polls; a rotating hash
+// would race (request A rotates the hash while request B is still in flight
+// with the old one). Token remains per-session random and expires normally.
+$config['csrf_regenerate'] = FALSE;
 $config['csrf_exclude_uris'][] = 'messages/presence_beacon';
 
 /*

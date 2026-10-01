@@ -37,10 +37,8 @@ class TesdaTraining_model extends CI_Model
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
         $this->db->query($sql);
-
-        if ($this->db->table_exists($this->table) && !$this->db->field_exists('image_path', $this->table)) {
-            $this->db->query("ALTER TABLE `{$this->table}` ADD COLUMN `image_path` varchar(255) DEFAULT NULL AFTER `website_url`");
-        }
+        // Column upgrades for legacy installs live in
+        // database/migrations/001_schema_consolidation.sql — never ALTER here.
     }
 
     public function mine(int $posterId): array

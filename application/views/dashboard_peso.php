@@ -16,9 +16,10 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-peso.css?v=1.1.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="<?= base_url('assets/css/tw-utils.css?v=1') ?>">
 </head>
 
 <body>
@@ -302,23 +303,25 @@
                               <i class="mdi mdi-pencil"></i>
                               <span class="iconbtn__label">Edit</span>
                             </button>
-                            <a
-                              href="<?= site_url('peso/toggle/' . $id) ?>"
-                              class="iconbtn"
-                              title="<?= htmlspecialchars($toggleTip, ENT_QUOTES, 'UTF-8') ?>"
-                              aria-label="<?= htmlspecialchars($toggleTip, ENT_QUOTES, 'UTF-8') ?>">
-                              <i class="mdi <?= $toggleIcon ?>"></i>
-                              <span class="iconbtn__label"><?= htmlspecialchars($toggleTip, ENT_QUOTES, 'UTF-8') ?></span>
-                            </a>
-                            <a
-                              href="<?= site_url('peso/delete/' . $id) ?>"
-                              onclick="return confirm('Delete this posting?');"
-                              class="iconbtn iconbtn--danger"
-                              title="Delete"
-                              aria-label="Delete">
-                              <i class="mdi mdi-delete-outline"></i>
-                              <span class="iconbtn__label">Delete</span>
-                            </a>
+                            <form method="post" action="<?= site_url('peso/toggle/' . $id) ?>" style="display:inline">
+                              <button type="submit"
+                                class="iconbtn"
+                                title="<?= htmlspecialchars($toggleTip, ENT_QUOTES, 'UTF-8') ?>"
+                                aria-label="<?= htmlspecialchars($toggleTip, ENT_QUOTES, 'UTF-8') ?>">
+                                <i class="mdi <?= $toggleIcon ?>"></i>
+                                <span class="iconbtn__label"><?= htmlspecialchars($toggleTip, ENT_QUOTES, 'UTF-8') ?></span>
+                              </button>
+                            </form>
+                            <form method="post" action="<?= site_url('peso/delete/' . $id) ?>" style="display:inline"
+                              onsubmit="return confirm('Delete this posting?');">
+                              <button type="submit"
+                                class="iconbtn iconbtn--danger"
+                                title="Delete"
+                                aria-label="Delete">
+                                <i class="mdi mdi-delete-outline"></i>
+                                <span class="iconbtn__label">Delete</span>
+                              </button>
+                            </form>
                           </div>
                           <div class="job-card__stamp">Posted <?= $posted ?></div>
                         </div>

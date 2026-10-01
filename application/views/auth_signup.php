@@ -31,7 +31,7 @@
 
         <div class="auth-visual-brand">
           <div class="auth-visual-mark">
-            <img src="<?= base_url('assets/images/logo.png') ?>" alt="">
+            <img src="<?= base_url('assets/images/logo.png') ?>" alt="JobMatch DavOr logo">
           </div>
           <div>
             <p class="auth-visual-name">PESO Davao Oriental</p>
@@ -50,7 +50,7 @@
         <div class="auth-mobile-brand">
           <a href="<?= site_url('/') ?>" class="auth-brand-link">
             <span class="auth-brand-mark">
-              <img src="<?= base_url('assets/images/logo.png') ?>" alt="">
+              <img src="<?= base_url('assets/images/logo.png') ?>" alt="JobMatch DavOr logo">
             </span>
             <span>
               <strong>PESO Davao Oriental</strong>
@@ -225,20 +225,34 @@
           <div class="text-red-600 text-sm mt-2"><?= form_error('accept_privacy'); ?></div>
         <?php endif; ?>
 
+        <?php $recaptchaSiteKey = (string) $this->config->item('recaptcha_site_key'); ?>
         <div class="auth-field auth-field--full fade-up fd4">
           <label class="auth-label">Human verification</label>
           <div class="auth-captcha">
-            <div
-              class="g-recaptcha"
-              data-sitekey="<?= html_escape($this->config->item('recaptcha_site_key')) ?>"
-              data-callback="recaptchaOk"
-              data-expired-callback="recaptchaExpired"
-              data-error-callback="recaptchaError"></div>
+            <?php if ($recaptchaSiteKey !== ''): ?>
+              <div
+                class="g-recaptcha"
+                data-sitekey="<?= html_escape($recaptchaSiteKey) ?>"
+                data-callback="recaptchaOk"
+                data-expired-callback="recaptchaExpired"
+                data-error-callback="recaptchaError"></div>
+            <?php else: /* local dev fallback — server validates via math captcha */ ?>
+              <input
+                id="captchaAnswer"
+                class="auth-input"
+                type="text"
+                name="captcha_answer"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="<?= html_escape($captcha_q ?? 'Solve: a + b = ?') ?>"
+                aria-label="Answer the math question" />
+            <?php endif; ?>
           </div>
           <?php if (form_error('g-recaptcha-response')): ?>
             <div class="text-red-600 text-sm mt-2"><?= form_error('g-recaptcha-response'); ?></div>
           <?php endif; ?>
         </div>
+        <script>window.__jmNoRecaptcha = <?= $recaptchaSiteKey === '' ? 'true' : 'false' ?>;</script>
 
         <div class="hp" aria-hidden="true">
           <label for="hp-website">Website</label>
@@ -336,8 +350,11 @@
   <script src="<?= base_url('dist/js/components/base/page-loader.js') ?>"></script>
   <script src="<?= base_url('dist/js/components/base/lucide.js') ?>"></script>
   <script src="<?= base_url('dist/js/components/theme-switcher.js') ?>"></script>
+  <?php if ($recaptchaSiteKey !== ''): ?>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <?php endif; ?>
 
+  <script src="<?= base_url('assets/js/jm-ui.js') ?>"></script>
   <script src="<?= base_url('assets/js/auth-common.js') ?>"></script>
   <script src="<?= base_url('assets/js/auth-signup.js') ?>"></script>
 </body>

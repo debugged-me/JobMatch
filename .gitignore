@@ -1,0 +1,45 @@
+# OS / editor noise
+.DS_Store
+**/._*
+._*
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+.Spotlight-V100
+.Trashes
+.fseventsd
+.AppleDouble
+.LSOverride
+*.swp
+*.swo
+*~
+.*.sw[a-p]
+
+# User content & secrets — never commit
+uploads/*
+!uploads/.htaccess
+writable/
+database_backups/
+*.zip
+# DB dumps anywhere; schema migrations under database/migrations/ ARE tracked
+*.sql
+!database/migrations/*.sql
+.env
+.env.*
+
+# Framework runtime
+application/logs/*
+application/cache/*
+!application/logs/index.html
+!application/cache/index.html
+
+# Dependencies (installed via composer/npm on deploy)
+# vendor/
+node_modules/
+build/tw/node_modules/
+
+# Backups / local overrides
+* copy.php
+*_BACKUP.php
+application/config/*-local.php

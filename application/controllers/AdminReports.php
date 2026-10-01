@@ -1,13 +1,14 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class AdminReports extends CI_Controller
+class AdminReports extends MY_Controller
 {
     public function __construct() {
         parent::__construct();
-        // TODO: add your admin auth/ACL here
         $this->load->model('AdminReport_model', 'R');
         $this->load->helper(['url','html']);
+
+        $this->require_role('admin');
     }
 public function index() {
     $this->load->model('AdminReport_model', 'R');

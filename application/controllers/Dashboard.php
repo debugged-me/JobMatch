@@ -67,7 +67,7 @@ class Dashboard extends CI_Controller
         $r = $this->role_normalized();
         log_message('debug', __CLASS__.' role normalized=['.$r.']');
         return (
-            strpos($r, 'peso') !== false     // "peso", "peso officer", "peso-admin", etc.
+            preg_match('/^peso\b/', $r) === 1   // role must START with "peso"
             || $r === 'admin'
             || $r === 'tesda admin'
         );

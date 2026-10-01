@@ -1,21 +1,17 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Admin extends CI_Controller
+class Admin extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
 
-        $this->load->library('session');  
-        $this->load->database();     
-        $this->load->helper(['url','form']); 
+        $this->load->database();
+        $this->load->helper(['url','form']);
         $this->load->model('User_model', 'user');
 
-        $role = strtolower((string)$this->session->userdata('role'));
-        if (!$this->session->userdata('logged_in') || $role !== 'admin') {
-            redirect('auth/login');
-        }
+        $this->require_role('admin');
     }
 
     public function pending_users()
@@ -26,6 +22,9 @@ class Admin extends CI_Controller
 
     public function approve($id)
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Method Not Allowed', 405);
+        }
         $this->user->activate_user($id);
         redirect('admin/pending_users');
     }

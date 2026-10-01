@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.2.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 
@@ -194,9 +195,11 @@
                               </td>
                               <td data-label="Email" class="wd-cell-email"><?= htmlspecialchars($u->email ?? '', ENT_QUOTES, 'UTF-8') ?></td>
                               <td data-label="Action">
-                                <a class="wd-btn wd-btn-sm wd-btn-primary" href="<?= site_url('admin/activate/' . (int)$u->id) ?>">
-                                  <i class="mdi mdi-check"></i> Approve
-                                </a>
+                                <form method="post" action="<?= site_url('admin/approve/' . (int)$u->id) ?>" style="display:inline" onsubmit="return confirm('Approve this account?');">
+                                  <button type="submit" class="wd-btn wd-btn-sm wd-btn-primary">
+                                    <i class="mdi mdi-check"></i> Approve
+                                  </button>
+                                </form>
                               </td>
                             </tr>
                           <?php endforeach; ?>

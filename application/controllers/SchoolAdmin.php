@@ -9,18 +9,31 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * - Edit / Delete / Resend Email (new temp)
  * - CSV bulk (emails each)
  */
-class SchoolAdmin extends CI_Controller
+class SchoolAdmin extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
         $this->load->helper(['url', 'form', 'security']);
-        $this->load->library(['session', 'form_validation', 'upload']);
+        $this->load->library(['form_validation', 'upload']);
         $this->load->model('SchoolAdminModel');
 
+        // Normalized roles: "school_admin" arrives as "school admin".
+        $this->require_role(['admin', 'school admin']);
+    }
 
-        if (!$this->session->userdata('logged_in')) {
-            redirect('auth/login');
+    /**
+     * School admins may only manage worker accounts. Aborts the request
+     * with 403 when the target user does not exist or is not a worker.
+     */
+    private function _assert_worker_target(int $id): void
+    {
+        if ($id <= 0) {
+            show_error('Forbidden', 403);
+        }
+        $target = $this->SchoolAdminModel->get_user_by_id($id);
+        if (!$target || strtolower((string)($target->role ?? '')) !== 'worker') {
+            show_error('Forbidden', 403);
         }
     }
 
@@ -121,6 +134,7 @@ class SchoolAdmin extends CI_Controller
     public function edit($id)
     {
         $id = (int)$id;
+        $this->_assert_worker_target($id);
         $user = $this->SchoolAdminModel->get_user_by_id($id);
         if (!$user) {
             $this->session->set_flashdata('danger', 'User not found.');
@@ -139,6 +153,7 @@ class SchoolAdmin extends CI_Controller
     public function update($id)
     {
         $id = (int)$id;
+        $this->_assert_worker_target($id);
 
         $this->form_validation->set_rules('first_name', 'First Name', 'required|trim');
         $this->form_validation->set_rules('last_name', 'Last Name', 'required|trim');
@@ -177,10 +192,14 @@ class SchoolAdmin extends CI_Controller
         return redirect('school-admin/workers');
     }
 
-    /** Delete (hard delete) */
+    /** Delete (hard delete) — POST only */
     public function delete($id)
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Method Not Allowed', 405);
+        }
         $id = (int)$id;
+        $this->_assert_worker_target($id);
         $res = $this->SchoolAdminModel->delete_user($id);
 
         if ($res['ok']) {
@@ -195,7 +214,11 @@ class SchoolAdmin extends CI_Controller
     /** Resend welcome email with NEW temp password (and update hash) */
     public function resend_email($id)
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Method Not Allowed', 405);
+        }
         $id = (int)$id;
+        $this->_assert_worker_target($id);
         $user = $this->SchoolAdminModel->get_user_by_id($id);
         if (!$user) {
             $this->session->set_flashdata('danger', 'User not found.');

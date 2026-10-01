@@ -125,13 +125,23 @@ class AdminWorkers extends CI_Controller
 
     public function import()
     {
-        $filename = $this->input->post('filename');
-        if (!$filename) show_error('Missing file', 400);
+        if ($this->input->method() !== 'post') show_error('Method Not Allowed', 405);
 
-        $full = FCPATH . 'uploads/' . $filename;
-        if (!file_exists($full)) show_error('File not found', 404);
+        $filename = basename((string)$this->input->post('filename'));
+        if ($filename === '' || $filename === '.' || $filename === '..') show_error('Missing file', 400);
 
-        $ext  = strtolower(pathinfo($full, PATHINFO_EXTENSION));
+        // Canonicalize: resolved path must be a file directly inside uploads/.
+        $uploadsRoot = realpath(FCPATH . 'uploads');
+        $full        = realpath($uploadsRoot ? $uploadsRoot . DIRECTORY_SEPARATOR . $filename : '');
+        if (!$uploadsRoot || $full === false || dirname($full) !== $uploadsRoot || !is_file($full)) {
+            show_error('File not found', 404);
+        }
+
+        $ext = strtolower(pathinfo($full, PATHINFO_EXTENSION));
+        if (!in_array($ext, ['csv', 'xls', 'xlsx'], true)) {
+            show_error('Invalid file type', 400);
+        }
+
         try {
             $rows = ($ext === 'csv') ? $this->parse_csv($full) : $this->parse_xlsx($full);
         } catch (Exception $e) {
@@ -139,6 +149,9 @@ class AdminWorkers extends CI_Controller
         }
 
         $result = $this->WorkerImport_model->import_rows($rows);
+
+        // Remove the uploaded PII-bearing import file once processed.
+        @unlink($full);
 
         // Determine route base for “Back” links in result view too (if you have them)
         $uri = trim((string)uri_string(), '/');

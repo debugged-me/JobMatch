@@ -46,10 +46,10 @@ class Nsrp extends CI_Controller
     {
         try {
             if (!$this->db->field_exists('nsrp_status', 'worker_profile')) {
-                $this->run_sql_file(APPPATH . 'config/nsrp_form1_migration.sql');
+                $this->run_sql_file(FCPATH . 'database/migrations/nsrp_form1_migration.sql');
             }
             if (!$this->db->field_exists('establishment_id', 'jobs')) {
-                $this->run_sql_file(APPPATH . 'config/nsrp_form2_migration.sql');
+                $this->run_sql_file(FCPATH . 'database/migrations/nsrp_form2_migration.sql');
             }
         } catch (\Throwable $e) {
             log_message('error', 'NSRP ensure_schema failed: ' . $e->getMessage());
@@ -80,7 +80,7 @@ class Nsrp extends CI_Controller
     private function is_peso(): bool
     {
         $r = $this->role();
-        return strpos($r, 'peso') !== false || $r === 'admin' || $r === 'tesda admin';
+        return preg_match('/^peso\b/', $r) === 1 || $r === 'admin' || $r === 'tesda admin';
     }
 
     private function me(): int

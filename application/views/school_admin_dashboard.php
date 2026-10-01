@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/dashboard-shell.css?v=1.0.0') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 </head>

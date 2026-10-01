@@ -1,24 +1,20 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Users extends CI_Controller
+class Users extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
         $this->load->database();
         $this->load->helper(['url', 'html', 'security']);
-        $this->load->library(['session', 'form_validation', 'email']);
+        $this->load->library(['form_validation', 'email']);
 
 
         $this->load->model('Manage_User', 'users');
         $this->load->model('User_model', 'User');
 
-        $role = strtolower((string)$this->session->userdata('role'));
-        $allowed = ['admin', 'tesda_admin', 'school_admin', 'worker', 'client', 'peso', 'other'];
-        if (!in_array($role, $allowed, true)) {
-            show_error('Forbidden', 403);
-        }
+        $this->require_role('admin');
 
 
 
@@ -115,11 +111,9 @@ class Users extends CI_Controller
         if ($id <= 0) return $this->_out(false, 'Missing id', [], 422);
 
         $res = $this->User->resend_activation($id);
-        $items = [];
-        if (!empty($res['link'])) $items['link'] = $res['link'];
-
+        // Never return the activation link to the client — it is a bearer token.
         $code = ($res['ok'] ?? false) ? 200 : 202;
-        return $this->_out($res['ok'] ?? false, $res['msg'] ?? 'Failed', $items, $code);
+        return $this->_out($res['ok'] ?? false, $res['msg'] ?? 'Failed', [], $code);
     }
 
     private function _out($ok, $msg, $items = [], $status = 200)

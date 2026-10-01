@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#c1272d" />
     <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/images/logo.png') ?>">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="<?= base_url('assets/css/tw-build.css?v=1') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/fonts/karla/karla.css') ?>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -1852,21 +1852,6 @@
           }
         });
 
-        window.toast = function(msg, ok = true) {
-          const box = document.getElementById('toaster');
-          if (!box) return;
-          const t = document.createElement('div');
-          t.className = 'toast ' + (ok ? 'toast--ok' : 'toast--err');
-          t.textContent = msg;
-          box.appendChild(t);
-          setTimeout(() => {
-            t.style.transition = 'opacity .18s ease, transform .18s ease';
-            t.style.opacity = '0';
-            t.style.transform = 'translateY(-8px) scale(.98)';
-          }, 2200);
-          setTimeout(() => t.remove(), 2400);
-        };
-
         (function initTabs() {
           const tabButtons = $$('.tab-button');
           const panels = $$('.tab-panel');
@@ -2364,6 +2349,8 @@
         }
       });
     </script>
+    <script src="<?= base_url('assets/js/jm-ui.js') ?>"></script>
+  <script src="<?= base_url('assets/js/csrf.js') ?>"></script>
 
 
   </body>

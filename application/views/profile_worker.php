@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/mobile-global.css?v=20251006') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/mobile-patch.css?v=20251006') ?>">
@@ -25,7 +26,7 @@
       --ink: #0f172a;
       --muted: #64748b;
       --line: #e6eaf0;
-      --brand: #6366f1;
+      --brand: var(--jm-primary);
       --brand-200: #c7d2fe;
       --brand-50: #eef2ff;
       --accent: #22c55e;
@@ -1007,7 +1008,7 @@
                                   ?>
                                     <div>
                                       <a href="<?= htmlspecialchars($viewerUrl, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener" title="<?= html_escape(basename($f)) ?>">
-                                        <i class="mdi <?= is_img($f) ? 'mdi-image-outline' : 'mdi-file-outline' ?>"></i>
+                                        <i class="mdi <?= wp_is_img($f) ? 'mdi-image-outline' : 'mdi-file-outline' ?>"></i>
                                         <?= html_escape(basename($f)) ?>
                                       </a>
                                     </div>

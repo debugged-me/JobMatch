@@ -1,0 +1,32 @@
+# JobMatch DavOr — crawler policy
+User-agent: *
+Disallow: /auth/
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /messages/
+Disallow: /message/
+Disallow: /notifications/
+Disallow: /profile/
+Disallow: /portfolio/
+Disallow: /deactivate/
+Disallow: /client/
+Disallow: /projects/api/
+Disallow: /media/
+Disallow: /cron/
+Disallow: /tesda/
+Disallow: /peso/
+Disallow: /school-admin/
+Disallow: /nsrp/
+Disallow: /search?
+Disallow: /uploads/documents/
+Disallow: /uploads/clients/ids/
+Disallow: /uploads/certificates/
+Disallow: /database_backups/
+Disallow: /writable/
+
+# Public pages (landing, hotlines, login screen, privacy) stay indexable.
+Allow: /$
+Allow: /hotlines
+Allow: /privacy
+
+# No sitemap: member/auth areas should not be indexed.

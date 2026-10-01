@@ -611,12 +611,18 @@ class Client extends CI_Controller
                 : $urlPath, '/');
         }
         $rel = ltrim(str_replace('\\', '/', $raw), '/');
-        if (!preg_match('#^uploads/#', $rel)) {
+        if (!preg_match('#^uploads/#', $rel) || strpos($rel, '..') !== false) {
             $this->output->set_status_header(400);
             return $this->_json(false, 'Invalid file path');
         }
-        $abs = FCPATH . $rel;
-        if (is_file($abs)) @unlink($abs);
+
+        // Canonicalize: the resolved path must live inside the real uploads dir.
+        $uploadsRoot = realpath(FCPATH . 'uploads');
+        $abs         = realpath(FCPATH . $rel);
+        if (!$uploadsRoot || $abs === false || strpos($abs, $uploadsRoot . DIRECTORY_SEPARATOR) !== 0) {
+            $this->output->set_status_header(400);
+            return $this->_json(false, 'Invalid file path');
+        }
 
         $uid = (int) $this->session->userdata('user_id');
         $row = $this->db->select('certificates, id_image, business_permit')
@@ -627,6 +633,27 @@ class Client extends CI_Controller
             $this->output->set_status_header(404);
             return $this->_json(false, 'Profile not found');
         }
+
+        // Ownership check: only unlink files referenced by this client's profile.
+        $owns = false;
+        foreach (['id_image', 'business_permit'] as $f) {
+            if (ltrim((string)($row->{$f} ?? ''), '/') === $rel) { $owns = true; break; }
+        }
+        if (!$owns) {
+            $list = json_decode((string)$row->certificates, true);
+            if (is_array($list)) {
+                foreach ($list as $it) {
+                    $p = is_array($it) ? (string)($it['path'] ?? '') : (string)$it;
+                    if (ltrim($p, '/') === $rel) { $owns = true; break; }
+                }
+            }
+        }
+        if (!$owns) {
+            $this->output->set_status_header(403);
+            return $this->_json(false, 'File does not belong to your profile');
+        }
+
+        if (is_file($abs)) @unlink($abs);
 
         if ($field === 'id_image' || $field === 'business_permit') {
             $current = (string)($row->{$field} ?? '');

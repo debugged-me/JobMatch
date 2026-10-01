@@ -171,7 +171,7 @@ if ($current_uid > 0) {
                   data-id="<?= (int)$n->id ?>">
                   <img
                     src="<?= htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8') ?>"
-                    class="me-2 rounded-circle nav-avatar"
+                    class="me-2 rounded-circle nav-avatar" alt="avatar"
                     onerror="this.onerror=null;this.src='<?= htmlspecialchars(base_url('uploads/avatars/avatar.png'), ENT_QUOTES, 'UTF-8') ?>';">
                   <div class="preview-item-content flex-grow">
                     <p class="preview-subject mb-0 <?= !$n->is_read ? 'fw-bold' : '' ?>">
@@ -242,7 +242,7 @@ if ($current_uid > 0) {
                   <?php $def = base_url($DEFAULT_AVATAR_REL); ?>
                   <img
                     src="<?= htmlspecialchars($avatar, ENT_QUOTES, 'UTF-8') ?>"
-                    class="me-2 rounded-circle nav-avatar"
+                    class="me-2 rounded-circle nav-avatar" alt="avatar"
                     onerror="this.onerror=null;this.src='<?= htmlspecialchars($def, ENT_QUOTES, 'UTF-8') ?>';">
 
                   <div class="preview-item-content flex-grow">

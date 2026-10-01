@@ -10,29 +10,8 @@ class Projects extends CI_Controller
         $this->load->model('ClientProjects_model', 'cpm');
         $this->load->model('ClientProfile_model', 'cp');
     }
-private function _ensure_projects_schema()
-{
-    try {
-        if (!$this->db->field_exists('employment_term', 'client_projects')) {
-            $this->db->query("ALTER TABLE `client_projects`
-                ADD COLUMN `employment_term` VARCHAR(32) NULL AFTER `rate_unit`");
-        }
-        if (!$this->db->field_exists('payment_cycle', 'client_projects')) {
-            $this->db->query("ALTER TABLE `client_projects`
-                ADD COLUMN `payment_cycle` ENUM('monthly','yearly') NULL AFTER `employment_term`");
-        }
-        if (!$this->db->field_exists('project_duration_value', 'client_projects')) {
-            $this->db->query("ALTER TABLE `client_projects`
-                ADD COLUMN `project_duration_value` INT NULL AFTER `payment_cycle`");
-        }
-        if (!$this->db->field_exists('project_duration_unit', 'client_projects')) {
-            $this->db->query("ALTER TABLE `client_projects`
-                ADD COLUMN `project_duration_unit` ENUM('day','week','month','year') NULL AFTER `project_duration_value`");
-        }
-    } catch (\Throwable $e) {
-        log_message('error', 'Schema ensure failed (client_projects): '.$e->getMessage());
-    }
-}
+// Schema lives in database/migrations/001_schema_consolidation.sql —
+// never ALTER at request time.
 
     private function _must_be_client()
     {
@@ -262,7 +241,6 @@ public function restore_history()
     $this->_must_be_client();
 
     $uid = (int)$this->session->userdata('user_id');
-$this->_ensure_projects_schema();
 
     $this->form_validation->set_rules('title', 'Title', 'trim|required|max_length[150]');
     $this->form_validation->set_rules('description', 'Description', 'trim|max_length[5000]');
@@ -412,6 +390,9 @@ if ($resolved_category === '') {
 
   public function close($projectID)
 {
+    if ($this->input->method() !== 'post') {
+        show_error('Method Not Allowed', 405);
+    }
     $this->_must_be_client();
     $uid = (int)$this->session->userdata('user_id');
     $pid = (int)$projectID;

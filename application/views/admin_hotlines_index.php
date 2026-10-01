@@ -11,13 +11,14 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
 
   <style>
     :root {
       --silver-300: #d9dee7;
       --blue-900: #c1272d;
-      --brand: #c1272d;
+      --brand: var(--jm-primary);
       --brand-700: #9e1b21;
       --shadow-1: 0 6px 16px rgba(2, 6, 23, .08)
     }
@@ -439,7 +440,6 @@
 </head>
 
 <body>
-  <?php $this->load->view('partials_translate_banner'); ?>
   <div class="container-scroller">
     <?php $this->load->view('includes_nav'); ?>
     <div class="container-fluid page-body-wrapper">
@@ -584,7 +584,6 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="<?= base_url('assets/vendors/js/vendor.bundle.base.js') ?>"></script>
   <script src="<?= base_url('assets/js/off-canvas.js') ?>"></script>
   <script src="<?= base_url('assets/js/hoverable-collapse.js') ?>"></script>
@@ -593,16 +592,13 @@
     document.querySelectorAll('.hotline-delete-form').forEach(function(form) {
       form.addEventListener('submit', function(e) {
         e.preventDefault();
-        Swal.fire({
+        JM.confirm({
           title: 'Delete this hotline?',
           text: 'This action cannot be undone.',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#dc2626',
-          cancelButtonColor: '#64748b',
-          confirmButtonText: 'Yes, delete it'
-        }).then(function(result) {
-          if (result.isConfirmed) form.submit();
+          danger: true,
+          confirmText: 'Yes, delete it'
+        }).then(function(ok) {
+          if (ok) form.submit();
         });
       });
     });

@@ -1,14 +1,14 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class AdminHotlines extends CI_Controller
+class AdminHotlines extends MY_Controller
 {
     public function __construct(){
         parent::__construct();
-        // TODO: Ensure admin auth check here.
         $this->load->model('Hotline_model', 'Hotlines');
         $this->load->helper(['url','form','html']);
-        $this->load->library('session');
+
+        $this->require_role('admin');
     }
 
     public function index(){

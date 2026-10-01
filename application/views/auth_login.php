@@ -31,7 +31,7 @@
 
         <div class="auth-visual-brand">
           <div class="auth-visual-mark">
-            <img src="<?= base_url('assets/images/logo.png') ?>" alt="">
+            <img src="<?= base_url('assets/images/logo.png') ?>" alt="JobMatch DavOr logo">
           </div>
           <div>
             <p class="auth-visual-name">PESO Davao Oriental</p>
@@ -50,7 +50,7 @@
         <div class="auth-mobile-brand">
           <a href="<?= site_url('/') ?>" class="auth-brand-link">
             <span class="auth-brand-mark">
-              <img src="<?= base_url('assets/images/logo.png') ?>" alt="">
+              <img src="<?= base_url('assets/images/logo.png') ?>" alt="JobMatch DavOr logo">
             </span>
             <span>
               <strong>PESO Davao Oriental</strong>
@@ -157,6 +157,7 @@
   <script src="<?= base_url('dist/js/components/base/page-loader.js') ?>"></script>
   <script src="<?= base_url('dist/js/components/base/lucide.js') ?>"></script>
 
+  <script src="<?= base_url('assets/js/jm-ui.js') ?>"></script>
   <script src="<?= base_url('assets/js/auth-common.js') ?>"></script>
 </body>
 

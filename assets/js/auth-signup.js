@@ -7,7 +7,16 @@
   var btn = document.getElementById('btnRegister');
   var tos = document.getElementById('tos');
   var emailCheckUrl = form.dataset.emailCheckUrl || '';
+  var noRecaptcha = (window.__jmNoRecaptcha === true);
+  var captchaInput = document.getElementById('captchaAnswer');
   var greOk = false;
+
+  function humanCheckOk() {
+    if (noRecaptcha) {
+      return !!(captchaInput && captchaInput.value.trim() !== '');
+    }
+    return greOk;
+  }
 
   function setInputState(state) {
     if (!email) return;
@@ -48,7 +57,7 @@
   }
 
   function syncBtn() {
-    var disabled = !(tos && tos.checked && emailIsOk() && greOk);
+    var disabled = !(tos && tos.checked && emailIsOk() && humanCheckOk());
     applyDisabled(disabled);
   }
   window.__signupSyncBtn = syncBtn;
@@ -111,6 +120,7 @@
     email.addEventListener('input', syncBtn);
     email.addEventListener('blur', syncBtn);
   }
+  if (captchaInput) captchaInput.addEventListener('input', syncBtn);
 
   window.recaptchaOk = function () {
     greOk = true;

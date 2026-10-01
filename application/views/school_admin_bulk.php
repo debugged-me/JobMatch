@@ -12,8 +12,9 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="<?= base_url('assets/css/tw-utils.css?v=1') ?>">
   <style>
     :root{--ink:#0f172a;--muted:#6b7280;--line:#e5e7eb;--primary:#2563eb;--hover:rgba(2,6,23,.03)}
     body{font-family:"Karla",system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:#f8fafc;color:var(--ink)}

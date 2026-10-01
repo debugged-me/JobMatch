@@ -50,7 +50,7 @@ class PesoDashboard extends CI_Controller
         log_message('debug', __CLASS__.' role normalized=['.$r.']');
 
         return (
-            strpos($r, 'peso') !== false     // matches: "peso", "PESO_Officer", "peso-admin", etc.
+            preg_match('/^peso\b/', $r) === 1   // role must START with "peso" (peso, peso admin, peso officer)
             || $r === 'admin'
             || $r === 'tesda admin'
         );
@@ -543,6 +543,9 @@ class PesoDashboard extends CI_Controller
 
     public function toggle($id)
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Method Not Allowed', 405);
+        }
         $ok = $this->peso->toggle_status($id, $this->me());
         $this->session->set_flashdata($ok ? 'success' : 'danger', $ok ? 'Status changed.' : 'Could not change status.');
         return redirect('dashboard/peso');
@@ -550,6 +553,9 @@ class PesoDashboard extends CI_Controller
 
     public function delete($id)
     {
+        if ($this->input->method() !== 'post') {
+            show_error('Method Not Allowed', 405);
+        }
         $job = $this->peso->find($id, $this->me());
         if (!$job) {
             $this->session->set_flashdata('danger', 'Record not found.');

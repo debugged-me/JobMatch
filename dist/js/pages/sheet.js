@@ -1,1 +1,0 @@
-(()=>{(function(){"use strict";$("#sheet-size").find("[data-change-size]").on("click",function(){let e=$(this).data("change-size"),s=$("#sheet-size").data("current-size");s&&$("#sheet-size").find(".box").removeClass(s),$("#sheet-size").data("current-size",e),$("#sheet-size").find(".box").addClass(e)})})();})();

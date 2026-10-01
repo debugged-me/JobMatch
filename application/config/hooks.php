@@ -7,3 +7,11 @@ $hook['post_controller_constructor'][] = [
     'filepath' => 'hooks',
     'params'   => []
 ];
+
+$hook['post_controller_constructor'][] = [
+    'class'    => 'SecurityExtras',
+    'function' => 'run',
+    'filename' => 'SecurityExtras.php',
+    'filepath' => 'hooks',
+    'params'   => []
+];

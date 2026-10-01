@@ -40,8 +40,8 @@ class Auth extends CI_Controller
                 ]
             );
 
-            $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]');
-            $this->form_validation->set_rules('role', 'Role', 'required|in_list[worker,client,employer]');
+            $this->form_validation->set_rules('password', 'Password', 'required|min_length[8]');
+            $this->form_validation->set_rules('role', 'Role', 'required|in_list[worker,client]');
             $this->form_validation->set_rules(
                 'accept_privacy',
                 'Privacy Policy',
@@ -312,11 +312,7 @@ class Auth extends CI_Controller
         $this->email->message($message);
 
         if (!$this->email->send(false)) {
-            log_message('error', $this->email->print_debugger(['headers']));
-            echo "<div style='margin:16px;padding:14px;background:#fff3cd;border:1px solid #ffeeba;border-radius:6px'>
-                <strong>DEV ONLY:</strong> Activation link —
-                <a href='" . htmlspecialchars($link, ENT_QUOTES, 'UTF-8') . "'>" . htmlspecialchars($link, ENT_QUOTES, 'UTF-8') . "</a>
-              </div>";
+            log_message('error', 'Activation email failed for ' . $email . ': ' . $this->email->print_debugger(['headers']));
         }
     }
 
@@ -393,6 +389,9 @@ class Auth extends CI_Controller
                 }
 
                 $user = $res;
+
+                // Defeat session fixation: fresh session id for the authenticated session.
+                $this->session->sess_regenerate(true);
 
                 if (!empty($user->locked_until)) {
                     $lockedUntilTs = strtotime((string)$user->locked_until);
@@ -533,6 +532,11 @@ class Auth extends CI_Controller
 
     public function _recaptcha_check(): bool
     {
+        // When reCAPTCHA keys are not configured (local dev), fall back to the
+        // session math captcha. Production MUST set JM_RECAPTCHA_* env vars.
+        if ((string) $this->config->item('recaptcha_secret') === '') {
+            return $this->_nocaptcha_check($this->input->post('captcha_answer'));
+        }
         if ($this->_verify_recaptcha()) return true;
         $this->form_validation->set_message('_recaptcha_check', 'Please complete the reCAPTCHA.');
         return false;

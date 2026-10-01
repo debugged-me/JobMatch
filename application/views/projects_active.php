@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/vertical-light/style.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/custom.css?v=20260625b') ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/tokens.css?v=1') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css?v=1.0.0') ?>">
 
   <link rel="shortcut icon" href="<?= base_url('assets/images/logo.png') ?>" />
@@ -882,10 +883,12 @@
                               </a>
                             <?php endif; ?>
 
-                            <a href="<?= site_url('projects/close/' . $it['id']) ?>" class="btn btn-danger-soft"
-                              onclick="return confirm('Close this project?');">
-                              <i class="mdi mdi-close-octagon-outline"></i> Close
-                            </a>
+                            <form method="post" action="<?= site_url('projects/close/' . $it['id']) ?>" style="display:inline"
+                              onsubmit="return confirm('Close this project?');">
+                              <button type="submit" class="btn btn-danger-soft">
+                                <i class="mdi mdi-close-octagon-outline"></i> Close
+                              </button>
+                            </form>
                           </div>
                         <?php endif; ?>
 
