@@ -10,16 +10,29 @@
  | NEVER commit real credentials here.
  |--------------------------------------------------------------------------
  */
+if (!function_exists('jm_env')) {
+	function jm_env($key) {
+		static $secrets_loaded = false;
+		if (!$secrets_loaded) {
+			$secrets_loaded = true;
+			$__f = dirname(__FILE__) . '/secrets.php';
+			if (is_file($__f)) require $__f;
+		}
+		$v = getenv($key);
+		if ($v === false) $v = isset($_SERVER[$key]) ? $_SERVER[$key] : false;
+		return $v;
+	}
+}
 $config['protocol']     = 'smtp';
-$config['smtp_host']    = getenv('JM_SMTP_HOST') ?: '';
-$config['smtp_user']    = getenv('JM_SMTP_USER') ?: '';
-$config['smtp_pass']    = getenv('JM_SMTP_PASS') ?: '';
-$config['smtp_port']    = (int) (getenv('JM_SMTP_PORT') ?: 465);
-$config['smtp_crypto']  = 'ssl';
-$config['from_email']   = getenv('JM_FROM_EMAIL') ?: 'no-reply@jobmatch.local';
+$config['smtp_host']    = jm_env('JM_SMTP_HOST') ?: '';
+$config['smtp_user']    = jm_env('JM_SMTP_USER') ?: '';
+$config['smtp_pass']    = jm_env('JM_SMTP_PASS') ?: '';
+$config['smtp_port']    = (int) (jm_env('JM_SMTP_PORT') ?: 465);
+$config['smtp_crypto']  = jm_env('JM_SMTP_CRYPTO') ?: 'ssl';
+$config['from_email']   = jm_env('JM_FROM_EMAIL') ?: 'no-reply@jobmatch.local';
 $config['from_name']    = 'JobMatch DavOr';
 $config['support_name'] = 'JobMatch DavOr Support';
-$config['reply_to_email'] = getenv('JM_REPLY_TO_EMAIL') ?: $config['from_email'];
+$config['reply_to_email'] = jm_env('JM_REPLY_TO_EMAIL') ?: $config['from_email'];
 $config['reply_to_name']  = 'JobMatch DavOr';
 $config['charset']      = 'utf-8';
 $config['mailtype']     = 'html';

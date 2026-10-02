@@ -15,3 +15,11 @@ $hook['post_controller_constructor'][] = [
     'filepath' => 'hooks',
     'params'   => []
 ];
+
+$hook['post_controller_constructor'][] = [
+    'class'    => 'SchemaMigrate',
+    'function' => 'run',
+    'filename' => 'SchemaMigrate.php',
+    'filepath' => 'hooks',
+    'params'   => []
+];

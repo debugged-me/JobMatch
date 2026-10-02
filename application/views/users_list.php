@@ -649,6 +649,7 @@
                         <a href="<?= site_url('users') ?>?sort=role&dir=<?= $sort === 'role' && $dir === 'asc' ? 'desc' : 'asc' ?><?= $params ?>" style="text-decoration:none;color:inherit">Role <?php if ($sort === 'role'): ?><i class="mdi mdi-arrow-<?= $dir === 'asc' ? 'up' : 'down' ?>"></i><?php endif; ?></a>
                       </th>
                       <th>Status</th>
+                      <th>National ID</th>
                       <th class="col-actions" style="text-align:center">Action</th>
                     </tr>
                   </thead>
@@ -725,6 +726,43 @@
                           </span>
                         </td>
 
+                        <!-- National ID (PhilSys) -->
+                        <td data-th="National ID" class="td-psys">
+                          <?php
+                            $psStatus = (string)($u->philsys_status ?? '');
+                            $psName   = trim((string)($u->philsys_name ?? ''));
+                            $psTip    = $psName !== ''
+                              ? 'ID: ' . $psName . (!empty($u->philsys_dob) ? ' · DOB ' . $u->philsys_dob : '')
+                              : '';
+                            $psMap = [
+                              'verified' => ['pill-ok',   'mdi-shield-check',            'Verified'],
+                              'pending'  => ['pill-warn', 'mdi-timer-sand',              'Pending'],
+                              'failed'   => ['pill-bad',  'mdi-shield-alert-outline',    'Failed'],
+                            ];
+                          ?>
+                          <?php if ($psStatus === ''): ?>
+                            <span class="pill" style="color:var(--jm-slate-400);border-color:var(--jm-gray-200)"><i class="mdi mdi-minus"></i> —</span>
+                          <?php else: ?>
+                            <span class="pill pill-psys <?= $psMap[$psStatus][0] ?? '' ?>" title="<?= htmlspecialchars($psTip, ENT_QUOTES, 'UTF-8') ?>">
+                              <i class="mdi <?= $psMap[$psStatus][1] ?? 'mdi-card-account-details-outline' ?>"></i>
+                              <?= $psMap[$psStatus][2] ?? $psStatus ?>
+                            </span>
+                            <?php if (!empty($u->philsys_id_type)): ?>
+                              <span style="font-size:.72rem;color:var(--jm-slate-400)"><?= htmlspecialchars($u->philsys_id_type, ENT_QUOTES, 'UTF-8') ?></span>
+                            <?php endif; ?>
+                            <?php if ($psStatus === 'pending'): ?>
+                              <span class="actbar" style="display:inline-flex;margin-left:6px">
+                                <button type="button" class="icon-btn ok psys-act" data-id="<?= (int)$u->id ?>" data-action="verify" data-tip="Confirm ID match">
+                                  <i class="mdi mdi-check"></i>
+                                </button>
+                                <button type="button" class="icon-btn bad psys-act" data-id="<?= (int)$u->id ?>" data-action="reject" data-tip="Reject ID">
+                                  <i class="mdi mdi-close"></i>
+                                </button>
+                              </span>
+                            <?php endif; ?>
+                          <?php endif; ?>
+                        </td>
+
                         <!-- Actions -->
                         <td class="td-actions" data-th="Action">
                           <div class="actbar">
@@ -775,7 +813,7 @@
 
                     <?php if (empty($users)): ?>
                       <tr>
-                        <td colspan="5" class="text-center py-10">
+                        <td colspan="6" class="text-center py-10">
                           <div style="font-size:48px;color:var(--jm-slate-300);margin-bottom:8px"><i class="mdi mdi-account-search-outline"></i></div>
                           <h5 style="font-weight:700;color:var(--jm-slate-600);margin-bottom:4px">No users found</h5>
                           <p style="color:var(--jm-slate-500);font-size:.9rem;margin-bottom:12px">Try adjusting your search or filters.</p>
@@ -966,6 +1004,7 @@
       const URL_RESEND = '<?= site_url('users/resend')  ?>';
       const URL_CREATE = '<?= site_url('users/create_admin') ?>';
       const URL_DELETE = '<?= site_url('users/delete') ?>'; // NEW
+      const URL_PSYS   = '<?= site_url('philsys/review') ?>';
 
       // CSRF helpers
       const metaName = document.querySelector('meta[name="csrf-token-name"]');
@@ -1144,6 +1183,38 @@
         const copyBtn = ev.target.closest('[data-copy]');
         if (copyBtn) {
           copy(copyBtn.getAttribute('data-copy') || '');
+          return;
+        }
+
+        const psysBtn = ev.target.closest('button.psys-act');
+        if (psysBtn) {
+          const tr = psysBtn.closest('tr');
+          const id = parseInt(psysBtn.getAttribute('data-id'), 10);
+          const action = psysBtn.getAttribute('data-action');
+          const isVerify = action === 'verify';
+          JM.confirm({
+            title: isVerify ? 'Confirm National ID?' : 'Reject National ID?',
+            text: isVerify
+              ? 'Confirm the name and birthdate on the scanned ID match this account holder, then mark it verified.'
+              : 'Flag this scanned National ID as failed. The user can rescan a valid ID.',
+            danger: !isVerify,
+            confirmText: isVerify ? 'Yes, verify' : 'Yes, reject'
+          }).then(function(result) {
+            if (!result) return;
+            post(URL_PSYS, { user_id: id, action: action }).then(function(res) {
+              JM.toast(res.msg || 'Updated.', 'success');
+              const cell = tr && tr.querySelector('.td-psys');
+              if (cell) {
+                const ok = res.status === 'verified';
+                cell.innerHTML =
+                  '<span class="pill pill-psys ' + (ok ? 'pill-ok' : 'pill-bad') + '">' +
+                  '<i class="mdi ' + (ok ? 'mdi-shield-check' : 'mdi-shield-alert-outline') + '"></i> ' +
+                  (ok ? 'Verified' : 'Failed') + '</span>';
+              }
+            }).catch(function(e) {
+              JM.alert(e.message || 'Update failed', 'error', 'Failed');
+            });
+          });
           return;
         }
 

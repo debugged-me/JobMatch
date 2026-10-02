@@ -53,7 +53,22 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+	// Per-host credentials (gitignored; no-ops on localhost). Loaded before
+	// environment detection so it may also pin ENVIRONMENT if ever needed.
+	$__secrets_file = __DIR__ . '/application/config/secrets.php';
+	if (is_file($__secrets_file)) {
+		require $__secrets_file;
+	}
+
+	// Accept both CI_ENV and ENVIRONMENT (docs/scripts use either). With no
+	// explicit env var, non-localhost hosts default to production so a live
+	// deploy can never silently run with development error display.
+	$__env = $_SERVER['CI_ENV'] ?? getenv('CI_ENV') ?: ($_SERVER['ENVIRONMENT'] ?? getenv('ENVIRONMENT') ?: '');
+	if ($__env === '') {
+		$__host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+		$__env = ($__host !== '' && !preg_match('/^(localhost|127\.0\.0\.1|::1)(:\d+)?$/i', $__host)) ? 'production' : 'development';
+	}
+	define('ENVIRONMENT', $__env);
 
 /*
  *---------------------------------------------------------------

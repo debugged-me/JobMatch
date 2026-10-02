@@ -10,7 +10,8 @@ ServerSignature Off
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    # camera=(self) is required for the PhilSys national-ID QR scanner
+    Header always set Permissions-Policy "camera=(self), microphone=(), geolocation=()"
     # Pragmatic CSP: this app still relies on inline <script>/<style> blocks;
     # tighten by removing 'unsafe-inline' once views are fully externalized.
     Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: blob: https:; media-src 'self'; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com; frame-src https://www.google.com; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"

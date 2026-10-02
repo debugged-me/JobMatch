@@ -150,6 +150,15 @@
           </div>
         </div>
 
+        <div class="auth-field auth-field--full fade-up fd3">
+          <label class="auth-label">National ID <span style="font-weight:400;color:var(--jm-gray-500,#6b7280)">(optional — PhilID or ePhilID)</span></label>
+          <?php $this->load->view('partials/philsys_scan', [
+            'ps'       => null,
+            'ps_mode'  => 'preview',
+            'ps_fields' => ['first' => '#first_name', 'last' => '#last_name'],
+          ]); ?>
+        </div>
+
         <div class="auth-grid2 fade-up fd3">
           <div class="auth-field">
             <label class="auth-label" for="signupEmail">Email</label>
@@ -225,33 +234,22 @@
         <?php endif; ?>
 
         <?php $recaptchaSiteKey = (string) $this->config->item('recaptcha_site_key'); ?>
+        <?php if ($recaptchaSiteKey !== ''): ?>
         <div class="auth-field auth-field--full fade-up fd4">
           <label class="auth-label">Human verification</label>
           <div class="auth-captcha">
-            <?php if ($recaptchaSiteKey !== ''): ?>
-              <div
-                class="g-recaptcha"
-                data-sitekey="<?= html_escape($recaptchaSiteKey) ?>"
-                data-callback="recaptchaOk"
-                data-expired-callback="recaptchaExpired"
-                data-error-callback="recaptchaError"></div>
-            <?php else: /* local dev fallback — server validates via math captcha */ ?>
-              <input
-                id="captchaAnswer"
-                class="auth-input"
-                type="text"
-                name="captcha_answer"
-                inputmode="numeric"
-                autocomplete="off"
-                placeholder="<?= html_escape($captcha_q ?? 'Solve: a + b = ?') ?>"
-                aria-label="Answer the math question" />
-            <?php endif; ?>
+            <div
+              class="g-recaptcha"
+              data-sitekey="<?= html_escape($recaptchaSiteKey) ?>"
+              data-callback="recaptchaOk"
+              data-expired-callback="recaptchaExpired"
+              data-error-callback="recaptchaError"></div>
           </div>
           <?php if (form_error('g-recaptcha-response')): ?>
             <div class="text-red-600 text-sm mt-2"><?= form_error('g-recaptcha-response'); ?></div>
           <?php endif; ?>
         </div>
-        <script>window.__jmNoRecaptcha = <?= $recaptchaSiteKey === '' ? 'true' : 'false' ?>;</script>
+        <?php endif; ?>
 
         <div class="hp" aria-hidden="true">
           <label for="hp-website">Website</label>
@@ -297,6 +295,7 @@
           <li>Reviews/ratings after completed engagements.</li>
           <li>System notifications and related delivery data (email or in-app notification events).</li>
           <li>Basic usage, log, and device information for security and diagnostics.</li>
+          <li>If you choose to scan your National ID (PhilID/ePhilID): the name, sex, birthdate, and birthplace read from the ID, plus a one-way hash of the card number. We never store the raw card number.</li>
         </ul>
 
         <h4>2) How We Use Your Information</h4>
@@ -354,6 +353,7 @@
   <?php endif; ?>
 
   <script src="<?= base_url('assets/js/jm-ui.js') ?>"></script>
+  <script src="<?= base_url('assets/js/csrf.js') ?>"></script>
   <script src="<?= base_url('assets/js/auth-common.js') ?>"></script>
   <script src="<?= base_url('assets/js/auth-signup.js') ?>"></script>
 </body>

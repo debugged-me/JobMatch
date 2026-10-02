@@ -80,6 +80,9 @@ if (!$this->session->userdata('logged_in')) {
         $uid      = (int) $this->session->userdata('user_id');
         $data['p'] = $this->wp->get($uid);
 
+        $this->load->model('User_model', 'um');
+        $data['ps'] = $this->um->philsys_brief($uid);
+
         // normalize JSON fields we persist as text
         if (!empty($data['p']->exp) && is_string($data['p']->exp)) {
             $tmp = json_decode($data['p']->exp, true);

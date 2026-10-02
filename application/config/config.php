@@ -5,10 +5,26 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 $autoload['helper'] = array('url', 'form');
 
+// Env reader: checks process env first, then $_SERVER — PHP-FPM/cPanel hosts
+// expose SetEnv/fastcgi_param values via $_SERVER where getenv() sees nothing.
+if (!function_exists('jm_env')) {
+	function jm_env($key) {
+		static $secrets_loaded = false;
+		if (!$secrets_loaded) {
+			$secrets_loaded = true;
+			$__f = dirname(__FILE__) . '/secrets.php';
+			if (is_file($__f)) require $__f;
+		}
+		$v = getenv($key);
+		if ($v === false) $v = isset($_SERVER[$key]) ? $_SERVER[$key] : false;
+		return $v;
+	}
+}
+
 // Auto-detect base URL (works for localhost and production).
 // Pinned base URL in production (set JM_BASE_URL env var) to prevent
 // Host-header poisoning of emailed links/redirects. Auto-detect stays for local dev.
-$base_url = getenv('JM_BASE_URL') ?: '';
+$base_url = jm_env('JM_BASE_URL') ?: '';
 if ($base_url === '' && isset($_SERVER['HTTP_HOST'])) {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
@@ -310,9 +326,9 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/userguide3/libraries/encryption.html
 |
 */
-// Override with the JM_ENC_KEY env var in production. Fallback: a per-install
-// random key persisted outside the repo in the system temp dir.
-$jmEncKey = getenv('JM_ENC_KEY') ?: '';
+// Override with JM_ENCRYPTION_KEY (or JM_ENC_KEY) env var in production.
+// Fallback: a per-install random key persisted outside the repo.
+$jmEncKey = jm_env('JM_ENCRYPTION_KEY') ?: (jm_env('JM_ENC_KEY') ?: '');
 if ($jmEncKey === '') {
     $jmKeyFile = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'jobmatch_enc_key';
     if (is_file($jmKeyFile)) {
@@ -385,6 +401,11 @@ $config['sess_cookie_name'] = 'ci_session';
 $config['sess_samesite'] = 'Lax';
 $config['sess_expiration'] = 7200;
 $config['sess_save_path'] = FCPATH . 'writable/sessions';
+// Self-heal: the files driver fails hard when the dir is missing/unwritable —
+// create it at bootstrap so a fresh deploy never deadlocks sessions.
+if (!is_dir($config['sess_save_path'])) {
+	@mkdir($config['sess_save_path'], 0700, true);
+}
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = TRUE;

@@ -33,6 +33,8 @@ class Client extends CI_Controller
         $uid = (int)$this->session->userdata('user_id');
         $data['page_title'] = 'Edit Client Profile';
         $data['profile']    = $this->cp->get($uid);
+        $this->load->model('User_model', 'um');
+        $data['ps']         = $this->um->philsys_brief($uid);
         $this->load->view('client_edit', $data);
     }
 

@@ -7,15 +7,14 @@
   var btn = document.getElementById('btnRegister');
   var tos = document.getElementById('tos');
   var emailCheckUrl = form.dataset.emailCheckUrl || '';
-  var noRecaptcha = (window.__jmNoRecaptcha === true);
+  var hasRecaptcha = !!document.querySelector('.g-recaptcha');
   var captchaInput = document.getElementById('captchaAnswer');
   var greOk = false;
 
   function humanCheckOk() {
-    if (noRecaptcha) {
-      return !!(captchaInput && captchaInput.value.trim() !== '');
-    }
-    return greOk;
+    // math fallback field (legacy) > reCAPTCHA > nothing configured = pass
+    if (captchaInput) return captchaInput.value.trim() !== '';
+    return hasRecaptcha ? greOk : true;
   }
 
   function setInputState(state) {

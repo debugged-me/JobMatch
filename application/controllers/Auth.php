@@ -48,12 +48,16 @@ class Auth extends CI_Controller
                 'required',
                 ['required' => 'You must agree to the Privacy Policy to proceed.']
             );
-            $this->form_validation->set_rules(
-                'g-recaptcha-response',
-                'reCAPTCHA',
-                'required|callback__recaptcha_check',
-                ['required' => 'Please complete the reCAPTCHA.']
-            );
+            // reCAPTCHA is enforced only when JM_RECAPTCHA_* keys are
+            // configured; otherwise the honeypot alone guards the form.
+            if ((string) $this->config->item('recaptcha_secret') !== '') {
+                $this->form_validation->set_rules(
+                    'g-recaptcha-response',
+                    'reCAPTCHA',
+                    'required|callback__recaptcha_check',
+                    ['required' => 'Please complete the reCAPTCHA.']
+                );
+            }
             $this->form_validation->set_rules('website', 'Website', 'callback__honeypot_clear');
 
             if ($this->form_validation->run()) {
@@ -115,15 +119,31 @@ class Auth extends CI_Controller
                     ]);
                 }
 
+                // PhilSys national ID scanned during signup — re-verify the raw
+                // payload server-side (the client-provided flag is never trusted).
+                $qrRaw = trim((string)$this->input->post('philsys_qr', false));
+                if ($qrRaw !== '' && $this->db->field_exists('philsys_status', 'users')) {
+                    try {
+                        $this->load->library('philsys_qr');
+                        $scan = $this->philsys_qr->analyze($qrRaw);
+                        if ($scan['ok']) {
+                            $scan['online'] = null;
+                            if ($scan['normalized'] && ($scan['sig_valid'] !== false)) {
+                                $scan['online'] = $this->philsys_qr->verify_online($scan['normalized']);
+                            }
+                            $accountName = trim(($dataInsert['first_name'] ?? '') . ' ' . ($dataInsert['last_name'] ?? ''));
+                            $match = $this->philsys_qr->name_matches($accountName, (string)$scan['full_name']);
+                            $scan['status'] = $this->philsys_qr->status_for($scan, $match);
+                            $this->user->record_philsys($uid, $scan);
+                        }
+                    } catch (Throwable $e) {
+                        log_message('error', 'PhilSys attach on signup failed: ' . $e->getMessage());
+                    }
+                }
+
                 $this->session->set_flashdata('msg', 'Signup successful! Your account is now active. You can log in.');
                 return redirect('auth/login');
             }
-
-            $cap = $this->_start_local_captcha();
-            $data['captcha_q'] = $cap['q'];
-        } else {
-            $cap = $this->_start_local_captcha();
-            $data['captcha_q'] = $cap['q'];
         }
 
         $this->load->view('auth_signup', $data);
@@ -461,21 +481,6 @@ class Auth extends CI_Controller
     }
 
 
-    private function _start_local_captcha(): array
-    {
-        $a = random_int(10, 99);
-        $b = random_int(1, 9);
-        $ans = $a + $b;
-
-        $this->session->set_userdata([
-            'captcha_answer'     => $ans,
-            'captcha_expires_at' => time() + 600,
-            'form_started_at'    => time(),
-        ]);
-
-        return ['q' => "{$a} + {$b} = ?"];
-    }
-
     public function _honeypot_clear($val): bool
     {
         if (!empty($val)) {
@@ -532,43 +537,11 @@ class Auth extends CI_Controller
 
     public function _recaptcha_check(): bool
     {
-        // When reCAPTCHA keys are not configured (local dev), fall back to the
-        // session math captcha. Production MUST set JM_RECAPTCHA_* env vars.
-        if ((string) $this->config->item('recaptcha_secret') === '') {
-            return $this->_nocaptcha_check($this->input->post('captcha_answer'));
-        }
+        // Only reached when JM_RECAPTCHA_* keys are configured — the rule
+        // isn't registered at all otherwise.
         if ($this->_verify_recaptcha()) return true;
         $this->form_validation->set_message('_recaptcha_check', 'Please complete the reCAPTCHA.');
         return false;
-    }
-
-    public function _nocaptcha_check($val): bool
-    {
-        $expires = (int) $this->session->userdata('captcha_expires_at');
-        $answer  = (int) $this->session->userdata('captcha_answer');
-        $this->session->unset_userdata(['captcha_answer', 'captcha_expires_at']);
-
-        if ($expires < time()) {
-            $this->form_validation->set_message('_nocaptcha_check', 'The verification expired. Please try again.');
-            return false;
-        }
-        if (!preg_match('/^\d+$/', (string)$val)) {
-            $this->form_validation->set_message('_nocaptcha_check', 'Enter the correct answer.');
-            return false;
-        }
-
-        if ((int)$val !== (int)$answer) {
-            $this->form_validation->set_message('_nocaptcha_check', 'Wrong answer. Please try again.');
-            return false;
-        }
-        $started = (int) $this->session->userdata('form_started_at');
-        $this->session->unset_userdata('form_started_at');
-        if ($started && (time() - $started) < 2) {
-            $this->form_validation->set_message('_nocaptcha_check', 'Please take a moment before submitting.');
-            return false;
-        }
-
-        return true;
     }
 
     public function forgot()

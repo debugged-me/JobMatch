@@ -94,6 +94,16 @@ if (!class_exists('PdfWithRotation')) {
 
 class Media extends CI_Controller
 {
+    /** Dirs holding personal/credential documents — owner or staff only. */
+    private const PRIVATE_DIRS = [
+        'uploads/documents/',
+        'uploads/clients/ids/',
+        'uploads/clients/permits/',
+        'uploads/clients/certificates/',
+        'uploads/certificates/',
+        'uploads/trainings/',
+    ];
+
     public function __construct()
     {
         parent::__construct();
@@ -101,6 +111,49 @@ class Media extends CI_Controller
         if (!$this->session->userdata('logged_in')) {
             show_error('Authentication required', 401);
         }
+    }
+
+    /**
+     * Authorization for a normalized 'uploads/…' path:
+     * staff roles may view anything; other logged-in users may only fetch
+     * files inside PRIVATE_DIRS that a DB row they own references.
+     */
+    private function _can_access(string $rel): bool
+    {
+        // Normalize so leading slashes / backslashes can't bypass the dir check.
+        $rel = preg_replace('#[/\\\\]+#', '/', ltrim(str_replace('\\', '/', $rel), '/'));
+
+        $role = strtolower(str_replace(['_', '-'], ' ',
+            (string)($this->session->userdata('role') ?: $this->session->userdata('level'))));
+        if (in_array($role, ['admin', 'peso', 'tesda admin', 'school admin'], true)) {
+            return true;
+        }
+        foreach (self::PRIVATE_DIRS as $d) {
+            if (strpos($rel, $d) === 0) return $this->_owns_file($rel);
+        }
+        return true; // published content dirs (posts, avatars, projects…)
+    }
+
+    /** True when a row owned by the current user references this path. */
+    private function _owns_file(string $rel): bool
+    {
+        $uid = (int)($this->session->userdata('user_id') ?: $this->session->userdata('id'));
+        if ($uid <= 0) return false;
+        $this->load->database();
+
+        $hit = function (string $table, string $ownerCol, array $cols) use ($uid, $rel): bool {
+            if (!$this->db->table_exists($table)) return false;
+            $q = $this->db->where($ownerCol, $uid)->group_start();
+            foreach ($cols as $c) {
+                if ($this->db->field_exists($c, $table)) $q->or_like($c, $rel);
+            }
+            return $q->group_end()->count_all_results($table) > 0;
+        };
+
+        return $hit('documents',      'user_id',   ['file_path'])
+            || $hit('client_profile', 'clientID',  ['id_image', 'certificates', 'business_permit'])
+            || $hit('worker_profile', 'workerID',  ['avatar', 'cert_files', 'tesda_certs', 'language_certs'])
+            || $hit('users',          'id',        ['avatar', 'photo', 'image', 'profile_pic']);
     }
 
     /**
@@ -134,6 +187,7 @@ class Media extends CI_Controller
         $abs         = realpath(FCPATH . $f);
         if (!$uploadsRoot || !$abs || strpos($abs, $uploadsRoot) !== 0) show_error('Not allowed', 403);
         if (!is_file($abs)) show_404();
+        if (!$this->_can_access($f)) show_error('Not allowed', 403);
 
         $ext  = strtolower(pathinfo($abs, PATHINFO_EXTENSION));
         $allowed = ['jpg','jpeg','png','webp','gif','pdf'];
@@ -164,6 +218,7 @@ class Media extends CI_Controller
         $rel = (string) $this->input->get('f', true);
         $abs = $this->_uploads_file($rel);
         if ($abs === null) show_error('Invalid path', 400);
+        if (!$this->_can_access($rel)) show_error('Not allowed', 403);
 
         $ext = strtolower(pathinfo($abs, PATHINFO_EXTENSION));
         $imgExts = ['jpg','jpeg','png','webp','gif'];
@@ -319,6 +374,7 @@ class Media extends CI_Controller
         $rel = (string) $this->input->get('f', true);
         $abs = $this->_uploads_file($rel);
         if ($abs === null) show_error('Invalid path', 400);
+        if (!$this->_can_access($rel)) show_error('Not allowed', 403);
 
         $ext = strtolower(pathinfo($abs, PATHINFO_EXTENSION));
         if ($ext !== 'pdf') show_error('Unsupported file type', 415);

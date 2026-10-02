@@ -270,6 +270,18 @@
             <div data-panel="info" class="tab-panel">
               <h2 class="section-header text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
 
+              <div class="mb-4">
+                <?php $this->load->view('partials/philsys_scan', [
+                  'ps'        => $ps ?? null,
+                  'ps_mode'   => 'attach',
+                  'ps_fields' => [
+                    'first'  => 'input[name="fName"]',
+                    'last'   => 'input[name="lName"]',
+                    'middle' => 'input[name="mName"]',
+                  ],
+                ]); ?>
+              </div>
+
               <div class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div class="input-group">

@@ -350,6 +350,73 @@ class User_model extends CI_Model
         return $this->db->update($this->table, $data, ['id' => $id]);
     }
 
+    /* ---------------------------------------------------------------- *
+     *  PhilSys national-ID verification
+     * ---------------------------------------------------------------- */
+
+    /** Small snapshot used by profile pages/admin lists. */
+    public function philsys_brief(int $uid): ?array
+    {
+        if (!$this->db->field_exists('philsys_status', $this->table)) return null;
+        $row = $this->db->select(
+            'philsys_status, philsys_id_type, philsys_name, philsys_dob, philsys_sex, philsys_scanned_at, philsys_verified_at'
+        )->get_where($this->table, ['id' => $uid])->row_array();
+        return $row ?: null;
+    }
+
+    /** Returns the user id that owns this PCN hash, or null. */
+    public function philsys_pcn_owner(string $hash): ?int
+    {
+        if ($hash === '' || !$this->db->field_exists('philsys_pcn_hash', $this->table)) return null;
+        $row = $this->db->select('id')->get_where($this->table, ['philsys_pcn_hash' => $hash])->row();
+        return $row ? (int)$row->id : null;
+    }
+
+    /**
+     * Persist a scan result onto a user row.
+     * $r = Philsys_qr::analyze() output + 'status' + optional 'verified_by'.
+     * Never writes the raw PCN — only its SHA-256 hash.
+     */
+    public function record_philsys(int $uid, array $r): bool
+    {
+        if (!$this->db->field_exists('philsys_status', $this->table)) return false;
+
+        $now = date('Y-m-d H:i:s');
+        $data = [
+            'philsys_status'     => $r['status'] ?? 'failed',
+            'philsys_id_type'    => $r['card_type'] ?? null,
+            'philsys_name'       => $r['full_name'] ?? null,
+            'philsys_dob'        => $r['dob'] ?? null,
+            'philsys_sex'        => $r['subject']['sex'] ?? null,
+            'philsys_pcn_hash'   => $r['pcn_hash'] ?? null,
+            'philsys_scanned_at' => $now,
+            'updated_at'         => $now,
+        ];
+        if (($r['status'] ?? '') === 'verified') {
+            $data['philsys_verified_at'] = $now;
+            $data['philsys_verified_by'] = $r['verified_by'] ?? null;
+        }
+
+        return (bool)$this->db->update($this->table, $data, ['id' => $uid]);
+    }
+
+    /** Staff decision on a pending scan. */
+    public function review_philsys(int $uid, string $action, int $staffId): bool
+    {
+        if (!$this->db->field_exists('philsys_status', $this->table)) return false;
+        $now = date('Y-m-d H:i:s');
+        $data = [
+            'philsys_status'       => $action === 'verify' ? 'verified' : 'failed',
+            'philsys_verified_by'  => $staffId,
+            'philsys_verified_at'  => $now,
+            'updated_at'           => $now,
+        ];
+        // Only when a scan actually exists — never verify a blank record.
+        return (bool)$this->db
+            ->where_in('philsys_status', ['pending', 'verified', 'failed'])
+            ->update($this->table, $data, ['id' => $uid]);
+    }
+
     private function is_staff_role($role): bool
     {
         $role = $this->normalize_role($role);

@@ -21,11 +21,16 @@ public function search(
     $this->db->join('client_profile cp', 'cp.clientID = u.id', 'left');
 
     // Select with unified avatar
-    $this->db->select("
+    $select = "
         u.id, u.email, u.role, u.is_active, u.status,
         u.first_name, u.last_name, u.created_at,
         COALESCE(NULLIF(TRIM(wp.avatar), ''), NULLIF(TRIM(cp.avatar), '')) AS avatar
-    ", false);
+    ";
+    if ($this->db->field_exists('philsys_status', $this->table)) {
+        $select .= ",
+        u.philsys_status, u.philsys_id_type, u.philsys_name, u.philsys_dob, u.philsys_scanned_at";
+    }
+    $this->db->select($select, false);
 
     if ($q !== '') {
         $this->db->group_start()

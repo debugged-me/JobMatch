@@ -43,3 +43,4 @@ build/tw/node_modules/
 * copy.php
 *_BACKUP.php
 application/config/*-local.php
+application/config/secrets.php
